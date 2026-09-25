@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Category;
+use Illuminate\Support\Str;
+
+class CategoryController extends Controller
+{
+    public function index()
+    {
+        $categories = Category::withCount('posts')->get();
+        return view('admin.categories.index', compact('categories'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:50',
+            'color' => 'nullable|string|max:50',
+            'description' => 'nullable|string',
+        ]);
+
+        Category::create([
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+            'type' => $validated['type'],
+            'color' => $validated['color'] ?? 'blue',
+            'description' => $validated['description'],
+        ]);
+
+        return back()->with('success', 'Kategori berhasil ditambahkan!');
+    }
+
+    public function update(Request $request, Category $category)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:50',
+            'color' => 'nullable|string|max:50',
+            'description' => 'nullable|string',
+        ]);
+
+        $category->update($validated);
+
+        return back()->with('success', 'Kategori berhasil diperbarui!');
+    }
+
+    public function destroy(Category $category)
+    {
+        if ($category->posts()->count() > 0) {
+            return back()->with('error', 'Kategori tidak dapat dihapus karena masih memiliki artikel terkait.');
+        }
+        $category->delete();
+        return back()->with('success', 'Kategori berhasil dihapus.');
+    }
+}
