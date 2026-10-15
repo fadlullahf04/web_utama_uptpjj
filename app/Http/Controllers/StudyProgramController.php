@@ -23,7 +23,7 @@ class StudyProgramController extends Controller
 
     public function show($slug)
     {
-        $program = StudyProgram::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $program = StudyProgram::where('slug', $slug)->firstOrFail();
         $otherPrograms = StudyProgram::active()->where('id', '!=', $program->id)->take(3)->get();
 
         return view('pages.programs.show', compact('program', 'otherPrograms'));

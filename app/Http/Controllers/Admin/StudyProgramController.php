@@ -46,7 +46,6 @@ class StudyProgramController extends Controller
             'registration_url' => 'nullable|url',
             'website_url' => 'nullable|url',
             'order' => 'nullable|integer',
-            'is_active' => 'boolean',
         ]);
 
         $imagePath = $request->input('image_url');
@@ -58,7 +57,7 @@ class StudyProgramController extends Controller
             'slug' => Str::slug($validated['name']),
             'image' => $imagePath,
             'order' => $validated['order'] ?? 0,
-            'is_active' => $request->boolean('is_active', true),
+            'is_active' => true,
         ]));
 
         return redirect()->route('admin.programs.index')->with('success', 'Program Studi PJJ berhasil ditambahkan!');
@@ -94,7 +93,6 @@ class StudyProgramController extends Controller
             'registration_url' => 'nullable|url',
             'website_url' => 'nullable|url',
             'order' => 'nullable|integer',
-            'is_active' => 'boolean',
         ]);
 
         $imagePath = $program->image;
@@ -108,7 +106,7 @@ class StudyProgramController extends Controller
         $program->update(array_merge($validated, [
             'image' => $imagePath,
             'order' => $validated['order'] ?? $program->order,
-            'is_active' => $request->boolean('is_active'),
+            'is_active' => true,
         ]));
 
         return redirect()->route('admin.programs.index')->with('success', 'Program Studi PJJ berhasil diperbarui!');

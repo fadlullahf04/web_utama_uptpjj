@@ -55,7 +55,7 @@ class StudyProgram extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('is_active', true)->orderBy('order', 'asc');
+        return $query->orderBy('order', 'asc');
     }
 
     public function getImageUrlAttribute(): string

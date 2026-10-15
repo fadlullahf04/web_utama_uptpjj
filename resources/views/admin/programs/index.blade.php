@@ -22,7 +22,6 @@
                     <th class="py-3.5 px-4 font-bold">Akreditasi</th>
                     <th class="py-3.5 px-4 font-bold">Kaprodi</th>
                     <th class="py-3.5 px-4 font-bold">SKS / Durasi</th>
-                    <th class="py-3.5 px-4 font-bold">Status</th>
                     <th class="py-3.5 px-4 font-bold text-right">Aksi</th>
                 </tr>
             </thead>
@@ -50,13 +49,6 @@
                         </td>
                         <td class="py-3.5 px-4 text-slate-800 font-medium">{{ $prodi->head_of_program ?? '-' }}</td>
                         <td class="py-3.5 px-4 text-slate-500">{{ $prodi->total_credits }} SKS ({{ $prodi->study_duration }})</td>
-                        <td class="py-3.5 px-4">
-                            @if($prodi->is_active)
-                                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-[#006837] text-[10px] font-bold">Aktif</span>
-                            @else
-                                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold">Non-aktif</span>
-                            @endif
-                        </td>
                         <td class="py-3.5 px-4 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('programs.show', $prodi->slug) }}" target="_blank" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:text-emerald-700 hover:bg-slate-200 transition" title="Lihat Publik">

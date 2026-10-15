@@ -68,8 +68,8 @@ class SitemapController extends Controller
             ];
         }
 
-        // Active Study Programs
-        $programs = StudyProgram::where('is_active', true)->orderBy('order')->get();
+        // Study Programs
+        $programs = StudyProgram::orderBy('order')->get();
         foreach ($programs as $program) {
             $urls[] = [
                 'loc' => route('programs.show', $program->slug),
