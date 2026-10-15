@@ -31,8 +31,16 @@
                     </div>
                 </div>
 
-                <div class="text-slate-700 text-sm leading-relaxed space-y-4">
-                    {!! nl2br(e(\App\Models\Setting::get('head_greeting'))) !!}
+                <div class="article-content text-slate-700 text-sm sm:text-base leading-relaxed space-y-4">
+                    @php
+                        $greeting = \App\Models\Setting::get('head_greeting', '');
+                        $hasHtml = strip_tags($greeting) !== $greeting;
+                    @endphp
+                    @if($hasHtml)
+                        {!! $greeting !!}
+                    @else
+                        {!! nl2br(e($greeting)) !!}
+                    @endif
                 </div>
 
                 <div class="pt-6 border-t border-slate-100 text-xs text-slate-500 italic border-l-2 border-[#006837] pl-4">

@@ -5,11 +5,14 @@
 @section('header_subtitle', 'Konfigurasi identitas kampus, sambutan pimpinan, kontak, dan tautan sistem')
 
 @section('content')
-<div class="w-full space-y-6" x-data="{ activeTab: 'general' }">
+<div class="w-full space-y-6" x-data="{ 
+    activeTab: (new URLSearchParams(window.location.search).get('tab')) || (window.location.hash ? window.location.hash.replace('#', '') : '{{ session('active_tab', 'general') }}')
+}" x-init="$watch('activeTab', val => { if(history.replaceState) history.replaceState(null, null, '#' + val); })">
     
-    <form action="{{ route('admin.settings.update') }}" method="POST">
+    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        <input type="hidden" name="_active_tab" :value="activeTab">
 
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
             
@@ -94,14 +97,99 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">URL Foto Pimpinan</label>
-                        <input type="url" name="head_photo" value="{{ \App\Models\Setting::get('head_photo') }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    <!-- Foto Pimpinan: Upload Komputer & URL -->
+                    <div class="bg-slate-50/70 p-5 rounded-2xl border border-slate-200 space-y-4" x-data="{
+                        photoPreview: null,
+                        fileName: '',
+                        currentPhoto: @js(\App\Models\Setting::get('head_photo')),
+                        handleFileSelect(event) {
+                            const file = event.target.files[0];
+                            if (!file) return;
+                            this.fileName = file.name;
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.photoPreview = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }">
+                        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider">
+                                    <i class="fa-solid fa-camera text-[#006837] mr-1.5"></i> Foto Resmi Kepala UPT
+                                </label>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Unggah foto resmi Kepala Unit langsung dari komputer atau tautkan URL gambar.</p>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">
+                                Rekomendasi 1:1 / Persegi
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+                            <!-- Preview Box -->
+                            <div class="md:col-span-4 flex flex-col items-center text-center p-3.5 bg-white rounded-xl border border-slate-200 shadow-xs">
+                                <div class="w-32 h-32 rounded-2xl overflow-hidden border-2 border-[#006837]/30 bg-slate-100 shadow-sm relative group">
+                                    <template x-if="photoPreview">
+                                        <img :src="photoPreview" alt="Preview Foto Baru" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!photoPreview && currentPhoto">
+                                        <img :src="currentPhoto" alt="Foto Kepala UPT" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!photoPreview && !currentPhoto">
+                                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400">
+                                            <i class="fa-solid fa-user-tie text-3xl"></i>
+                                            <span class="text-[10px] mt-1 font-semibold">Belum Ada Foto</span>
+                                        </div>
+                                    </template>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-2.5" x-text="photoPreview ? 'Pratinjau Foto Baru' : (currentPhoto ? 'Foto Saat Ini Aktif' : 'Pratinjau Foto')"></span>
+                                <span x-show="fileName" x-text="fileName" class="text-[11px] text-emerald-700 font-semibold truncate max-w-full px-2 mt-0.5"></span>
+                            </div>
+
+                            <!-- Upload & URL Inputs -->
+                            <div class="md:col-span-8 space-y-3.5">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-upload text-[#006837]"></i> Pilih Foto Dari Komputer (Disarankan)
+                                    </label>
+                                    <input type="file" 
+                                           name="head_photo_file" 
+                                           accept="image/jpeg,image/png,image/jpg,image/webp" 
+                                           @change="handleFileSelect($event)" 
+                                           class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#006837] file:text-white hover:file:bg-[#004d29] transition file:cursor-pointer">
+                                    <span class="text-[11px] text-slate-400 mt-1 block">Format: JPG, PNG, WebP (Maksimal 5MB). Foto tersimpan otomatis di penyimpanan server kampus.</span>
+                                </div>
+
+                                <div class="pt-3 border-t border-slate-200">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-link text-slate-400"></i> Atau Gunakan URL Foto Online
+                                    </label>
+                                    <input type="url" 
+                                           name="head_photo" 
+                                           x-model="currentPhoto"
+                                           value="{{ \App\Models\Setting::get('head_photo') }}" 
+                                           placeholder="https://... (Kosongkan jika mengunggah berkas dari komputer)" 
+                                           class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-xs focus:outline-none focus:border-[#006837]">
+                                    <span class="text-[11px] text-slate-400 mt-1 block">Jika berkas dari komputer diunggah, foto baru akan diprioritaskan dan disimpan ke sistem.</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Teks Sambutan Kepala UPT</label>
-                        <textarea name="head_greeting" rows="8" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837] leading-relaxed">{{ \App\Models\Setting::get('head_greeting') }}</textarea>
+                    <!-- Sambutan Kepala UPT dengan Rich Text Editor & Sisipkan Gambar -->
+                    <div class="space-y-2">
+                        @include('admin.posts._editor', [
+                            'content' => \App\Models\Setting::get('head_greeting', ''),
+                            'name' => 'head_greeting',
+                            'label' => 'Teks Sambutan Resmi Kepala UPT',
+                            'required' => false,
+                            'minHeight' => '320px',
+                            'uploadUrl' => route('admin.posts.upload_image')
+                        ])
+                        <div class="flex items-center gap-2 text-[11px] text-slate-500 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200">
+                            <i class="fa-solid fa-circle-info text-[#006837]"></i>
+                            <span>Dapat memformat teks (tebal, miring, judul bagian, kutipan) dan menyisipkan gambar/foto sambutan dari komputer melalui tombol <strong>"Sisipkan Gambar"</strong>.</span>
+                        </div>
                     </div>
 
                     <div>

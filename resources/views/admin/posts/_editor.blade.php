@@ -33,7 +33,11 @@
                 const form = this.$el.closest('form');
                 if (form) {
                     form.addEventListener('submit', () => {
-                        this.syncToInput();
+                        if (this.mode === 'html') {
+                            this.syncFromHtml();
+                        } else {
+                            this.syncToInput();
+                        }
                     });
                 }
             },

@@ -7,11 +7,14 @@ use App\Models\Faq;
 use App\Models\GalleryItem;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\Setting;
 use App\Models\StudyProgram;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CmsCrudTest extends TestCase
@@ -245,5 +248,39 @@ class CmsCrudTest extends TestCase
         $this->actingAs($this->admin)->get("/admin/services/{$service->id}/edit")->assertOk();
         $this->actingAs($this->admin)->get("/admin/posts/{$post->id}/edit")->assertOk();
         $this->actingAs($this->admin)->get("/admin/team/{$team->id}/edit")->assertOk();
+    }
+
+    public function test_can_update_leadership_settings_with_uploaded_photo_and_rich_greeting(): void
+    {
+        Storage::fake('public');
+
+        $photoFile = UploadedFile::fake()->image('head_leader.jpg', 400, 400);
+
+        $response = $this->actingAs($this->admin)->put(route('admin.settings.update'), [
+            '_active_tab' => 'profile',
+            'head_name' => 'Prof. Dr. Pembina Siber, M.Ag',
+            'head_title' => 'Direktur Eksekutif UPT PJJ',
+            'head_photo_file' => $photoFile,
+            'head_greeting' => '<p>Sambutan resmi pimpinan dengan format <strong>tebal</strong> dan foto.</p>',
+            'vision' => 'Visi siber terdepan 2030.',
+            'mission' => 'Misi inovasi pembelajaran digital.',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('active_tab', 'profile');
+
+        // Assert file stored in storage/settings
+        Storage::disk('public')->assertExists('settings/'.$photoFile->hashName());
+
+        // Assert settings updated
+        $this->assertEquals('Prof. Dr. Pembina Siber, M.Ag', Setting::get('head_name'));
+        $this->assertStringContainsString('settings/'.$photoFile->hashName(), Setting::get('head_photo'));
+        $this->assertStringContainsString('Sambutan resmi pimpinan', Setting::get('head_greeting'));
+
+        // Assert overview page renders greeting and photo
+        $overviewResponse = $this->get(route('profile.overview'));
+        $overviewResponse->assertOk();
+        $overviewResponse->assertSee('Prof. Dr. Pembina Siber, M.Ag');
+        $overviewResponse->assertSee('Sambutan resmi pimpinan');
     }
 }
