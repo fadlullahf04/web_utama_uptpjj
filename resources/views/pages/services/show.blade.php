@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $service->title . ' - UPT Pendidikan Jarak Jauh UINSSC')
+@section('meta_description', $service->short_description ?: \Illuminate\Support\Str::limit(strip_tags($service->content), 155))
 
 @section('content')
 <!-- Page Header -->

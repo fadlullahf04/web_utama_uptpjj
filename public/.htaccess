@@ -3,6 +3,11 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    ServerSignature Off
+
+    # Block access to hidden files (.env, .git, etc.)
+    RewriteRule ^(\.|\/\.) - [F,L]
+
     RewriteEngine On
 
     # Handle Authorization Header

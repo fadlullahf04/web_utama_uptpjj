@@ -28,6 +28,12 @@
                 <form action="{{ route('contact.store') }}" method="POST" class="space-y-4">
                     @csrf
 
+                    {{-- Anti-spam honeypot (hidden from human visitors) --}}
+                    <div class="hidden" style="display: none;" aria-hidden="true">
+                        <label for="_hp_company">Do not fill this field</label>
+                        <input type="text" name="_hp_company" id="_hp_company" tabindex="-1" autocomplete="off" value="">
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap *</label>

@@ -5,7 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'UPT Pendidikan Jarak Jauh - UIN Siber Syekh Nurjati Cirebon')</title>
     <meta name="description" content="@yield('meta_description', 'Portal Resmi Unit Pelaksana Teknis Pendidikan Jarak Jauh (UPT PJJ) UIN Siber Syekh Nurjati Cirebon. World Class Cyber Islamic University.')">
-    <meta name="keywords" content="UPT PJJ, UINSSC, PJJ UIN Cirebon, Kuliah Online, Cyber Islamic University, LMS Pillar, PMB PJJ, S1 PAI PJJ, S2 PAI PJJ">
+    <meta name="keywords" content="@yield('meta_keywords', 'UPT PJJ, UINSSC, PJJ UIN Cirebon, Kuliah Online, Cyber Islamic University, LMS Pillar, PMB PJJ, S1 PAI PJJ, S2 PAI PJJ')">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Open Graph (Facebook / WhatsApp / LinkedIn) -->
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:type" content="@yield('meta_type', 'website')">
+    <meta property="og:site_name" content="UPT PJJ UIN Siber Syekh Nurjati Cirebon">
+    <meta property="og:title" content="@yield('title', 'UPT Pendidikan Jarak Jauh - UIN Siber Syekh Nurjati Cirebon')">
+    <meta property="og:description" content="@yield('meta_description', 'Portal Resmi Unit Pelaksana Teknis Pendidikan Jarak Jauh (UPT PJJ) UIN Siber Syekh Nurjati Cirebon. World Class Cyber Islamic University.')">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="@yield('meta_image', asset('images/logo_uptpjj.png'))">
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', 'UPT Pendidikan Jarak Jauh - UIN Siber Syekh Nurjati Cirebon')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Portal Resmi Unit Pelaksana Teknis Pendidikan Jarak Jauh (UPT PJJ) UIN Siber Syekh Nurjati Cirebon. World Class Cyber Islamic University.')">
+    <meta name="twitter:image" content="@yield('meta_image', asset('images/logo_uptpjj.png'))">
+
+    <!-- Schema.org Organization Structured Data -->
+    <script type="application/ld+json">
+    {
+        "{{ '@context' }}": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "UPT Pendidikan Jarak Jauh UIN Siber Syekh Nurjati Cirebon",
+        "alternateName": "UPT PJJ UINSSC",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('images/logo_uptpjj.png') }}",
+        "email": "{{ \App\Models\Setting::get('email', 'pjj@uinssc.ac.id') }}",
+        "telephone": "{{ \App\Models\Setting::get('phone', '(0231) 481264') }}"
+    }
+    </script>
+    @stack('schema')
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

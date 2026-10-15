@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Setting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SettingController extends Controller
 {
     public function index()
     {
         $settings = Setting::all()->groupBy('group');
+
         return view('admin.settings.index', compact('settings'));
     }
 
@@ -26,7 +28,7 @@ class SettingController extends Controller
         }
 
         // Clear cache
-        \Illuminate\Support\Facades\Cache::flush();
+        Cache::flush();
 
         return back()->with('success', 'Pengaturan situs web berhasil diperbarui!');
     }

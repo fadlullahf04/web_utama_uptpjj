@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Testimonial;
+use Illuminate\Http\Request;
 
 class TestimonialController extends Controller
 {
     public function index()
     {
         $testimonials = Testimonial::orderBy('order', 'asc')->get();
+
         return view('admin.testimonials.index', compact('testimonials'));
     }
 
@@ -23,13 +24,13 @@ class TestimonialController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'avatar_url' => 'nullable|url',
             'avatar_file' => 'nullable|image|max:2048',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
         $avatar = $request->input('avatar_url');
         if ($request->hasFile('avatar_file')) {
-            $avatar = asset('storage/' . $request->file('avatar_file')->store('testimonials', 'public'));
+            $avatar = asset('storage/'.$request->file('avatar_file')->store('testimonials', 'public'));
         }
 
         Testimonial::create([
@@ -54,7 +55,7 @@ class TestimonialController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'avatar_url' => 'nullable|url',
             'avatar_file' => 'nullable|image|max:2048',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
@@ -63,7 +64,7 @@ class TestimonialController extends Controller
             $avatar = $request->input('avatar_url');
         }
         if ($request->hasFile('avatar_file')) {
-            $avatar = asset('storage/' . $request->file('avatar_file')->store('testimonials', 'public'));
+            $avatar = asset('storage/'.$request->file('avatar_file')->store('testimonials', 'public'));
         }
 
         $testimonial->update([
@@ -82,6 +83,7 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial)
     {
         $testimonial->delete();
+
         return back()->with('success', 'Testimoni berhasil dihapus.');
     }
 }

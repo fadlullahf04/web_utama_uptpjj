@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\ContactMessage;
+use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
@@ -27,9 +27,10 @@ class ContactController extends Controller
 
     public function show(ContactMessage $contact)
     {
-        if (!$contact->is_read) {
+        if (! $contact->is_read) {
             $contact->update(['is_read' => true]);
         }
+
         return view('admin.contacts.show', ['message' => $contact]);
     }
 
@@ -51,6 +52,7 @@ class ContactController extends Controller
     public function destroy(ContactMessage $contact)
     {
         $contact->delete();
+
         return redirect()->route('admin.contacts.index')->with('success', 'Pesan helpdesk berhasil dihapus.');
     }
 }

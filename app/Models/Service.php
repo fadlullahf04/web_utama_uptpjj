@@ -49,8 +49,9 @@ class Service extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->image) {
-            return str_starts_with($this->image, 'http') ? $this->image : asset('storage/' . $this->image);
+            return str_starts_with($this->image, 'http') ? $this->image : asset('storage/'.$this->image);
         }
+
         return 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=800&auto=format&fit=crop';
     }
 }

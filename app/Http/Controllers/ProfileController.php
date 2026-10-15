@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\TeamMember;
 use App\Models\GalleryItem;
-use App\Models\Setting;
+use App\Models\TeamMember;
 
 class ProfileController extends Controller
 {
@@ -23,18 +21,21 @@ class ProfileController extends Controller
     {
         $leadership = TeamMember::active()->where('division', 'Pimpinan')->get();
         $divisions = TeamMember::active()->where('division', '!=', 'Pimpinan')->get()->groupBy('division');
+
         return view('pages.profile.organization', compact('leadership', 'divisions'));
     }
 
     public function team()
     {
         $teams = TeamMember::active()->get()->groupBy('division');
+
         return view('pages.profile.team', compact('teams'));
     }
 
     public function facilities()
     {
         $galleries = GalleryItem::orderBy('order', 'asc')->get()->groupBy('category');
+
         return view('pages.profile.facilities', compact('galleries'));
     }
 

@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\HeroSlide;
-use App\Models\StudyProgram;
-use App\Models\Post;
 use App\Models\Announcement;
-use App\Models\Service;
-use App\Models\Testimonial;
-use App\Models\GalleryItem;
-use App\Models\Setting;
-use App\Models\TeamMember;
 use App\Models\Faq;
+use App\Models\GalleryItem;
+use App\Models\HeroSlide;
+use App\Models\Post;
+use App\Models\Service;
+use App\Models\StudyProgram;
+use App\Models\Testimonial;
 
 class HomeController extends Controller
 {

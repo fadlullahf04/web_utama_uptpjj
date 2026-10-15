@@ -19,5 +19,8 @@
     "dependencies": {
         "@tailwindcss/typography": "^0.5.20",
         "alpinejs": "^3.17.4"
+    },
+    "overrides": {
+        "postcss-selector-parser": "^7.1.6"
     }
 }

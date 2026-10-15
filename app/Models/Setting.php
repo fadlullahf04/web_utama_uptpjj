@@ -22,6 +22,7 @@ class Setting extends Model
     {
         return Cache::rememberForever("setting_{$key}", function () use ($key, $default) {
             $setting = static::where('key', $key)->first();
+
             return $setting ? $setting->value : $default;
         });
     }
@@ -39,19 +40,20 @@ class Setting extends Model
         );
 
         Cache::forget("setting_{$key}");
-        Cache::forget("settings_all_grouped");
+        Cache::forget('settings_all_grouped');
 
         return $setting;
     }
 
     public static function getAllGrouped(): array
     {
-        return Cache::rememberForever("settings_all_grouped", function () {
+        return Cache::rememberForever('settings_all_grouped', function () {
             $settings = static::all();
             $grouped = [];
             foreach ($settings as $setting) {
                 $grouped[$setting->group][$setting->key] = $setting->value;
             }
+
             return $grouped;
         });
     }

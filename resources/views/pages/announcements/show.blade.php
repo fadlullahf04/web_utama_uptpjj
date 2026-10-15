@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $announcement->title . ' - UPT Pendidikan Jarak Jauh UINSSC')
+@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($announcement->content), 155))
 
 @section('content')
 <!-- Page Header -->
@@ -22,8 +23,12 @@
 
 <div class="py-14 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
     <div class="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-        <div class="text-slate-700 text-sm sm:text-base leading-relaxed space-y-4">
-            {!! nl2br(e($announcement->content)) !!}
+        <div class="article-content text-slate-700 text-sm sm:text-base leading-relaxed space-y-4">
+            @if(strip_tags($announcement->content) !== $announcement->content)
+                {!! $announcement->clean_content !!}
+            @else
+                {!! nl2br(e($announcement->content)) !!}
+            @endif
         </div>
 
         @if($announcement->attachment_file)

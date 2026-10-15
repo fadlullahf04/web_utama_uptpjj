@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\StudyProgram;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class StudyProgramController extends Controller
@@ -12,6 +12,7 @@ class StudyProgramController extends Controller
     public function index()
     {
         $programs = StudyProgram::orderBy('order', 'asc')->get();
+
         return view('admin.programs.index', compact('programs'));
     }
 
@@ -40,11 +41,11 @@ class StudyProgramController extends Controller
             'study_duration' => 'nullable|string',
             'learning_method' => 'nullable|string',
             'tuition_info' => 'nullable|string',
-            'image' => 'nullable|image|max:3072',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'image_url' => 'nullable|url',
             'registration_url' => 'nullable|url',
             'website_url' => 'nullable|url',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
@@ -56,6 +57,7 @@ class StudyProgramController extends Controller
         StudyProgram::create(array_merge($validated, [
             'slug' => Str::slug($validated['name']),
             'image' => $imagePath,
+            'order' => $validated['order'] ?? 0,
             'is_active' => $request->boolean('is_active', true),
         ]));
 
@@ -87,11 +89,11 @@ class StudyProgramController extends Controller
             'study_duration' => 'nullable|string',
             'learning_method' => 'nullable|string',
             'tuition_info' => 'nullable|string',
-            'image' => 'nullable|image|max:3072',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'image_url' => 'nullable|url',
             'registration_url' => 'nullable|url',
             'website_url' => 'nullable|url',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
@@ -105,6 +107,7 @@ class StudyProgramController extends Controller
 
         $program->update(array_merge($validated, [
             'image' => $imagePath,
+            'order' => $validated['order'] ?? $program->order,
             'is_active' => $request->boolean('is_active'),
         ]));
 
@@ -114,6 +117,7 @@ class StudyProgramController extends Controller
     public function destroy(StudyProgram $program)
     {
         $program->delete();
+
         return redirect()->route('admin.programs.index')->with('success', 'Program Studi berhasil dihapus.');
     }
 }

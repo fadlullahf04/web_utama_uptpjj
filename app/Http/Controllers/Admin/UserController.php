@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
     public function index()
     {
         $users = User::orderBy('created_at', 'desc')->get();
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -21,20 +21,27 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => ['required', Password::min(6)],
+            'password' => 'required|string|min:6',
             'role' => 'required|in:admin,editor,staf',
             'phone' => 'nullable|string|max:50',
+            'avatar' => 'nullable|image|max:3072',
             'bio' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
+
+        $avatarPath = null;
+        if ($request->hasFile('avatar')) {
+            $avatarPath = asset('storage/'.$request->file('avatar')->store('avatars', 'public'));
+        }
 
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
-            'phone' => $validated['phone'],
-            'bio' => $validated['bio'],
+            'avatar' => $avatarPath,
+            'phone' => $validated['phone'] ?? null,
+            'bio' => $validated['bio'] ?? null,
             'is_active' => $request->boolean('is_active', true),
         ]);
 
@@ -45,10 +52,11 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => ['nullable', Password::min(6)],
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'password' => 'nullable|string|min:6',
             'role' => 'required|in:admin,editor,staf',
             'phone' => 'nullable|string|max:50',
+            'avatar' => 'nullable|image|max:3072',
             'bio' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
@@ -57,12 +65,16 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
-            'phone' => $validated['phone'],
-            'bio' => $validated['bio'],
+            'phone' => $validated['phone'] ?? null,
+            'bio' => $validated['bio'] ?? null,
             'is_active' => $request->boolean('is_active'),
         ];
 
-        if (!empty($validated['password'])) {
+        if ($request->hasFile('avatar')) {
+            $userData['avatar'] = asset('storage/'.$request->file('avatar')->store('avatars', 'public'));
+        }
+
+        if (! empty($validated['password'])) {
             $userData['password'] = Hash::make($validated['password']);
         }
 
@@ -78,6 +90,7 @@ class UserController extends Controller
         }
 
         $user->delete();
+
         return back()->with('success', 'Pengguna berhasil dihapus.');
     }
 }

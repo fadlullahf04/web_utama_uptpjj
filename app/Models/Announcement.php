@@ -35,7 +35,7 @@ class Announcement extends Model
         parent::boot();
         static::creating(function ($item) {
             if (empty($item->slug)) {
-                $item->slug = Str::slug($item->title) . '-' . Str::random(5);
+                $item->slug = Str::slug($item->title).'-'.Str::random(5);
             }
             if (empty($item->published_at) && $item->is_published) {
                 $item->published_at = now();
@@ -55,7 +55,38 @@ class Announcement extends Model
 
     public function getAttachmentUrlAttribute(): ?string
     {
-        if (!$this->attachment_file) return null;
-        return str_starts_with($this->attachment_file, 'http') ? $this->attachment_file : asset('storage/' . $this->attachment_file);
+        if (! $this->attachment_file) {
+            return null;
+        }
+
+        return str_starts_with($this->attachment_file, 'http') ? $this->attachment_file : asset('storage/'.$this->attachment_file);
+    }
+
+    public function getCleanContentAttribute(): string
+    {
+        $content = $this->content ?? '';
+
+        // Strip dangerous tags completely
+        $content = preg_replace('/<(script|style|object|embed|applet)[^>]*>.*?<\/\\1>/is', '', $content) ?? '';
+        $content = preg_replace('/<(meta|link|base|frame|frameset)[^>]*>/is', '', $content) ?? '';
+
+        // Strip inline event attributes like onclick, onload, onerror, onmouseover, etc.
+        $content = preg_replace('/(\s+)on[a-z]+\s*=\s*(["\'][^"\']*["\']|[^\s>]+)/i', '', $content) ?? '';
+
+        // Neutralize javascript: or unsafe data: schemes in href and src
+        $content = preg_replace_callback('/(href|src)\s*=\s*(["\'])(.*?)\2/i', function ($matches) {
+            $attr = strtolower($matches[1]);
+            $val = trim($matches[3]);
+            if (preg_match('/^javascript:/i', $val)) {
+                return "{$attr}=\"#\"";
+            }
+            if ($attr === 'href' && preg_match('/^data:/i', $val)) {
+                return "{$attr}=\"#\"";
+            }
+
+            return "{$matches[1]}=\"{$matches[3]}\"";
+        }, $content) ?? '';
+
+        return $content;
     }
 }

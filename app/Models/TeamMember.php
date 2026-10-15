@@ -37,8 +37,9 @@ class TeamMember extends Model
     public function getPhotoUrlAttribute(): string
     {
         if ($this->photo) {
-            return str_starts_with($this->photo, 'http') ? $this->photo : asset('storage/' . $this->photo);
+            return str_starts_with($this->photo, 'http') ? $this->photo : asset('storage/'.$this->photo);
         }
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=1e293b&color=38bdf8&bold=true';
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=1e293b&color=38bdf8&bold=true';
     }
 }

@@ -2,22 +2,22 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Setting;
-use App\Models\HeroSlide;
-use App\Models\Category;
-use App\Models\Post;
 use App\Models\Announcement;
-use App\Models\StudyProgram;
-use App\Models\Service;
-use App\Models\TeamMember;
+use App\Models\Category;
+use App\Models\ContactMessage;
 use App\Models\DownloadDocument;
 use App\Models\Faq;
 use App\Models\GalleryItem;
+use App\Models\HeroSlide;
+use App\Models\Post;
+use App\Models\Service;
+use App\Models\Setting;
+use App\Models\StudyProgram;
+use App\Models\TeamMember;
 use App\Models\Testimonial;
-use App\Models\ContactMessage;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -55,13 +55,13 @@ class DatabaseSeeder extends Seeder
             ['key' => 'site_tagline', 'value' => 'Pionir Pendidikan Jarak Jauh Siber Berbasis Nilai Keislaman & Standar Global', 'group' => 'general', 'label' => 'Tagline'],
             ['key' => 'site_description', 'value' => 'Unit Pelaksana Teknis Pendidikan Jarak Jauh Universitas Islam Negeri Siber Syekh Nurjati Cirebon yang menyelenggarakan pendidikan tinggi berbasis siber berkelas dunia.', 'group' => 'general', 'label' => 'Deskripsi Situs'],
             ['key' => 'site_logo_text', 'value' => 'UPT PJJ UINSSC', 'group' => 'general', 'label' => 'Teks Logo'],
-            
+
             // Profile & Greetings
-            ['key' => 'head_name', 'value' => 'Dr. Moh. Ali, M.Pd.I', 'group' => 'profile', 'label' => 'Nama Kepala UPT'],
+            ['key' => 'head_name', 'value' => 'Dr. Muslihudin, M.Ag.', 'group' => 'profile', 'label' => 'Nama Kepala UPT'],
             ['key' => 'head_title', 'value' => 'Kepala UPT Pendidikan Jarak Jauh UINSSC', 'group' => 'profile', 'label' => 'Jabatan Kepala UPT'],
             ['key' => 'head_photo', 'value' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop', 'group' => 'profile', 'label' => 'Foto Kepala UPT'],
             ['key' => 'head_greeting', 'value' => "Assalamu'alaikum Warahmatullahi Wabarakatuh.\n\nSelamat datang di portal resmi UPT Pendidikan Jarak Jauh (UPT PJJ) UIN Siber Syekh Nurjati Cirebon. Sebagai World Class Cyber Islamic University pertama di Indonesia yang diamanatkan oleh Kementerian Agama RI, kami berkomitmen membuka akses seluas-luasnya bagi seluruh anak bangsa untuk mengenyam pendidikan tinggi Islam berkualitas tinggi secara fleksibel tanpa batasan geografis.\n\nMelalui ekosistem pembelajaran digital terkini dengan LMS Pillar, modul interaktif multimedia, serta didukung dosen berstandar global, UPT PJJ UINSSC siap mengantarkan Anda menjadi sarjana dan magister unggul, berkarakter, dan berdaya saing internasional.", 'group' => 'profile', 'label' => 'Sambutan Kepala UPT'],
-            
+
             ['key' => 'vision', 'value' => 'Menjadi Unit Pelaksana Teknis Pendidikan Jarak Jauh (UPT-PJJ) yang inovatif dan inklusif, menghasilkan lulusan berkualitas global dalam bingkai nilai-nilai Islam, serta mendukung terwujudnya Universitas Islam Siber berkelas dunia untuk semua pada Tahun 2030.', 'group' => 'profile', 'label' => 'Visi'],
             ['key' => 'mission', 'value' => "1. Menyelenggarakan dan mengelola sistem pendidikan jarak jauh berbasis teknologi informasi yang mutakhir, adaptif, dan handal.\n2. Mengembangkan materi pembelajaran dan bahan ajar modular multimedia digital yang interaktif dan berstandar internasional.\n3. Memperluas akses pendidikan tinggi Islam yang inklusif dan merata bagi masyarakat di seluruh penjuru nusantara dan mancanegara.\n4. Mengembangkan riset, inovasi pedagogi siber, dan pengabdian kepada masyarakat berbasis digital.\n5. Membangun kolaborasi strategis dengan institusi pendidikan, industri teknologi, dan dunia usaha di tingkat nasional maupun internasional.", 'group' => 'profile', 'label' => 'Misi'],
             ['key' => 'profile_video_url', 'value' => 'https://www.youtube.com/embed/dQw4w9WgXcQ', 'group' => 'profile', 'label' => 'Video Profil Embed URL'],
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
             ['key' => 'stats_modules', 'value' => '1,250+', 'group' => 'profile', 'label' => 'Modul & Video Pembelajaran'],
 
             // Contact & Social
-            ['key' => 'address', 'value' => 'Gedung Siber Lt. 2, Kampus UIN Siber Syekh Nurjati Cirebon, Jl. Perjuangan By Pass Sunyaragi, Kota Cirebon, Jawa Barat 45132', 'group' => 'contact', 'label' => 'Alamat Kampus'],
+            ['key' => 'address', 'value' => 'Gedung Siber Lt. 3, Kampus UIN Siber Syekh Nurjati Cirebon, Jl. Perjuangan By Pass Sunyaragi, Kota Cirebon, Jawa Barat 45132', 'group' => 'contact', 'label' => 'Alamat Kampus'],
             ['key' => 'email', 'value' => 'pjj@uinssc.ac.id', 'group' => 'contact', 'label' => 'Email Resmi'],
             ['key' => 'phone', 'value' => '(0231) 481264', 'group' => 'contact', 'label' => 'Telepon'],
             ['key' => 'whatsapp', 'value' => '+628112345678', 'group' => 'contact', 'label' => 'WhatsApp Helpdesk'],
@@ -85,7 +85,7 @@ class DatabaseSeeder extends Seeder
             ['key' => 'tiktok_url', 'value' => 'https://tiktok.com/@uinssc.official', 'group' => 'social', 'label' => 'TikTok'],
 
             // External Links & Portals
-            ['key' => 'lms_url', 'value' => 'https://pillar.uinssc.ac.id', 'group' => 'links', 'label' => 'LMS Pillar URL'],
+            ['key' => 'lms_url', 'value' => 'https://sso-lms.uinssc.ac.id', 'group' => 'links', 'label' => 'LMS Pillar URL'],
             ['key' => 'pmb_url', 'value' => 'https://pmb.uinssc.ac.id', 'group' => 'links', 'label' => 'PMB Online URL'],
             ['key' => 'main_campus_url', 'value' => 'https://uinssc.ac.id', 'group' => 'links', 'label' => 'Website Utama UINSSC'],
             ['key' => 'sibergo_url', 'value' => 'https://play.google.com/store/apps/details?id=com.uinssc.pustikom.sibergo', 'group' => 'links', 'label' => 'App SiberGo (PlayStore)'],
@@ -316,7 +316,7 @@ class DatabaseSeeder extends Seeder
             'category_id' => $catBimtek->id,
             'user_id' => $editor->id,
             'excerpt' => 'Bimbingan teknis intensif digelar untuk memastikan kelancaran perkuliahan daring semester ganjil melalui platform LMS Pillar versi 3.0.',
-            'content' => "<p><strong>CIREBON</strong> — Dalam rangka menyambut tahun akademik baru, UPT PJJ UIN Siber Syekh Nurjati Cirebon menggelar Bimbingan Teknis (Bimtek) dan Refreshment Penggunaan LMS Pillar bagi seluruh dosen pengampu dan mahasiswa baru angkatan 2026.</p><p>Materi yang disampaikan mencakup navigasi sistem micro-learning, aktivasi forum diskusi asinkron, sistem pengunggahan bahan ajar multimedia interaktif, hingga penggunaan fitur automated grading dan proctoring ujian online berbasis AI. Tim IT UPT PJJ juga memperkenalkan aplikasi mobile SiberGo yang mempermudah mahasiswa memantau jadwal dan notifikasi perkuliahan langsung dari genggaman.</p>",
+            'content' => '<p><strong>CIREBON</strong> — Dalam rangka menyambut tahun akademik baru, UPT PJJ UIN Siber Syekh Nurjati Cirebon menggelar Bimbingan Teknis (Bimtek) dan Refreshment Penggunaan LMS Pillar bagi seluruh dosen pengampu dan mahasiswa baru angkatan 2026.</p><p>Materi yang disampaikan mencakup navigasi sistem micro-learning, aktivasi forum diskusi asinkron, sistem pengunggahan bahan ajar multimedia interaktif, hingga penggunaan fitur automated grading dan proctoring ujian online berbasis AI. Tim IT UPT PJJ juga memperkenalkan aplikasi mobile SiberGo yang mempermudah mahasiswa memantau jadwal dan notifikasi perkuliahan langsung dari genggaman.</p>',
             'featured_image' => 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=800&auto=format&fit=crop',
             'views_count' => 2150,
             'is_featured' => true,
@@ -331,7 +331,7 @@ class DatabaseSeeder extends Seeder
             'category_id' => $catBerita->id,
             'user_id' => $admin->id,
             'excerpt' => 'Di era digital, kuliah berkualitas dunia dapat diakses dari mana saja. Temukan berbagai kemudahan dan keunggulan resmi program PJJ UINSSC.',
-            'content' => "<p>Pendidikan tinggi kini berada di titik transformasi besar. UIN Siber Syekh Nurjati Cirebon sebagai Perguruan Tinggi Keagamaan Islam Negeri (PTKIN) Siber pertama di Indonesia menawarkan kemudahan belajar luar biasa:</p><ul><li><strong>1. Fleksibilitas Waktu 100%:</strong> Belajar kapan saja dan di mana saja tanpa harus cuti bekerja.</li><li><strong>2. Ijazah & Gelar Sah:</strong> Setara dengan perkuliahan reguler dan diakui penuh oleh Kemendikbudristek & Kemenag RI.</li><li><strong>3. Biaya Kuliah Terjangkau:</strong> Tanpa beban biaya kos, transportasi harian, atau akomodasi.</li><li><strong>4. Ekosistem LMS Terkini:</strong> Akses materi audio, video studio siber, dan e-book tanpa batas.</li><li><strong>5. Dosen Berpengalaman:</strong> Bimbingan langsung dari akademisi berkaliber nasional dan internasional.</li><li><strong>6. Komunitas Mahasiswa Lintas Batas:</strong> Berjejaring dengan ribuan teman sekelas dari Sabang hingga Merauke, bahkan luar negeri.</li><li><strong>7. Layanan Helpdesk Responsif 24 Jam:</strong> Tim support siap mendampingi setiap kendala teknis Anda.</li></ul>",
+            'content' => '<p>Pendidikan tinggi kini berada di titik transformasi besar. UIN Siber Syekh Nurjati Cirebon sebagai Perguruan Tinggi Keagamaan Islam Negeri (PTKIN) Siber pertama di Indonesia menawarkan kemudahan belajar luar biasa:</p><ul><li><strong>1. Fleksibilitas Waktu 100%:</strong> Belajar kapan saja dan di mana saja tanpa harus cuti bekerja.</li><li><strong>2. Ijazah & Gelar Sah:</strong> Setara dengan perkuliahan reguler dan diakui penuh oleh Kemendikbudristek & Kemenag RI.</li><li><strong>3. Biaya Kuliah Terjangkau:</strong> Tanpa beban biaya kos, transportasi harian, atau akomodasi.</li><li><strong>4. Ekosistem LMS Terkini:</strong> Akses materi audio, video studio siber, dan e-book tanpa batas.</li><li><strong>5. Dosen Berpengalaman:</strong> Bimbingan langsung dari akademisi berkaliber nasional dan internasional.</li><li><strong>6. Komunitas Mahasiswa Lintas Batas:</strong> Berjejaring dengan ribuan teman sekelas dari Sabang hingga Merauke, bahkan luar negeri.</li><li><strong>7. Layanan Helpdesk Responsif 24 Jam:</strong> Tim support siap mendampingi setiap kendala teknis Anda.</li></ul>',
             'featured_image' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
             'views_count' => 3400,
             'is_featured' => false,

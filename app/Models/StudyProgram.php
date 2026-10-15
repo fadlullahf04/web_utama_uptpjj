@@ -61,8 +61,9 @@ class StudyProgram extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->image) {
-            return str_starts_with($this->image, 'http') ? $this->image : asset('storage/' . $this->image);
+            return str_starts_with($this->image, 'http') ? $this->image : asset('storage/'.$this->image);
         }
+
         return 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=800&auto=format&fit=crop';
     }
 }

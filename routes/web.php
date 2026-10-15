@@ -1,33 +1,33 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\StudyProgramController;
-use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\AnnouncementController;
-use App\Http\Controllers\DownloadController;
-use App\Http\Controllers\FaqController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\LmsGuideController;
-use App\Http\Controllers\AuthController;
-
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\PostController as AdminPostController;
-use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
-use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
-use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
-use App\Http\Controllers\Admin\HeroSlideController as AdminHeroSlideController;
-use App\Http\Controllers\Admin\TeamMemberController as AdminTeamMemberController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\ContactController as AdminContactController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DownloadController as AdminDownloadController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
-use App\Http\Controllers\Admin\ContactController as AdminContactController;
-use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
+use App\Http\Controllers\Admin\HeroSlideController as AdminHeroSlideController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
+use App\Http\Controllers\Admin\TeamMemberController as AdminTeamMemberController;
+use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DownloadController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LmsGuideController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\StudyProgramController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +36,8 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.xml');
+Route::get('/sitemap', [SitemapController::class, 'index'])->name('sitemap');
 
 // Profile Sub-pages
 Route::prefix('profil')->name('profile.')->group(function () {
@@ -88,7 +90,7 @@ Route::get('/course-tutorial-penggunaan-lms-pilar-upt-pjj-uin-siber-syekh-nurjat
 // Contact & Helpdesk
 Route::prefix('kontak')->name('contact.')->group(function () {
     Route::get('/', [ContactController::class, 'index'])->name('index');
-    Route::post('/', [ContactController::class, 'store'])->name('store');
+    Route::post('/', [ContactController::class, 'store'])->name('store')->middleware('throttle:5,1');
 });
 
 /*
@@ -98,7 +100,7 @@ Route::prefix('kontak')->name('contact.')->group(function () {
 */
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post')->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /*
@@ -110,9 +112,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
+    // Posts XML Import & Template
+    Route::get('/posts/import/xml', [AdminPostController::class, 'showImport'])->name('posts.import');
+    Route::post('/posts/import/xml', [AdminPostController::class, 'importXml'])->name('posts.import.process')->middleware('throttle:10,1');
+    Route::get('/posts/template/xml', [AdminPostController::class, 'downloadXmlTemplate'])->name('posts.template.xml');
+
     // Posts / Berita
+    Route::post('/posts/upload-image', [AdminPostController::class, 'uploadContentImage'])->name('posts.upload_image');
     Route::resource('posts', AdminPostController::class);
-    
+
     // Categories
     Route::resource('categories', AdminCategoryController::class)->except(['create', 'edit', 'show']);
 
@@ -138,7 +146,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::resource('faqs', AdminFaqController::class)->except(['create', 'edit', 'show']);
 
     // Gallery
-    Route::resource('gallery', AdminGalleryController::class)->except(['create', 'edit', 'show', 'update']);
+    Route::resource('gallery', AdminGalleryController::class)->except(['create', 'edit', 'show']);
 
     // Contact Messages / Helpdesk Inbox
     Route::get('/contacts', [AdminContactController::class, 'index'])->name('contacts.index');
@@ -149,10 +157,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Testimonials
     Route::resource('testimonials', AdminTestimonialController::class)->except(['create', 'edit', 'show']);
 
-    // Settings
-    Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
-    Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
-
-    // Users Management
-    Route::resource('users', AdminUserController::class)->except(['create', 'edit', 'show']);
+    // Super Admin Only: Settings & Users Management
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+        Route::resource('users', AdminUserController::class)->except(['create', 'edit', 'show']);
+    });
 });

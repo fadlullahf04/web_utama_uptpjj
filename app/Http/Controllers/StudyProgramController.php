@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\StudyProgram;
+use Illuminate\Http\Request;
 
 class StudyProgramController extends Controller
 {
@@ -17,6 +17,7 @@ class StudyProgramController extends Controller
         }
 
         $programs = $query->get();
+
         return view('pages.programs.index', compact('programs', 'degree'));
     }
 
@@ -24,6 +25,7 @@ class StudyProgramController extends Controller
     {
         $program = StudyProgram::where('slug', $slug)->where('is_active', true)->firstOrFail();
         $otherPrograms = StudyProgram::active()->where('id', '!=', $program->id)->take(3)->get();
+
         return view('pages.programs.show', compact('program', 'otherPrograms'));
     }
 }

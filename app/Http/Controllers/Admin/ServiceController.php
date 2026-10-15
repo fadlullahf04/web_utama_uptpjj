@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Service;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ServiceController extends Controller
@@ -12,6 +12,7 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::orderBy('order', 'asc')->get();
+
         return view('admin.services.index', compact('services'));
     }
 
@@ -28,17 +29,24 @@ class ServiceController extends Controller
             'short_description' => 'required|string',
             'content' => 'nullable|string',
             'icon' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'image_url' => 'nullable|url',
             'portal_url' => 'nullable|url',
             'button_text' => 'nullable|string',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
         ]);
 
+        $imagePath = $request->input('image_url');
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('services', 'public');
+        }
+
         Service::create(array_merge($validated, [
             'slug' => Str::slug($validated['title']),
-            'image' => $validated['image_url'] ?? null,
+            'image' => $imagePath,
+            'order' => $validated['order'] ?? 0,
             'is_featured' => $request->boolean('is_featured'),
             'is_active' => $request->boolean('is_active', true),
         ]));
@@ -59,16 +67,26 @@ class ServiceController extends Controller
             'short_description' => 'required|string',
             'content' => 'nullable|string',
             'icon' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'image_url' => 'nullable|url',
             'portal_url' => 'nullable|url',
             'button_text' => 'nullable|string',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
         ]);
 
+        $imagePath = $service->image;
+        if ($request->filled('image_url')) {
+            $imagePath = $request->input('image_url');
+        }
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('services', 'public');
+        }
+
         $service->update(array_merge($validated, [
-            'image' => $validated['image_url'] ?? $service->image,
+            'image' => $imagePath,
+            'order' => $validated['order'] ?? $service->order,
             'is_featured' => $request->boolean('is_featured'),
             'is_active' => $request->boolean('is_active'),
         ]));
@@ -79,6 +97,7 @@ class ServiceController extends Controller
     public function destroy(Service $service)
     {
         $service->delete();
+
         return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil dihapus.');
     }
 }

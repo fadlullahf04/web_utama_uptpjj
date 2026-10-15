@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\DownloadDocument;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class DownloadController extends Controller
@@ -12,6 +12,7 @@ class DownloadController extends Controller
     public function index()
     {
         $documents = DownloadDocument::orderBy('created_at', 'desc')->paginate(10);
+
         return view('admin.downloads.index', compact('documents'));
     }
 
@@ -26,11 +27,11 @@ class DownloadController extends Controller
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|max:20480',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar,csv,txt|max:20480',
             'external_url' => 'nullable|url',
             'file_type' => 'nullable|string|max:20',
             'file_size' => 'nullable|string|max:20',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
@@ -43,16 +44,16 @@ class DownloadController extends Controller
             $filePath = $file->store('downloads', 'public');
             $fileType = strtoupper($file->getClientOriginalExtension());
             $bytes = $file->getSize();
-            $fileSize = $bytes >= 1048576 ? round($bytes / 1048576, 1) . ' MB' : round($bytes / 1024, 0) . ' KB';
+            $fileSize = $bytes >= 1048576 ? round($bytes / 1048576, 1).' MB' : round($bytes / 1024, 0).' KB';
         }
 
         DownloadDocument::create([
             'title' => $validated['title'],
-            'slug' => Str::slug($validated['title']) . '-' . Str::random(4),
+            'slug' => Str::slug($validated['title']).'-'.Str::random(4),
             'category' => $validated['category'],
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'file_path' => $filePath,
-            'external_url' => $validated['external_url'],
+            'external_url' => $validated['external_url'] ?? null,
             'file_type' => $fileType,
             'file_size' => $fileSize,
             'order' => $validated['order'] ?? 0,
@@ -73,11 +74,11 @@ class DownloadController extends Controller
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|max:20480',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar,csv,txt|max:20480',
             'external_url' => 'nullable|url',
             'file_type' => 'nullable|string|max:20',
             'file_size' => 'nullable|string|max:20',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
@@ -90,13 +91,13 @@ class DownloadController extends Controller
             $filePath = $file->store('downloads', 'public');
             $fileType = strtoupper($file->getClientOriginalExtension());
             $bytes = $file->getSize();
-            $fileSize = $bytes >= 1048576 ? round($bytes / 1048576, 1) . ' MB' : round($bytes / 1024, 0) . ' KB';
+            $fileSize = $bytes >= 1048576 ? round($bytes / 1048576, 1).' MB' : round($bytes / 1024, 0).' KB';
         }
 
         $download->update([
             'title' => $validated['title'],
             'category' => $validated['category'],
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'file_path' => $filePath,
             'external_url' => $validated['external_url'] ?? $download->external_url,
             'file_type' => $validated['file_type'] ?? $fileType,
@@ -111,6 +112,7 @@ class DownloadController extends Controller
     public function destroy(DownloadDocument $download)
     {
         $download->delete();
+
         return redirect()->route('admin.downloads.index')->with('success', 'Dokumen berhasil dihapus.');
     }
 }

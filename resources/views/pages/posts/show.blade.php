@@ -1,7 +1,67 @@
 @extends('layouts.app')
 
-@section('title', $post->title . ' - UPT Pendidikan Jarak Jauh UINSSC')
-@section('meta_description', $post->excerpt)
+@section('title', ($post->meta_title ?: $post->title) . ' - UPT PJJ UINSSC')
+@section('meta_description', $post->meta_description ?: ($post->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($post->content), 155)))
+@section('meta_image', $post->image_url)
+@section('meta_type', 'article')
+
+@push('schema')
+<script type="application/ld+json">
+{
+    "{{ '@context' }}": "https://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ url()->current() }}"
+    },
+    "headline": {{ json_encode($post->meta_title ?: $post->title) }},
+    "image": [
+        "{{ $post->image_url }}"
+    ],
+    "datePublished": "{{ ($post->published_at ?? $post->created_at)->toIso8601String() }}",
+    "dateModified": "{{ $post->updated_at->toIso8601String() }}",
+    "author": {
+        "@type": "Person",
+        "name": {{ json_encode($post->author->name ?? 'Humas UPT PJJ') }}
+    },
+    "publisher": {
+        "@type": "EducationalOrganization",
+        "name": "UPT Pendidikan Jarak Jauh UINSSC",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "{{ asset('images/logo_uptpjj.png') }}"
+        }
+    },
+    "description": {{ json_encode($post->meta_description ?: ($post->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($post->content), 155))) }}
+}
+</script>
+<script type="application/ld+json">
+{
+    "{{ '@context' }}": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Beranda",
+            "item": "{{ route('home') }}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Berita",
+            "item": "{{ route('posts.index') }}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": {{ json_encode($post->title) }},
+            "item": "{{ url()->current() }}"
+        }
+    ]
+}
+</script>
+@endpush
 
 @section('content')
 <!-- Page Header -->
@@ -38,8 +98,8 @@
 
     <!-- Article Content -->
     <div class="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-        <div class="text-slate-700 text-sm sm:text-base leading-relaxed space-y-4">
-            {!! $post->content !!}
+        <div class="article-content text-slate-700 text-sm sm:text-base leading-relaxed">
+            {!! $post->clean_content !!}
         </div>
 
         <!-- Tags & Share Strip -->

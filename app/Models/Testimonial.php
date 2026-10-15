@@ -33,8 +33,9 @@ class Testimonial extends Model
     public function getAvatarUrlAttribute(): string
     {
         if ($this->avatar) {
-            return str_starts_with($this->avatar, 'http') ? $this->avatar : asset('storage/' . $this->avatar);
+            return str_starts_with($this->avatar, 'http') ? $this->avatar : asset('storage/'.$this->avatar);
         }
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=0284c7&color=ffffff&bold=true';
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=0284c7&color=ffffff&bold=true';
     }
 }

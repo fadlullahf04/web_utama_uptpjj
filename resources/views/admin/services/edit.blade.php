@@ -5,86 +5,150 @@
 @section('header_subtitle', 'Perbarui data fasilitas dan portal layanan')
 
 @section('content')
-<div class="max-w-4xl space-y-6">
-    <a href="{{ route('admin.services.index') }}" class="text-xs text-slate-500 hover:text-[#006837] font-semibold transition flex items-center gap-1.5">
-        <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar Layanan
-    </a>
+<div class="w-full space-y-6">
+    
+    <div class="flex items-center justify-between">
+        <a href="{{ route('admin.services.index') }}" class="text-xs text-slate-500 hover:text-slate-800 font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar Layanan
+        </a>
 
-    <form action="{{ route('admin.services.update', $service->id) }}" method="POST" class="space-y-6">
+        <a href="{{ route('services.show', $service->slug) }}" target="_blank" class="text-xs text-[#006837] hover:underline font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat di Portal
+        </a>
+    </div>
+
+    <form action="{{ route('admin.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
-        <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Layanan / Fasilitas *</label>
-                    <input type="text" name="title" value="{{ old('title', $service->title) }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Main Column (8 cols): Title & Descriptions -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Layanan / Fasilitas *</label>
+                            <input type="text" name="title" value="{{ old('title', $service->title) }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-sm focus:bg-white focus:outline-none focus:border-[#006837]">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kategori Layanan *</label>
+                            <select name="category" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                                <option value="LMS & Cyber Platform" {{ old('category', $service->category) === 'LMS & Cyber Platform' ? 'selected' : '' }}>LMS & Cyber Platform</option>
+                                <option value="Studio Multimedia" {{ old('category', $service->category) === 'Studio Multimedia' ? 'selected' : '' }}>Studio Multimedia & Penyiaran</option>
+                                <option value="Akademik" {{ old('category', $service->category) === 'Akademik' ? 'selected' : '' }}>Akademik & Kurikulum Modular</option>
+                                <option value="Helpdesk & Training" {{ old('category', $service->category) === 'Helpdesk & Training' ? 'selected' : '' }}>Helpdesk & Pelatihan Dosen</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Ringkasan Singkat (Short Description) *</label>
+                        <textarea name="short_description" rows="3" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837] leading-relaxed">{{ old('short_description', $service->short_description) }}</textarea>
+                    </div>
+
+                    <div>
+                        @include('admin.posts._editor', [
+                            'content' => old('content', $service->content),
+                            'name' => 'content',
+                            'label' => 'Uraian & Fitur Lengkap Layanan',
+                            'required' => false,
+                            'minHeight' => '320px',
+                        ])
+                    </div>
+
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kategori Layanan *</label>
-                    <select name="category" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
-                        <option value="LMS & Cyber Platform" {{ old('category', $service->category) === 'LMS & Cyber Platform' ? 'selected' : '' }}>LMS & Cyber Platform</option>
-                        <option value="Studio Multimedia" {{ old('category', $service->category) === 'Studio Multimedia' ? 'selected' : '' }}>Studio Multimedia & Penyiaran</option>
-                        <option value="Akademik" {{ old('category', $service->category) === 'Akademik' ? 'selected' : '' }}>Akademik & Kurikulum Modular</option>
-                        <option value="Helpdesk & Training" {{ old('category', $service->category) === 'Helpdesk & Training' ? 'selected' : '' }}>Helpdesk & Pelatihan Dosen</option>
-                    </select>
+            </div>
+
+            <!-- Right Sidebar Column (4 cols): Meta, Settings, Portal Integration -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Card 1: Publikasi & Status -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-solid fa-paper-plane text-[#006837]"></i> Status Layanan
+                    </h4>
+
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-700">
+                            <input type="checkbox" name="is_active" value="1" {{ old('is_active', $service->is_active) ? 'checked' : '' }} class="w-4 h-4 rounded bg-slate-100 border-slate-300 text-[#006837] focus:ring-[#006837]">
+                            <span>Status Aktif (Tampilkan di Web)</span>
+                        </label>
+
+                        <label class="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-700">
+                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $service->is_featured) ? 'checked' : '' }} class="w-4 h-4 rounded bg-slate-100 border-slate-300 text-[#006837] focus:ring-[#006837]">
+                            <span>Tampilkan di Beranda (Featured)</span>
+                        </label>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 space-y-2">
+                        <button type="submit" class="w-full py-3 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-extrabold text-xs uppercase tracking-wider transition shadow-md shadow-[#006837]/25 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                        </button>
+                        <a href="{{ route('admin.services.index') }}" class="block text-center w-full py-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold transition">
+                            Batal
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Icon ID *</label>
-                    <input type="text" name="icon" value="{{ old('icon', $service->icon) }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                <!-- Card 2: Akses & Tombol Aksi -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[#006837]"></i> Tombol & Portal Akses
+                    </h4>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Icon ID FontAwesome *</label>
+                        <input type="text" name="icon" value="{{ old('icon', $service->icon) }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                        <span class="text-[11px] text-slate-400 mt-1 block">Contoh: laptop, video, headphones, graduation-cap</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Teks Tombol Aksi</label>
+                        <input type="text" name="button_text" value="{{ old('button_text', $service->button_text) }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">URL Portal Eksternal</label>
+                        <input type="url" name="portal_url" value="{{ old('portal_url', $service->portal_url) }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Teks Tombol Aksi</label>
-                    <input type="text" name="button_text" value="{{ old('button_text', $service->button_text) }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                <!-- Card 3: Gambar Cover -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-solid fa-image text-[#006837]"></i> Gambar Cover Layanan
+                    </h4>
+
+                    @if($service->image)
+                        <div class="space-y-1.5">
+                            <span class="text-[11px] font-semibold text-slate-500">Cover Saat Ini:</span>
+                            <div class="relative rounded-xl overflow-hidden border border-slate-200 aspect-video bg-slate-100">
+                                <img src="{{ $service->image_url }}" alt="{{ $service->title }}" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    @endif
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Ganti Gambar Cover dari Komputer</label>
+                        <input type="file" name="image" accept="image/*" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-600 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#006837] file:text-white hover:file:bg-[#004d29]">
+                        <span class="text-[10px] text-slate-400 mt-1 block">JPG, PNG, WEBP maks 5 MB</span>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Atau URL Gambar Cover</label>
+                        <input type="url" name="image_url" value="{{ old('image_url', $service->image) }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">URL Portal Eksternal</label>
-                    <input type="url" name="portal_url" value="{{ old('portal_url', $service->portal_url) }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
-                </div>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">URL Gambar Cover</label>
-                <input type="url" name="image_url" value="{{ old('image_url', $service->image) }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Deskripsi Singkat *</label>
-                <textarea name="short_description" rows="2" required class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">{{ old('short_description', $service->short_description) }}</textarea>
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Deskripsi Lengkap</label>
-                <textarea name="content" rows="6" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">{{ old('content', $service->content) }}</textarea>
-            </div>
-
-            <div class="flex items-center gap-6 pt-4 border-t border-slate-100">
-                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-                    <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $service->is_featured) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-[#006837] focus:ring-[#006837]">
-                    <span>Tampilkan di Beranda (Featured)</span>
-                </label>
-
-                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $service->is_active) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-[#006837] focus:ring-[#006837]">
-                    <span>Status Aktif</span>
-                </label>
-            </div>
-
-            <div class="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
-                <a href="{{ route('admin.services.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold transition">
-                    Batal
-                </a>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs uppercase tracking-wider transition shadow-md shadow-[#006837]/20">
-                    Perbarui Layanan
-                </button>
-            </div>
         </div>
+
     </form>
 </div>
 @endsection

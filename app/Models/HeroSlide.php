@@ -36,8 +36,9 @@ class HeroSlide extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->image) {
-            return str_starts_with($this->image, 'http') ? $this->image : asset('storage/' . $this->image);
+            return str_starts_with($this->image, 'http') ? $this->image : asset('storage/'.$this->image);
         }
+
         return 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop';
     }
 }

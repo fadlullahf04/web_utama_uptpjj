@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Announcement;
+use Illuminate\Http\Request;
 
 class AnnouncementController extends Controller
 {
@@ -26,6 +26,7 @@ class AnnouncementController extends Controller
     {
         $announcement = Announcement::where('slug', $slug)->active()->firstOrFail();
         $recentAnnouncements = Announcement::active()->where('id', '!=', $announcement->id)->take(4)->get();
+
         return view('pages.announcements.show', compact('announcement', 'recentAnnouncements'));
     }
 }

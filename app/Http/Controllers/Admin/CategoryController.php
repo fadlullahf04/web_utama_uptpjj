@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -12,6 +12,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::withCount('posts')->get();
+
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -28,8 +29,8 @@ class CategoryController extends Controller
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'type' => $validated['type'],
-            'color' => $validated['color'] ?? 'blue',
-            'description' => $validated['description'],
+            'color' => $validated['color'] ?? 'emerald',
+            'description' => $validated['description'] ?? null,
         ]);
 
         return back()->with('success', 'Kategori berhasil ditambahkan!');
@@ -44,7 +45,13 @@ class CategoryController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $category->update($validated);
+        $category->update([
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+            'type' => $validated['type'],
+            'color' => $validated['color'] ?? 'emerald',
+            'description' => $validated['description'] ?? null,
+        ]);
 
         return back()->with('success', 'Kategori berhasil diperbarui!');
     }
@@ -55,6 +62,7 @@ class CategoryController extends Controller
             return back()->with('error', 'Kategori tidak dapat dihapus karena masih memiliki artikel terkait.');
         }
         $category->delete();
+
         return back()->with('success', 'Kategori berhasil dihapus.');
     }
 }

@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\HeroSlide;
+use Illuminate\Http\Request;
 
 class HeroSlideController extends Controller
 {
     public function index()
     {
         $slides = HeroSlide::orderBy('order', 'asc')->get();
+
         return view('admin.slides.index', compact('slides'));
     }
 
@@ -26,13 +27,13 @@ class HeroSlideController extends Controller
             'title' => 'required|string|max:255',
             'highlight_text' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
-            'image' => 'nullable|image|max:3072',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
             'image_url' => 'nullable|url',
             'primary_btn_text' => 'nullable|string|max:100',
             'primary_btn_url' => 'nullable|string|max:255',
             'secondary_btn_text' => 'nullable|string|max:100',
             'secondary_btn_url' => 'nullable|string|max:255',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
@@ -43,6 +44,7 @@ class HeroSlideController extends Controller
 
         HeroSlide::create(array_merge($validated, [
             'image' => $imagePath,
+            'order' => $validated['order'] ?? 0,
             'is_active' => $request->boolean('is_active', true),
         ]));
 
@@ -61,13 +63,13 @@ class HeroSlideController extends Controller
             'title' => 'required|string|max:255',
             'highlight_text' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
-            'image' => 'nullable|image|max:3072',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
             'image_url' => 'nullable|url',
             'primary_btn_text' => 'nullable|string|max:100',
             'primary_btn_url' => 'nullable|string|max:255',
             'secondary_btn_text' => 'nullable|string|max:100',
             'secondary_btn_url' => 'nullable|string|max:255',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
@@ -81,6 +83,7 @@ class HeroSlideController extends Controller
 
         $slide->update(array_merge($validated, [
             'image' => $imagePath,
+            'order' => $validated['order'] ?? $slide->order,
             'is_active' => $request->boolean('is_active'),
         ]));
 
@@ -90,6 +93,7 @@ class HeroSlideController extends Controller
     public function destroy(HeroSlide $slide)
     {
         $slide->delete();
+
         return redirect()->route('admin.slides.index')->with('success', 'Slide banner berhasil dihapus.');
     }
 }

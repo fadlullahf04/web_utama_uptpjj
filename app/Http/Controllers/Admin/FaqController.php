@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Faq;
+use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
     public function index()
     {
         $faqs = Faq::orderBy('order', 'asc')->get();
+
         return view('admin.faqs.index', compact('faqs'));
     }
 
@@ -20,11 +21,12 @@ class FaqController extends Controller
             'question' => 'required|string|max:500',
             'answer' => 'required|string',
             'category' => 'required|string|max:100',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
         Faq::create(array_merge($validated, [
+            'order' => $validated['order'] ?? 0,
             'is_active' => $request->boolean('is_active', true),
         ]));
 
@@ -37,11 +39,12 @@ class FaqController extends Controller
             'question' => 'required|string|max:500',
             'answer' => 'required|string',
             'category' => 'required|string|max:100',
-            'order' => 'integer',
+            'order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
 
         $faq->update(array_merge($validated, [
+            'order' => $validated['order'] ?? $faq->order,
             'is_active' => $request->boolean('is_active'),
         ]));
 
@@ -51,6 +54,7 @@ class FaqController extends Controller
     public function destroy(Faq $faq)
     {
         $faq->delete();
+
         return back()->with('success', 'FAQ berhasil dihapus.');
     }
 }

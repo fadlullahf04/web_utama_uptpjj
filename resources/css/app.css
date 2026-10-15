@@ -126,3 +126,139 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+/* Rich Article & Content Typography */
+.article-content {
+  line-height: 1.85;
+  color: #334155;
+  font-size: 0.9375rem;
+}
+
+.article-content h1,
+.article-content h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.article-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.article-content h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #334155;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.article-content p {
+  margin-bottom: 1.15rem;
+}
+
+.article-content p:last-child {
+  margin-bottom: 0;
+}
+
+.article-content ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-bottom: 1.25rem;
+  space-y: 0.35rem;
+}
+
+.article-content ol {
+  list-style-type: decimal;
+  margin-left: 1.5rem;
+  margin-bottom: 1.25rem;
+  space-y: 0.35rem;
+}
+
+.article-content li {
+  margin-bottom: 0.35rem;
+  padding-left: 0.25rem;
+}
+
+.article-content blockquote {
+  border-left: 4px solid #006837;
+  padding: 0.85rem 1.25rem;
+  font-style: italic;
+  color: #475569;
+  background-color: #f8fafc;
+  border-radius: 0 0.75rem 0.75rem 0;
+  margin: 1.5rem 0;
+}
+
+.article-content img {
+  border-radius: 1rem;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+  display: block;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+.article-content figure {
+  margin: 1.75rem 0;
+  text-align: center;
+}
+
+.article-content figcaption {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.article-content a {
+  color: #006837;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.article-content a:hover {
+  color: #004d29;
+}
+
+.article-content hr {
+  margin: 2rem 0;
+  border-color: #e2e8f0;
+}
+
+.article-content pre {
+  background-color: #0f172a;
+  color: #38bdf8;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 0.8125rem;
+  margin: 1.5rem 0;
+}
+
+.article-content code {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.375rem;
+  font-size: 0.85em;
+  font-family: monospace;
+}
+
+.article-content pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
+

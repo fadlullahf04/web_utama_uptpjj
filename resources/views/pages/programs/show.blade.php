@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', $program->name . ' - UPT PJJ UINSSC')
+@section('meta_description', $program->short_description ?: \Illuminate\Support\Str::limit(strip_tags($program->description), 155))
+@section('meta_image', $program->image_url)
 
 @section('content')
 <!-- Program Header -->

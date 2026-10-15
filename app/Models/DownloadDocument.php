@@ -35,7 +35,7 @@ class DownloadDocument extends Model
         parent::boot();
         static::creating(function ($item) {
             if (empty($item->slug)) {
-                $item->slug = Str::slug($item->title) . '-' . Str::random(4);
+                $item->slug = Str::slug($item->title).'-'.Str::random(4);
             }
         });
     }
@@ -51,8 +51,9 @@ class DownloadDocument extends Model
             return $this->external_url;
         }
         if ($this->file_path) {
-            return str_starts_with($this->file_path, 'http') ? $this->file_path : asset('storage/' . $this->file_path);
+            return str_starts_with($this->file_path, 'http') ? $this->file_path : asset('storage/'.$this->file_path);
         }
+
         return '#';
     }
 }
