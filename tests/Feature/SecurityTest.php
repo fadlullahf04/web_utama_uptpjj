@@ -101,6 +101,66 @@ class SecurityTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_staff_role_permissions_are_properly_restricted(): void
+    {
+        $staff = User::factory()->create([
+            'role' => 'staf',
+            'is_active' => true,
+        ]);
+
+        // Allowed for Staff: Dashboard, Posts & XML, Categories, Announcements
+        $this->actingAs($staff)->get(route('admin.dashboard'))->assertStatus(200);
+        $this->actingAs($staff)->get(route('admin.posts.index'))->assertStatus(200);
+        $this->actingAs($staff)->get(route('admin.posts.import'))->assertStatus(200);
+        $this->actingAs($staff)->get(route('admin.posts.template.xml'))->assertStatus(200);
+        $this->actingAs($staff)->get(route('admin.categories.index'))->assertStatus(200);
+        $this->actingAs($staff)->get(route('admin.announcements.index'))->assertStatus(200);
+
+        // Forbidden for Staff: Contacts & Helpdesk
+        $this->actingAs($staff)->get(route('admin.contacts.index'))->assertStatus(403);
+
+        // Forbidden for Staff: Admin-only modules
+        $this->actingAs($staff)->get(route('admin.programs.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.services.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.slides.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.team.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.downloads.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.faqs.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.gallery.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.testimonials.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.settings.index'))->assertStatus(403);
+        $this->actingAs($staff)->get(route('admin.users.index'))->assertStatus(403);
+    }
+
+    public function test_editor_role_permissions_are_properly_restricted(): void
+    {
+        $editor = User::factory()->create([
+            'role' => 'editor',
+            'is_active' => true,
+        ]);
+
+        // Allowed for Editor: Dashboard, Posts & XML, Categories, Announcements, Contacts
+        $this->actingAs($editor)->get(route('admin.dashboard'))->assertStatus(200);
+        $this->actingAs($editor)->get(route('admin.posts.index'))->assertStatus(200);
+        $this->actingAs($editor)->get(route('admin.posts.import'))->assertStatus(200);
+        $this->actingAs($editor)->get(route('admin.posts.template.xml'))->assertStatus(200);
+        $this->actingAs($editor)->get(route('admin.categories.index'))->assertStatus(200);
+        $this->actingAs($editor)->get(route('admin.announcements.index'))->assertStatus(200);
+        $this->actingAs($editor)->get(route('admin.contacts.index'))->assertStatus(200);
+
+        // Forbidden for Editor: Admin-only modules
+        $this->actingAs($editor)->get(route('admin.programs.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.services.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.slides.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.team.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.downloads.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.faqs.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.gallery.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.testimonials.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.settings.index'))->assertStatus(403);
+        $this->actingAs($editor)->get(route('admin.users.index'))->assertStatus(403);
+    }
+
     public function test_xxe_payload_is_rejected_in_xml_import(): void
     {
         $xxePayload = <<<'XML'

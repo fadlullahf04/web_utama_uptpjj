@@ -67,6 +67,7 @@
                     <span class="text-[10px] px-2 py-0.5 rounded-full {{ request()->routeIs('admin.announcements.*') ? 'bg-black/20 text-white' : 'bg-slate-100 text-slate-600' }} font-bold">{{ \App\Models\Announcement::count() }}</span>
                 </a>
 
+                @if(auth()->user()->isAdmin())
                 <a href="{{ route('admin.slides.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.slides.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-images text-sm {{ request()->routeIs('admin.slides.*') ? 'text-white' : 'text-emerald-600' }}"></i> Banner / Hero Slider
                 </a>
@@ -90,9 +91,12 @@
                     </div>
                     <span class="text-[10px] px-2 py-0.5 rounded-full {{ request()->routeIs('admin.downloads.*') ? 'bg-black/20 text-white' : 'bg-slate-100 text-slate-600' }} font-bold">{{ \App\Models\DownloadDocument::count() }}</span>
                 </a>
+                @endif
 
+                @if(auth()->user()->isAdmin() || auth()->user()->isEditor())
                 <div class="pt-4 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Profil & Interaksi</div>
                 
+                @if(auth()->user()->isAdmin())
                 <a href="{{ route('admin.team.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.team.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-users-gear text-sm {{ request()->routeIs('admin.team.*') ? 'text-white' : 'text-emerald-600' }}"></i> Tim & Struktur UPT
                 </a>
@@ -108,6 +112,7 @@
                 <a href="{{ route('admin.testimonials.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.testimonials.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-comment-dots text-sm {{ request()->routeIs('admin.testimonials.*') ? 'text-white' : 'text-emerald-600' }}"></i> Testimoni Mahasiswa
                 </a>
+                @endif
 
                 <a href="{{ route('admin.contacts.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.contacts.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     <div class="flex items-center gap-3">
@@ -118,7 +123,9 @@
                         <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500 text-white font-bold animate-pulse">{{ $unread }}</span>
                     @endif
                 </a>
+                @endif
 
+                @if(auth()->user()->isAdmin())
                 <div class="pt-4 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Pengaturan Sistem</div>
                 
                 <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.settings.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
@@ -128,6 +135,7 @@
                 <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.users.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-user-shield text-sm {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-slate-400' }}"></i> Manajemen Admin
                 </a>
+                @endif
 
             </div>
 

@@ -48,7 +48,17 @@ class User extends Authenticatable
 
     public function isEditor(): bool
     {
-        return in_array($this->role, ['admin', 'editor']);
+        return $this->role === 'editor';
+    }
+
+    public function isStaff(): bool
+    {
+        return in_array($this->role, ['staf', 'staff'], true);
+    }
+
+    public function canAccessContacts(): bool
+    {
+        return in_array($this->role, ['admin', 'editor'], true);
     }
 
     public function getAvatarUrlAttribute(): string

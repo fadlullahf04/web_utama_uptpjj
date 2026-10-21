@@ -109,24 +109,24 @@
     <!-- 2. Main Navigation Header (Clean White / Frosted with Proportional Spacing) -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-sm transition-all duration-300" id="main-header">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-20 gap-3">
                 
                 <!-- Logo & Official Branding (UINSSC + BLU + CIU Badges & Green Typography) -->
                 <a href="{{ route('home') }}" class="flex items-center group shrink-0 py-1">
-                    <img src="{{ asset('images/logo_uptpjj.png') }}" alt="Logo UPT Pendidikan Jarak Jauh UIN Siber Syekh Nurjati Cirebon" class="h-10 sm:h-12 md:h-13.5 w-auto max-w-[280px] sm:max-w-none object-contain transition-transform duration-300 group-hover:scale-[1.02]">
+                    <img src="{{ asset('images/logo_uptpjj.png') }}" alt="Logo UPT Pendidikan Jarak Jauh UIN Siber Syekh Nurjati Cirebon" class="h-10 sm:h-11 md:h-12 w-auto max-w-[240px] sm:max-w-none object-contain transition-transform duration-300 group-hover:scale-[1.02]">
                 </a>
 
-                <!-- Desktop Navigation Menu (Proportional, Balanced, Clean Typography) -->
-                <nav class="hidden xl:flex items-center space-x-1 lg:space-x-1.5">
+                <!-- Desktop Navigation Menu (Proportional, Balanced, Clean Typography, Never Wrapped) -->
+                <nav class="hidden lg:flex items-center space-x-0.5 xl:space-x-1.5 2xl:space-x-2">
                     
                     <!-- Home -->
-                    <a href="{{ route('home') }}" class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('home') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                    <a href="{{ route('home') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('home') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                         Home
                     </a>
 
                     <!-- Profil Dropdown -->
                     <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                        <button class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ request()->is('profil*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                        <button class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ request()->is('profil*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                             <span>Profil</span>
                             <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform" :class="{'rotate-180': open}"></i>
                         </button>
@@ -164,7 +164,7 @@
 
                     <!-- Prodi PJJ Dropdown -->
                     <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                        <button class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ request()->is('prodi*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                        <button class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ request()->is('prodi*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                             <span>Prodi PJJ</span>
                             <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform" :class="{'rotate-180': open}"></i>
                         </button>
@@ -218,54 +218,50 @@
                     </div>
 
                     <!-- Layanan -->
-                    <a href="{{ route('services.index') }}" class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('services.*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                    <a href="{{ route('services.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('services.*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                         Layanan
                     </a>
 
                     <!-- Pengumuman -->
-                    <a href="{{ route('announcements.index') }}" class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('announcements.*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                    <a href="{{ route('announcements.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('announcements.*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                         Pengumuman
                     </a>
 
                     <!-- FAQs -->
-                    <a href="{{ route('faqs') }}" class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('faqs') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                    <a href="{{ route('faqs') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('faqs') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                         FAQs
                     </a>
 
                     <!-- Course / Tutorial LMS -->
-                    <a href="{{ route('lms-guide') }}" class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('lms-guide*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                    <a href="{{ route('lms-guide') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('lms-guide*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                         Course
                     </a>
 
                     <!-- Downloads -->
-                    <a href="{{ route('downloads.index') }}" class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('downloads.*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                    <a href="{{ route('downloads.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('downloads.*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                         Downloads
                     </a>
 
                     <!-- Kontak -->
-                    <a href="{{ route('contact.index') }}" class="px-3 py-2 text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('contact.*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                    <a href="{{ route('contact.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors {{ request()->routeIs('contact.*') ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
                         Kontak
                     </a>
                 </nav>
 
-                <!-- Action Items (Search & Signature LMS PILLAR Button) -->
-                <div class="hidden lg:flex items-center space-x-3 shrink-0">
-                    <button @click="searchModal = true" class="p-2.5 rounded-full bg-slate-100 text-slate-600 hover:text-[#006837] hover:bg-emerald-50 transition" title="Pencarian Situs">
-                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                <!-- Action Items (Clean, Proportional Search Button) -->
+                <div class="hidden lg:flex items-center shrink-0">
+                    <button @click="searchModal = true" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100/80 hover:bg-emerald-50 text-slate-600 hover:text-[#006837] border border-slate-200/80 transition text-xs font-medium shadow-sm group" title="Pencarian Situs">
+                        <i class="fa-solid fa-magnifying-glass text-slate-400 group-hover:text-[#006837] text-xs"></i>
+                        <span class="text-slate-500 group-hover:text-[#006837]">Cari</span>
                     </button>
-
-                    <a href="{{ \App\Models\Setting::get('lms_url', 'https://pillar.uinssc.ac.id') }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-emerald-900/20 hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                        <i class="fa-solid fa-graduation-cap text-sm"></i>
-                        <span>LMS PILLAR</span>
-                    </a>
                 </div>
 
                 <!-- Mobile Navigation Toggle -->
-                <div class="flex items-center gap-2 xl:hidden">
-                    <button @click="searchModal = true" class="p-2.5 rounded-lg bg-slate-100 text-slate-700 hover:text-[#006837]">
+                <div class="flex items-center gap-2 lg:hidden">
+                    <button @click="searchModal = true" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837]">
                         <i class="fa-solid fa-magnifying-glass text-sm"></i>
                     </button>
-                    <button @click="mobileMenu = !mobileMenu" class="p-2.5 rounded-lg bg-slate-100 text-slate-700 hover:text-[#006837] transition">
+                    <button @click="mobileMenu = !mobileMenu" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837] transition">
                         <i class="fa-solid text-lg" :class="mobileMenu ? 'fa-xmark' : 'fa-bars'"></i>
                     </button>
                 </div>
@@ -280,33 +276,109 @@
              x-transition:leave="transition ease-in duration-150" 
              x-transition:leave-start="opacity-100 translate-y-0" 
              x-transition:leave-end="opacity-0 -translate-y-4" 
-             class="xl:hidden bg-white border-b border-slate-200 px-5 pt-3 pb-6 space-y-3 shadow-2xl max-h-[85vh] overflow-y-auto">
+             class="lg:hidden bg-white border-b border-slate-200 px-5 pt-3 pb-6 space-y-3 shadow-2xl max-h-[85vh] overflow-y-auto">
             
             <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg text-sm font-bold {{ request()->routeIs('home') ? 'bg-emerald-50 text-[#006837]' : 'text-slate-700 hover:bg-slate-50' }}">
                 <i class="fa-solid fa-house text-[#006837] mr-2"></i> Home / Beranda
             </a>
             
-            <!-- Mobile Profil Submenu -->
-            <div class="space-y-1 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <div class="px-2 py-1 text-xs font-extrabold uppercase text-[#006837]">Profil UPT PJJ</div>
-                <a href="{{ route('profile.overview') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">Selayang Pandang</a>
-                <a href="{{ route('profile.vision-mission') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">Visi dan Misi</a>
-                <a href="{{ route('profile.organization') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">Struktur Organisasi</a>
-                <a href="{{ route('profile.graduate-profile') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">Profil Lulusan</a>
-                <a href="{{ route('profile.team') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">Tim UPT PJJ</a>
-                <a href="{{ route('profile.video-profile') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">Video Profile</a>
-                <a href="{{ route('profile.facilities') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">Sarana dan Prasarana</a>
+            <!-- Mobile Profil Accordion Toggle -->
+            <div class="rounded-xl border border-slate-200/80 overflow-hidden bg-slate-50/70 transition-all" x-data="{ open: false }">
+                <button @click="open = !open" type="button" class="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-100/80 transition-colors">
+                    <span class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-id-card text-[#006837] text-xs w-4"></i>
+                        <span>Profil UPT PJJ</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-200" :class="{ 'rotate-180 text-[#006837]': open }"></i>
+                </button>
+                <div x-show="open" x-cloak 
+                     x-transition:enter="transition ease-out duration-200" 
+                     x-transition:enter-start="opacity-0 -translate-y-1" 
+                     x-transition:enter-end="opacity-100 translate-y-0" 
+                     x-transition:leave="transition ease-in duration-150" 
+                     x-transition:leave-start="opacity-100 translate-y-0" 
+                     x-transition:leave-end="opacity-0 -translate-y-1" 
+                     class="px-3 pb-2.5 pt-1 space-y-1 border-t border-slate-200/60 bg-white">
+                    <a href="{{ route('profile.overview') }}" class="flex items-center gap-2 pl-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <i class="fa-solid fa-quote-left text-[#006837] text-[10px] w-3.5"></i> Selayang Pandang
+                    </a>
+                    <a href="{{ route('profile.vision-mission') }}" class="flex items-center gap-2 pl-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <i class="fa-solid fa-bullseye text-emerald-600 text-[10px] w-3.5"></i> Visi dan Misi
+                    </a>
+                    <a href="{{ route('profile.organization') }}" class="flex items-center gap-2 pl-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <i class="fa-solid fa-sitemap text-amber-600 text-[10px] w-3.5"></i> Struktur Organisasi
+                    </a>
+                    <a href="{{ route('profile.graduate-profile') }}" class="flex items-center gap-2 pl-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <i class="fa-solid fa-user-graduate text-teal-600 text-[10px] w-3.5"></i> Profil Lulusan
+                    </a>
+                    <a href="{{ route('profile.team') }}" class="flex items-center gap-2 pl-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <i class="fa-solid fa-users text-blue-600 text-[10px] w-3.5"></i> Tim UPT PJJ
+                    </a>
+                    <a href="{{ route('profile.video-profile') }}" class="flex items-center gap-2 pl-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <i class="fa-brands fa-youtube text-red-600 text-[10px] w-3.5"></i> Video Profile
+                    </a>
+                    <a href="{{ route('profile.facilities') }}" class="flex items-center gap-2 pl-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <i class="fa-solid fa-building-columns text-purple-600 text-[10px] w-3.5"></i> Sarana dan Prasarana
+                    </a>
+                </div>
             </div>
 
-            <!-- Mobile Prodi Submenu -->
-            <div class="space-y-1 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <div class="px-2 py-1 text-xs font-extrabold uppercase text-[#006837]">Program Studi PJJ</div>
-                <a href="{{ route('programs.show', 'pjj-pendidikan-agama-islam') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">PJJ PAI (S1)</a>
-                <a href="{{ route('programs.show', 'pjj-pendidikan-guru-madrasah-ibtidaiyah') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">PJJ PGMI (S1)</a>
-                <a href="{{ route('programs.show', 'pjj-pendidikan-bahasa-arab') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">PJJ PBA (S1)</a>
-                <a href="{{ route('programs.show', 'pjj-hukum-keluarga-islam') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">PJJ HKI (S1)</a>
-                <a href="{{ route('programs.show', 'pjj-sejarah-peradaban-islam') }}" class="block pl-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#006837]">PJJ SPI (S1)</a>
-                <a href="{{ route('programs.show', 'pjj-magister-pendidikan-agama-islam-s2') }}" class="block pl-3 py-1.5 text-xs font-bold text-amber-700 hover:text-amber-800">PJJ PAI S2 (Magister)</a>
+            <!-- Mobile Prodi Accordion Toggle -->
+            <div class="rounded-xl border border-slate-200/80 overflow-hidden bg-slate-50/70 transition-all" x-data="{ open: false }">
+                <button @click="open = !open" type="button" class="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-100/80 transition-colors">
+                    <span class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-graduation-cap text-[#006837] text-xs w-4"></i>
+                        <span>Program Studi PJJ</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-200" :class="{ 'rotate-180 text-[#006837]': open }"></i>
+                </button>
+                <div x-show="open" x-cloak 
+                     x-transition:enter="transition ease-out duration-200" 
+                     x-transition:enter-start="opacity-0 -translate-y-1" 
+                     x-transition:enter-end="opacity-100 translate-y-0" 
+                     x-transition:leave="transition ease-in duration-150" 
+                     x-transition:leave-start="opacity-100 translate-y-0" 
+                     x-transition:leave-end="opacity-0 -translate-y-1" 
+                     class="px-3 pb-2.5 pt-1 space-y-1 border-t border-slate-200/60 bg-white">
+                    
+                    <div class="px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#006837] bg-emerald-50/60 rounded mt-1">
+                        Program Sarjana (S1)
+                    </div>
+                    <a href="{{ route('programs.show', 'pjj-pendidikan-agama-islam') }}" class="flex items-center justify-between pl-3 pr-2 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <span><i class="fa-solid fa-book-quran text-[#006837] text-[10px] mr-1.5"></i> PJJ PAI</span>
+                        <span class="text-[9px] bg-emerald-100 text-[#006837] px-1.5 py-0.5 rounded font-bold">Unggul</span>
+                    </a>
+                    <a href="{{ route('programs.show', 'pjj-pendidikan-guru-madrasah-ibtidaiyah') }}" class="flex items-center justify-between pl-3 pr-2 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <span><i class="fa-solid fa-chalkboard-user text-teal-600 text-[10px] mr-1.5"></i> PJJ PGMI</span>
+                        <span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-bold">Baik Sekali</span>
+                    </a>
+                    <a href="{{ route('programs.show', 'pjj-pendidikan-bahasa-arab') }}" class="flex items-center justify-between pl-3 pr-2 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <span><i class="fa-solid fa-language text-amber-600 text-[10px] mr-1.5"></i> PJJ PBA</span>
+                        <span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">Baik Sekali</span>
+                    </a>
+                    <a href="{{ route('programs.show', 'pjj-hukum-keluarga-islam') }}" class="flex items-center justify-between pl-3 pr-2 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <span><i class="fa-solid fa-scale-balanced text-purple-600 text-[10px] mr-1.5"></i> PJJ HKI</span>
+                        <span class="text-[9px] bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold">Baik Sekali</span>
+                    </a>
+                    <a href="{{ route('programs.show', 'pjj-sejarah-peradaban-islam') }}" class="flex items-center justify-between pl-3 pr-2 py-1.5 text-xs font-medium text-slate-700 hover:text-[#006837] hover:bg-emerald-50/60 rounded-lg transition">
+                        <span><i class="fa-solid fa-landmark text-blue-600 text-[10px] mr-1.5"></i> PJJ SPI</span>
+                        <span class="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">Baik</span>
+                    </a>
+
+                    <div class="px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-amber-800 bg-amber-50/60 rounded mt-1.5">
+                        Program Pascasarjana (S2)
+                    </div>
+                    <a href="{{ route('programs.show', 'pjj-magister-pendidikan-agama-islam-s2') }}" class="flex items-center justify-between pl-3 pr-2 py-1.5 text-xs font-medium text-slate-700 hover:text-amber-800 hover:bg-amber-50/60 rounded-lg transition">
+                        <span><i class="fa-solid fa-graduation-cap text-amber-600 text-[10px] mr-1.5"></i> PJJ PAI S2</span>
+                        <span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">Unggul</span>
+                    </a>
+
+                    <div class="pt-2 border-t border-slate-100 mt-1">
+                        <a href="{{ route('programs.index') }}" class="block text-center text-xs font-bold py-1.5 px-3 rounded-lg bg-emerald-50 text-[#006837] hover:bg-[#006837] hover:text-white transition">
+                            Lihat Semua Program Studi →
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <a href="{{ route('services.index') }}" class="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50">Layanan</a>
@@ -317,11 +389,8 @@
             <a href="{{ route('downloads.index') }}" class="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50">Downloads</a>
             <a href="{{ route('contact.index') }}" class="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50">Kontak Kami</a>
 
-            <div class="pt-3 border-t border-slate-200 flex flex-col gap-2">
-                <a href="{{ \App\Models\Setting::get('lms_url', 'https://pillar.uinssc.ac.id') }}" target="_blank" class="w-full text-center py-2.5 rounded-full bg-[#006837] text-white font-bold text-xs uppercase tracking-wider shadow-md">
-                    <i class="fa-solid fa-graduation-cap mr-1"></i> MASUK LMS PILLAR
-                </a>
-                <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="w-full text-center py-2.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs uppercase tracking-wider shadow-md">
+            <div class="pt-3 border-t border-slate-200">
+                <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="w-full text-center py-2.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs uppercase tracking-wider shadow-md block">
                     <i class="fa-solid fa-user-plus mr-1"></i> DAFTAR PMB ONLINE
                 </a>
             </div>

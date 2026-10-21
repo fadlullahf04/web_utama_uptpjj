@@ -127,38 +127,41 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Announcements / Pengumuman
     Route::resource('announcements', AdminAnnouncementController::class)->except(['show']);
 
-    // Study Programs / Prodi PJJ
-    Route::resource('programs', AdminStudyProgramController::class)->except(['show']);
+    // Admin & Editor Only: Contact Messages / Helpdesk Inbox
+    Route::middleware(['role:admin,editor'])->group(function () {
+        Route::get('/contacts', [AdminContactController::class, 'index'])->name('contacts.index');
+        Route::get('/contacts/{contact}', [AdminContactController::class, 'show'])->name('contacts.show');
+        Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])->name('contacts.reply');
+        Route::delete('/contacts/{contact}', [AdminContactController::class, 'destroy'])->name('contacts.destroy');
+    });
 
-    // Services / Layanan
-    Route::resource('services', AdminServiceController::class)->except(['show']);
-
-    // Hero Slides / Banner
-    Route::resource('slides', AdminHeroSlideController::class)->except(['show']);
-
-    // Team Members / Struktur
-    Route::resource('team', AdminTeamMemberController::class)->except(['show']);
-
-    // Downloads / Dokumen
-    Route::resource('downloads', AdminDownloadController::class)->except(['show']);
-
-    // FAQs
-    Route::resource('faqs', AdminFaqController::class)->except(['create', 'edit', 'show']);
-
-    // Gallery
-    Route::resource('gallery', AdminGalleryController::class)->except(['create', 'edit', 'show']);
-
-    // Contact Messages / Helpdesk Inbox
-    Route::get('/contacts', [AdminContactController::class, 'index'])->name('contacts.index');
-    Route::get('/contacts/{contact}', [AdminContactController::class, 'show'])->name('contacts.show');
-    Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])->name('contacts.reply');
-    Route::delete('/contacts/{contact}', [AdminContactController::class, 'destroy'])->name('contacts.destroy');
-
-    // Testimonials
-    Route::resource('testimonials', AdminTestimonialController::class)->except(['create', 'edit', 'show']);
-
-    // Super Admin Only: Settings & Users Management
+    // Super Admin Only: Programs, Services, Slides, Team, Downloads, FAQs, Gallery, Testimonials, Settings & Users Management
     Route::middleware(['role:admin'])->group(function () {
+        // Study Programs / Prodi PJJ
+        Route::resource('programs', AdminStudyProgramController::class)->except(['show']);
+
+        // Services / Layanan
+        Route::resource('services', AdminServiceController::class)->except(['show']);
+
+        // Hero Slides / Banner
+        Route::resource('slides', AdminHeroSlideController::class)->except(['show']);
+
+        // Team Members / Struktur
+        Route::resource('team', AdminTeamMemberController::class)->except(['show']);
+
+        // Downloads / Dokumen
+        Route::resource('downloads', AdminDownloadController::class)->except(['show']);
+
+        // FAQs
+        Route::resource('faqs', AdminFaqController::class)->except(['create', 'edit', 'show']);
+
+        // Gallery
+        Route::resource('gallery', AdminGalleryController::class)->except(['create', 'edit', 'show']);
+
+        // Testimonials
+        Route::resource('testimonials', AdminTestimonialController::class)->except(['create', 'edit', 'show']);
+
+        // Settings & Users Management
         Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
         Route::resource('users', AdminUserController::class)->except(['create', 'edit', 'show']);

@@ -21,7 +21,19 @@ class EnsureUserHasRole
             return redirect()->route('login');
         }
 
-        if (! in_array($user->role, $roles, true)) {
+        $userRole = in_array($user->role, ['staf', 'staff'], true) ? 'staf' : $user->role;
+
+        $allowedRoles = [];
+        foreach ($roles as $role) {
+            foreach (explode(',', $role) as $r) {
+                $trimmed = trim($r);
+                if ($trimmed !== '') {
+                    $allowedRoles[] = in_array($trimmed, ['staf', 'staff'], true) ? 'staf' : $trimmed;
+                }
+            }
+        }
+
+        if (! in_array($userRole, $allowedRoles, true)) {
             abort(403, 'Akses Ditolak: Peran akun Anda ('.$user->role.') tidak memiliki izin untuk mengakses modul ini.');
         }
 

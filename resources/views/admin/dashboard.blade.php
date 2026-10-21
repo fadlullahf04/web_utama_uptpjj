@@ -46,7 +46,8 @@
             </div>
         </div>
 
-        <!-- Pesan Masuk / Helpdesk -->
+        @if(auth()->user()->canAccessContacts())
+        <!-- Pesan Masuk / Helpdesk (Admin & Editor) -->
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Pesan Helpdesk</span>
@@ -61,6 +62,19 @@
                 <i class="fa-solid fa-inbox"></i>
             </div>
         </div>
+        @else
+        <!-- Kategori Artikel (Untuk Staf) -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Kategori Artikel</span>
+                <div class="text-2xl font-extrabold text-slate-900">{{ \App\Models\Category::count() }}</div>
+                <div class="text-[10px] text-emerald-600 font-semibold">Kategori Konten Aktif</div>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-[#006837] flex items-center justify-center text-xl">
+                <i class="fa-solid fa-tags"></i>
+            </div>
+        </div>
+        @endif
 
     </div>
 
@@ -74,19 +88,25 @@
             <a href="{{ route('admin.posts.create') }}" class="px-4 py-2 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs transition flex items-center gap-1.5 shadow-md shadow-[#006837]/20">
                 <i class="fa-solid fa-pen-to-square"></i> Tulis Berita
             </a>
+            <a href="{{ route('admin.posts.import') }}" class="px-4 py-2 rounded-xl bg-white hover:bg-emerald-50 text-[#006837] border border-[#006837]/30 font-bold text-xs transition flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-file-import"></i> Import XML
+            </a>
             <a href="{{ route('admin.announcements.create') }}" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs transition flex items-center gap-1.5">
                 <i class="fa-solid fa-bullhorn"></i> Buat Pengumuman
             </a>
+            @if(auth()->user()->isAdmin())
             <a href="{{ route('admin.downloads.create') }}" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
                 <i class="fa-solid fa-upload text-[#006837]"></i> Unggah Dokumen
             </a>
             <a href="{{ route('admin.settings.index') }}" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
                 <i class="fa-solid fa-sliders text-amber-600"></i> Pengaturan Situs
             </a>
+            @endif
         </div>
     </div>
 
-    <!-- 2 Column Details: Recent Messages & Recent News -->
+    @if(auth()->user()->canAccessContacts())
+    <!-- 2 Column Details for Admin & Editor: Recent Messages & Recent News -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <!-- Left: Pesan Masuk Terbaru (7 cols) -->
@@ -179,5 +199,72 @@
         </div>
 
     </div>
+    @else
+    <!-- 2 Column Details for Staf: Berita Terbaru & Pengumuman Aktif (No contact messages) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left: Berita Terbaru (6 cols) -->
+        <div class="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-newspaper text-[#006837]"></i>
+                    <h3 class="text-sm font-bold text-slate-900">Berita Terbaru</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('admin.posts.import') }}" class="text-xs text-emerald-700 font-semibold hover:underline">Import XML</a>
+                    <span class="text-slate-300">•</span>
+                    <a href="{{ route('admin.posts.index') }}" class="text-xs text-[#006837] font-semibold hover:underline">Kelola →</a>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                @foreach($recentPosts as $p)
+                    <div class="flex items-start justify-between gap-3 text-xs p-2.5 rounded-xl hover:bg-slate-50 transition border border-transparent hover:border-slate-200">
+                        <div class="space-y-0.5">
+                            <span class="text-[10px] text-[#006837] font-bold uppercase">{{ $p->category->name ?? 'Berita' }}</span>
+                            <h4 class="font-bold text-slate-800 line-clamp-1 hover:text-[#006837]">
+                                <a href="{{ route('admin.posts.edit', $p->id) }}">{{ $p->title }}</a>
+                            </h4>
+                            <span class="text-[10px] text-slate-400">{{ $p->published_at ? $p->published_at->format('d M Y') : $p->created_at->format('d M Y') }} • {{ number_format($p->views_count) }} views</span>
+                        </div>
+                        <a href="{{ route('admin.posts.edit', $p->id) }}" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 shrink-0">
+                            <i class="fa-solid fa-pen text-xs"></i>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Right: Pengumuman Aktif (6 cols) -->
+        <div class="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bullhorn text-amber-600"></i>
+                    <h3 class="text-sm font-bold text-slate-900">Pengumuman Aktif</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('admin.announcements.create') }}" class="text-xs text-amber-600 font-semibold hover:underline">+ Baru</a>
+                    <span class="text-slate-300">•</span>
+                    <a href="{{ route('admin.announcements.index') }}" class="text-xs text-amber-700 font-semibold hover:underline">Kelola →</a>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                @foreach($recentAnnouncements as $a)
+                    <div class="text-xs space-y-0.5 p-2.5 rounded-xl hover:bg-slate-50 transition border border-transparent hover:border-slate-200">
+                        <div class="flex items-center justify-between text-[10px] text-slate-400">
+                            <span class="text-amber-600 font-bold">{{ $a->category }}</span>
+                            <span>{{ $a->published_at ? $a->published_at->format('d M Y') : $a->created_at->format('d M Y') }}</span>
+                        </div>
+                        <h4 class="font-bold text-slate-800 line-clamp-1">
+                            <a href="{{ route('admin.announcements.edit', $a->id) }}" class="hover:text-amber-600">{{ $a->title }}</a>
+                        </h4>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+    </div>
+    @endif
 </div>
 @endsection
