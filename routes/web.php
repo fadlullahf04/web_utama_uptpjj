@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\DownloadController as AdminDownloadController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\HeroSlideController as AdminHeroSlideController;
+use App\Http\Controllers\Admin\MenuController as AdminMenuController;
+use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
@@ -22,6 +24,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LmsGuideController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
@@ -93,6 +96,10 @@ Route::prefix('kontak')->name('contact.')->group(function () {
     Route::post('/', [ContactController::class, 'store'])->name('store')->middleware('throttle:5,1');
 });
 
+// Dynamic Pages (Halaman Dinamis)
+Route::get('/halaman/{slug}', [PageController::class, 'show'])->name('pages.show');
+Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show_short');
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -127,6 +134,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Announcements / Pengumuman
     Route::resource('announcements', AdminAnnouncementController::class)->except(['show']);
 
+    // Dynamic Pages / Halaman Dinamis
+    Route::resource('pages', AdminPageController::class)->except(['show']);
+
     // Admin & Editor Only: Contact Messages / Helpdesk Inbox
     Route::middleware(['role:admin,editor'])->group(function () {
         Route::get('/contacts', [AdminContactController::class, 'index'])->name('contacts.index');
@@ -137,6 +147,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Super Admin Only: Programs, Services, Slides, Team, Downloads, FAQs, Gallery, Testimonials, Settings & Users Management
     Route::middleware(['role:admin'])->group(function () {
+        // Dynamic Menu Builder / Navigasi
+        Route::get('/menus', [AdminMenuController::class, 'index'])->name('menus.index');
+        Route::post('/menus', [AdminMenuController::class, 'store'])->name('menus.store');
+        Route::put('/menus/{menu}', [AdminMenuController::class, 'update'])->name('menus.update');
+        Route::delete('/menus/{menu}', [AdminMenuController::class, 'destroy'])->name('menus.destroy');
+        Route::post('/menus/{menu}/move/{direction}', [AdminMenuController::class, 'move'])->name('menus.move');
+        Route::post('/menus/seed-defaults', [AdminMenuController::class, 'seedDefaults'])->name('menus.seed_defaults');
+
         // Study Programs / Prodi PJJ
         Route::resource('programs', AdminStudyProgramController::class)->except(['show']);
 

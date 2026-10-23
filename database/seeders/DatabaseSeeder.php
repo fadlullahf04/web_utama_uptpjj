@@ -727,5 +727,8 @@ class DatabaseSeeder extends Seeder
             'message' => 'Halo tim helpdesk, saya mahasiswa baru PJJ PGMI, ingin konfirmasi reset password karena tidak menerima link verifikasi di email. NIM: 2601020045.',
             'is_read' => false,
         ]);
+
+        // 15. Dynamic Pages & Menu Builder
+        $this->call(MenuSeeder::class);
     }
 }
