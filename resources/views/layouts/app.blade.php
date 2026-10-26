@@ -163,17 +163,17 @@
         </div>
 
         <!-- Bottom Tier: Main Navigation Bar (Positioned Under the Logo with Full Width Availability) -->
-        <div class="hidden lg:block bg-gradient-to-r from-[#006837] via-[#005c31] to-[#004d29] shadow-md border-t border-emerald-600/30">
+        <div class="hidden lg:block bg-gradient-to-r from-[#006837] via-[#005c31] to-[#004d29] shadow-md border-t border-emerald-600/30 relative z-30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 @php
                     $headerNavItems = \App\Models\MenuItem::getTree('header');
                 @endphp
-                <nav class="flex items-center space-x-0.5 xl:space-x-1 py-1 overflow-x-auto no-scrollbar">
+                <nav class="flex items-center space-x-0.5 xl:space-x-1 py-1">
                     @if($headerNavItems->isNotEmpty())
                         @foreach($headerNavItems as $navItem)
                             @if($navItem->activeChildren->isNotEmpty())
                                 <!-- Dropdown Menu (Click to view all, hover or chevron to open dropdown) -->
-                                <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                                <div class="nav-dropdown" x-data="{ open: false }" :class="{ 'is-open': open }" @mouseleave="open = false">
                                     <div class="flex items-center rounded-lg transition-colors {{ $navItem->isActiveRoute() ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                         <!-- Main Parent Clickable Link -->
                                         <a href="{{ $navItem->getUrl() }}" 
@@ -196,44 +196,41 @@
                                             <i class="fa-solid fa-chevron-down text-[9px] transition-transform duration-200" :class="{'rotate-180': open}"></i>
                                         </button>
                                     </div>
-                                    <div x-show="open" x-cloak 
-                                         x-transition:enter="transition ease-out duration-200" 
-                                         x-transition:enter-start="opacity-0 translate-y-2" 
-                                         x-transition:enter-end="opacity-100 translate-y-0" 
-                                         x-transition:leave="transition ease-in duration-150" 
-                                         x-transition:leave-start="opacity-100 translate-y-0" 
-                                         x-transition:leave-end="opacity-0 translate-y-2" 
-                                         class="absolute left-0 mt-0.5 min-w-[280px] max-w-sm rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 z-50 text-slate-800">
-                                        
-                                        <!-- Direct Link to View All in Dropdown -->
-                                        @if($navItem->getUrl() && $navItem->getUrl() !== '#')
-                                            <div class="px-3 pt-1 pb-2 border-b border-slate-100">
-                                                <a href="{{ $navItem->getUrl() }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-xs font-bold text-[#006837] transition group/all">
-                                                    <span class="flex items-center gap-2">
-                                                        <i class="fa-solid fa-layer-group text-[#006837]"></i>
-                                                        <span>Lihat Semua {{ $navItem->title }}</span>
-                                                    </span>
-                                                    <i class="fa-solid fa-arrow-right text-[10px] transform group-hover/all:translate-x-1 transition-transform"></i>
-                                                </a>
-                                            </div>
-                                        @endif
 
-                                        <div class="py-1 max-h-[70vh] overflow-y-auto">
-                                            @foreach($navItem->activeChildren as $childNav)
-                                                <a href="{{ $childNav->getUrl() }}" target="{{ $childNav->target }}" class="flex items-center justify-between px-4 py-2.5 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80 transition">
-                                                    <span class="flex items-center gap-2.5 truncate">
-                                                        @if($childNav->icon)
-                                                            <i class="{{ $childNav->icon }} text-[#006837] w-4 text-center"></i>
-                                                        @else
-                                                            <i class="fa-solid fa-angle-right text-emerald-600 w-4 text-center text-[10px]"></i>
+                                    <!-- Dropdown Menu Panel -->
+                                    <div class="nav-dropdown-menu">
+                                        <div class="rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 text-slate-800">
+                                            
+                                            <!-- Direct Link to View All in Dropdown -->
+                                            @if($navItem->getUrl() && $navItem->getUrl() !== '#')
+                                                <div class="px-3 pt-1 pb-2 border-b border-slate-100">
+                                                    <a href="{{ $navItem->getUrl() }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-xs font-bold text-[#006837] transition group/all">
+                                                        <span class="flex items-center gap-2">
+                                                            <i class="fa-solid fa-layer-group text-[#006837]"></i>
+                                                            <span>Lihat Semua {{ $navItem->title }}</span>
+                                                        </span>
+                                                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover/all:translate-x-1 transition-transform"></i>
+                                                    </a>
+                                                </div>
+                                            @endif
+
+                                            <div class="py-1 max-h-[70vh] overflow-y-auto">
+                                                @foreach($navItem->activeChildren as $childNav)
+                                                    <a href="{{ $childNav->getUrl() }}" target="{{ $childNav->target }}" class="flex items-center justify-between px-4 py-2.5 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80 transition">
+                                                        <span class="flex items-center gap-2.5 truncate">
+                                                            @if($childNav->icon)
+                                                                <i class="{{ $childNav->icon }} text-[#006837] w-4 text-center"></i>
+                                                            @else
+                                                                <i class="fa-solid fa-angle-right text-emerald-600 w-4 text-center text-[10px]"></i>
+                                                            @endif
+                                                            <span class="truncate">{{ $childNav->title }}</span>
+                                                        </span>
+                                                        @if($childNav->badge)
+                                                            <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-{{ $childNav->badge_color }}-100 text-{{ $childNav->badge_color }}-800 shrink-0 ml-2">{{ $childNav->badge }}</span>
                                                         @endif
-                                                        <span class="truncate">{{ $childNav->title }}</span>
-                                                    </span>
-                                                    @if($childNav->badge)
-                                                        <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-{{ $childNav->badge_color }}-100 text-{{ $childNav->badge_color }}-800 shrink-0 ml-2">{{ $childNav->badge }}</span>
-                                                    @endif
-                                                </a>
-                                            @endforeach
+                                                    </a>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -254,7 +251,7 @@
                         <a href="{{ route('home') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg {{ request()->routeIs('home') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white hover:bg-white/15' }}">Home</a>
                         
                         <!-- Fallback Profil Dropdown -->
-                        <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <div class="nav-dropdown" x-data="{ open: false }" :class="{ 'is-open': open }" @mouseleave="open = false">
                             <div class="flex items-center rounded-lg transition-colors {{ request()->routeIs('profile.*') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                 <a href="{{ route('profile.overview') }}" class="whitespace-nowrap pl-3 pr-1.5 py-2.5 text-[13px] font-semibold flex items-center gap-1.5 text-inherit">
                                     <span>Profil</span>
@@ -263,26 +260,28 @@
                                     <i class="fa-solid fa-chevron-down text-[9px]" :class="{'rotate-180': open}"></i>
                                 </button>
                             </div>
-                            <div x-show="open" x-cloak class="absolute left-0 mt-0.5 min-w-[260px] rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 z-50 text-slate-800">
-                                <div class="px-3 pt-1 pb-2 border-b border-slate-100">
-                                    <a href="{{ route('profile.overview') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
-                                        <span>Lihat Semua Profil</span>
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                                    </a>
-                                </div>
-                                <div class="py-1">
-                                    <a href="{{ route('profile.overview') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Selayang Pandang</a>
-                                    <a href="{{ route('profile.vision-mission') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Visi dan Misi</a>
-                                    <a href="{{ route('profile.organization') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Struktur Organisasi</a>
-                                    <a href="{{ route('profile.graduate-profile') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Profil Lulusan</a>
-                                    <a href="{{ route('profile.team') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Tim UPT PJJ</a>
-                                    <a href="{{ route('profile.facilities') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Sarana & Prasarana</a>
+                            <div class="nav-dropdown-menu">
+                                <div class="rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 text-slate-800">
+                                    <div class="px-3 pt-1 pb-2 border-b border-slate-100">
+                                        <a href="{{ route('profile.overview') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
+                                            <span>Lihat Semua Profil</span>
+                                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                        </a>
+                                    </div>
+                                    <div class="py-1">
+                                        <a href="{{ route('profile.overview') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Selayang Pandang</a>
+                                        <a href="{{ route('profile.vision-mission') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Visi dan Misi</a>
+                                        <a href="{{ route('profile.organization') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Struktur Organisasi</a>
+                                        <a href="{{ route('profile.graduate-profile') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Profil Lulusan</a>
+                                        <a href="{{ route('profile.team') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Tim UPT PJJ</a>
+                                        <a href="{{ route('profile.facilities') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Sarana & Prasarana</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Fallback Prodi PJJ Dropdown -->
-                        <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <div class="nav-dropdown" x-data="{ open: false }" :class="{ 'is-open': open }" @mouseleave="open = false">
                             <div class="flex items-center rounded-lg transition-colors {{ request()->routeIs('programs.*') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                 <a href="{{ route('programs.index') }}" class="whitespace-nowrap pl-3 pr-1.5 py-2.5 text-[13px] font-semibold flex items-center gap-1.5 text-inherit">
                                     <span>Prodi PJJ</span>
@@ -291,26 +290,28 @@
                                     <i class="fa-solid fa-chevron-down text-[9px]" :class="{'rotate-180': open}"></i>
                                 </button>
                             </div>
-                            <div x-show="open" x-cloak class="absolute left-0 mt-0.5 min-w-[280px] rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 z-50 text-slate-800">
-                                <div class="px-3 pt-1 pb-2 border-b border-slate-100">
-                                    <a href="{{ route('programs.index') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
-                                        <span>Lihat Semua Program Studi</span>
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                                    </a>
-                                </div>
-                                <div class="py-1">
-                                    <a href="/prodi/pjj-pendidikan-agama-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PAI (S1)</a>
-                                    <a href="/prodi/pjj-pendidikan-guru-madrasah-ibtidaiyah" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PGMI (S1)</a>
-                                    <a href="/prodi/pjj-pendidikan-bahasa-arab" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PBA (S1)</a>
-                                    <a href="/prodi/pjj-hukum-keluarga-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ HKI (S1)</a>
-                                    <a href="/prodi/pjj-sejarah-peradaban-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ SPI (S1)</a>
-                                    <a href="/prodi/pjj-magister-pendidikan-agama-islam-s2" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PAI S2</a>
+                            <div class="nav-dropdown-menu">
+                                <div class="rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 text-slate-800">
+                                    <div class="px-3 pt-1 pb-2 border-b border-slate-100">
+                                        <a href="{{ route('programs.index') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
+                                            <span>Lihat Semua Program Studi</span>
+                                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                        </a>
+                                    </div>
+                                    <div class="py-1">
+                                        <a href="/prodi/pjj-pendidikan-agama-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PAI (S1)</a>
+                                        <a href="/prodi/pjj-pendidikan-guru-madrasah-ibtidaiyah" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PGMI (S1)</a>
+                                        <a href="/prodi/pjj-pendidikan-bahasa-arab" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PBA (S1)</a>
+                                        <a href="/prodi/pjj-hukum-keluarga-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ HKI (S1)</a>
+                                        <a href="/prodi/pjj-sejarah-peradaban-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ SPI (S1)</a>
+                                        <a href="/prodi/pjj-magister-pendidikan-agama-islam-s2" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PAI S2</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Fallback Layanan Dropdown -->
-                        <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <div class="nav-dropdown" x-data="{ open: false }" :class="{ 'is-open': open }" @mouseleave="open = false">
                             <div class="flex items-center rounded-lg transition-colors {{ request()->routeIs('services.*') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                 <a href="{{ route('services.index') }}" class="whitespace-nowrap pl-3 pr-1.5 py-2.5 text-[13px] font-semibold flex items-center gap-1.5 text-inherit">
                                     <span>Layanan</span>
@@ -319,18 +320,20 @@
                                     <i class="fa-solid fa-chevron-down text-[9px]" :class="{'rotate-180': open}"></i>
                                 </button>
                             </div>
-                            <div x-show="open" x-cloak class="absolute left-0 mt-0.5 min-w-[280px] rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 z-50 text-slate-800">
-                                <div class="px-3 pt-1 pb-2 border-b border-slate-100">
-                                    <a href="{{ route('services.index') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
-                                        <span>Lihat Semua Layanan & Fasilitas</span>
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                                    </a>
-                                </div>
-                                <div class="py-1">
-                                    <a href="/layanan/lms-pillar" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">LMS Pillar (Platform Belajar)</a>
-                                    <a href="{{ route('lms-guide') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Tutorial & Course LMS</a>
-                                    <a href="/layanan/studio-multimedia-mooc" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Studio Multimedia MOOC</a>
-                                    <a href="/layanan/helpdesk-terpadu" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Helpdesk Terpadu 24/7</a>
+                            <div class="nav-dropdown-menu">
+                                <div class="rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 text-slate-800">
+                                    <div class="px-3 pt-1 pb-2 border-b border-slate-100">
+                                        <a href="{{ route('services.index') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
+                                            <span>Lihat Semua Layanan & Fasilitas</span>
+                                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                        </a>
+                                    </div>
+                                    <div class="py-1">
+                                        <a href="/layanan/lms-pillar" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">LMS Pillar (Platform Belajar)</a>
+                                        <a href="{{ route('lms-guide') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Tutorial & Course LMS</a>
+                                        <a href="/layanan/studio-multimedia-mooc" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Studio Multimedia MOOC</a>
+                                        <a href="/layanan/helpdesk-terpadu" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Helpdesk Terpadu 24/7</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
