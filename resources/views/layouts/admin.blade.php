@@ -67,6 +67,13 @@
                     <i class="fa-solid fa-tags text-sm {{ request()->routeIs('admin.categories.*') ? 'text-white' : 'text-emerald-600' }}"></i> Kategori Artikel
                 </a>
 
+                <a href="{{ route('admin.pages.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.pages.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-file-lines text-sm {{ request()->routeIs('admin.pages.*') ? 'text-white' : 'text-emerald-600' }}"></i> Halaman Dinamis
+                    </div>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full {{ request()->routeIs('admin.pages.*') ? 'bg-black/20 text-white' : 'bg-slate-100 text-slate-600' }} font-bold">{{ \App\Models\Page::count() }}</span>
+                </a>
+
                 <a href="{{ route('admin.announcements.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.announcements.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-bullhorn text-sm {{ request()->routeIs('admin.announcements.*') ? 'text-white' : 'text-amber-600' }}"></i> Pengumuman
@@ -144,13 +151,6 @@
                         <i class="fa-solid fa-compass text-sm {{ request()->routeIs('admin.menus.*') ? 'text-white' : 'text-emerald-600' }}"></i> Menu Builder
                     </div>
                     <span class="text-[10px] px-2 py-0.5 rounded-full {{ request()->routeIs('admin.menus.*') ? 'bg-black/20 text-white' : 'bg-emerald-100 text-emerald-800' }} font-bold">{{ \App\Models\MenuItem::count() }}</span>
-                </a>
-
-                <a href="{{ route('admin.pages.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.pages.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-file-lines text-sm {{ request()->routeIs('admin.pages.*') ? 'text-white' : 'text-emerald-600' }}"></i> Halaman Dinamis
-                    </div>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full {{ request()->routeIs('admin.pages.*') ? 'bg-black/20 text-white' : 'bg-slate-100 text-slate-600' }} font-bold">{{ \App\Models\Page::count() }}</span>
                 </a>
 
                 <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.users.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
