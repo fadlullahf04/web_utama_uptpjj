@@ -246,6 +246,13 @@ class PageAndMenuBuilderTest extends TestCase
         $response->assertSee('UPBJJ');
         $response->assertSee('/halaman/upbjj');
         $response->assertSee('Tutorial & Course LMS');
+
+        // Check dropdown parent menus link to index pages (view all)
+        $response->assertSee(route('programs.index'));
+        $response->assertSee(route('services.index'));
+        $response->assertSee(route('profile.overview'));
+        $response->assertSee('Lihat Semua Prodi PJJ');
+        $response->assertSee('Lihat Semua Layanan');
     }
 
     public function test_admin_can_update_menu_item_and_toggle_active_status(): void

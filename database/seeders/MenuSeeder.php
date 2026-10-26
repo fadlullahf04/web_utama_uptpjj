@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\MenuItem;
 use App\Models\Page;
+use App\Models\Service;
+use App\Models\StudyProgram;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -227,8 +229,9 @@ class MenuSeeder extends Seeder
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Profil',
-            'type' => 'custom',
-            'url' => '#',
+            'type' => 'route',
+            'route_name' => 'profile.overview',
+            'icon' => 'fa-solid fa-landmark',
             'order' => 2,
             'is_active' => true,
         ]);
@@ -250,6 +253,7 @@ class MenuSeeder extends Seeder
                 'badge_color' => 'emerald',
                 'order' => 8,
             ],
+            ['title' => 'Semua Profil UPT PJJ →', 'type' => 'route', 'route_name' => 'profile.overview', 'icon' => 'fa-solid fa-arrow-right', 'order' => 9],
         ];
 
         foreach ($profilChildren as $child) {
@@ -260,64 +264,153 @@ class MenuSeeder extends Seeder
             ]));
         }
 
-        // 3. Prodi PJJ (Dropdown)
+        // 3. Prodi PJJ (Dropdown) -> Klik menu langsung membuka halaman semua prodi
         $prodi = MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Prodi PJJ',
             'type' => 'route',
             'route_name' => 'programs.index',
+            'icon' => 'fa-solid fa-graduation-cap',
             'order' => 3,
             'is_active' => true,
         ]);
 
-        $prodiChildren = [
-            ['title' => 'PJJ PAI (S1)', 'type' => 'custom', 'url' => '/prodi/pjj-pendidikan-agama-islam', 'icon' => 'fa-solid fa-book-quran', 'badge' => 'Unggul', 'badge_color' => 'emerald', 'order' => 1],
-            ['title' => 'PJJ PGMI (S1)', 'type' => 'custom', 'url' => '/prodi/pjj-pendidikan-guru-madrasah-ibtidaiyah', 'icon' => 'fa-solid fa-chalkboard-user', 'badge' => 'Baik Sekali', 'badge_color' => 'teal', 'order' => 2],
-            ['title' => 'PJJ PBA (S1)', 'type' => 'custom', 'url' => '/prodi/pjj-pendidikan-bahasa-arab', 'icon' => 'fa-solid fa-language', 'badge' => 'Baik Sekali', 'badge_color' => 'amber', 'order' => 3],
-            ['title' => 'PJJ HKI (S1)', 'type' => 'custom', 'url' => '/prodi/pjj-hukum-keluarga-islam', 'icon' => 'fa-solid fa-scale-balanced', 'badge' => 'Baik Sekali', 'badge_color' => 'purple', 'order' => 4],
-            ['title' => 'PJJ SPI (S1)', 'type' => 'custom', 'url' => '/prodi/pjj-sejarah-peradaban-islam', 'icon' => 'fa-solid fa-landmark', 'badge' => 'Baik', 'badge_color' => 'blue', 'order' => 5],
-            ['title' => 'PJJ PAI S2', 'type' => 'custom', 'url' => '/prodi/pjj-magister-pendidikan-agama-islam-s2', 'icon' => 'fa-solid fa-graduation-cap', 'badge' => 'Unggul', 'badge_color' => 'amber', 'order' => 6],
-            ['title' => 'Semua Program Studi →', 'type' => 'route', 'route_name' => 'programs.index', 'icon' => 'fa-solid fa-arrow-right', 'order' => 7],
-        ];
+        $programs = StudyProgram::orderBy('degree', 'asc')->orderBy('id', 'asc')->get();
+        $prodiOrder = 1;
+        if ($programs->isNotEmpty()) {
+            foreach ($programs as $prog) {
+                $icon = match (true) {
+                    str_contains(strtolower($prog->name), 'bahasa arab') => 'fa-solid fa-language',
+                    str_contains(strtolower($prog->name), 'madrasah ibtidaiyah') || str_contains(strtolower($prog->name), 'pgmi') => 'fa-solid fa-chalkboard-user',
+                    str_contains(strtolower($prog->name), 'hukum keluarga') || str_contains(strtolower($prog->name), 'hki') => 'fa-solid fa-scale-balanced',
+                    str_contains(strtolower($prog->name), 'sejarah peradaban') || str_contains(strtolower($prog->name), 'spi') => 'fa-solid fa-landmark',
+                    str_contains(strtolower($prog->name), 's2') || $prog->degree === 'S2' => 'fa-solid fa-user-graduate',
+                    default => 'fa-solid fa-book-quran',
+                };
 
-        foreach ($prodiChildren as $child) {
-            MenuItem::create(array_merge($child, [
-                'location' => 'header',
-                'parent_id' => $prodi->id,
-                'is_active' => true,
-            ]));
+                $badgeColor = match (strtolower($prog->accreditation)) {
+                    'unggul' => 'emerald',
+                    'baik sekali' => 'teal',
+                    default => 'blue',
+                };
+
+                MenuItem::create([
+                    'location' => 'header',
+                    'parent_id' => $prodi->id,
+                    'title' => $prog->name,
+                    'type' => 'custom',
+                    'url' => '/prodi/'.$prog->slug,
+                    'icon' => $icon,
+                    'badge' => $prog->accreditation,
+                    'badge_color' => $badgeColor,
+                    'order' => $prodiOrder++,
+                    'is_active' => true,
+                ]);
+            }
+        } else {
+            $defaultPrograms = [
+                ['title' => 'PJJ PAI (S1)', 'url' => '/prodi/pjj-pendidikan-agama-islam', 'icon' => 'fa-solid fa-book-quran', 'badge' => 'Unggul', 'badge_color' => 'emerald'],
+                ['title' => 'PJJ PGMI (S1)', 'url' => '/prodi/pjj-pendidikan-guru-madrasah-ibtidaiyah', 'icon' => 'fa-solid fa-chalkboard-user', 'badge' => 'Baik Sekali', 'badge_color' => 'teal'],
+                ['title' => 'PJJ PBA (S1)', 'url' => '/prodi/pjj-pendidikan-bahasa-arab', 'icon' => 'fa-solid fa-language', 'badge' => 'Baik Sekali', 'badge_color' => 'amber'],
+                ['title' => 'PJJ HKI (S1)', 'url' => '/prodi/pjj-hukum-keluarga-islam', 'icon' => 'fa-solid fa-scale-balanced', 'badge' => 'Baik Sekali', 'badge_color' => 'purple'],
+                ['title' => 'PJJ SPI (S1)', 'url' => '/prodi/pjj-sejarah-peradaban-islam', 'icon' => 'fa-solid fa-landmark', 'badge' => 'Baik', 'badge_color' => 'blue'],
+                ['title' => 'PJJ PAI S2', 'url' => '/prodi/pjj-magister-pendidikan-agama-islam-s2', 'icon' => 'fa-solid fa-graduation-cap', 'badge' => 'Unggul', 'badge_color' => 'amber'],
+            ];
+            foreach ($defaultPrograms as $dp) {
+                MenuItem::create([
+                    'location' => 'header',
+                    'parent_id' => $prodi->id,
+                    'title' => $dp['title'],
+                    'type' => 'custom',
+                    'url' => $dp['url'],
+                    'icon' => $dp['icon'],
+                    'badge' => $dp['badge'],
+                    'badge_color' => $dp['badge_color'],
+                    'order' => $prodiOrder++,
+                    'is_active' => true,
+                ]);
+            }
         }
 
-        // 4. Layanan (Dropdown with LMS Pillar & Course Tutorial)
+        MenuItem::create([
+            'location' => 'header',
+            'parent_id' => $prodi->id,
+            'title' => 'Semua Program Studi (6 Prodi) →',
+            'type' => 'route',
+            'route_name' => 'programs.index',
+            'icon' => 'fa-solid fa-arrow-right',
+            'order' => $prodiOrder,
+            'is_active' => true,
+        ]);
+
+        // 4. Layanan (Dropdown with LMS Pillar & Course Tutorial) -> Klik menu langsung membuka halaman semua layanan
         $layanan = MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Layanan',
             'type' => 'route',
             'route_name' => 'services.index',
+            'icon' => 'fa-solid fa-hand-holding-hand',
             'order' => 4,
             'is_active' => true,
         ]);
 
-        $layananChildren = [
-            ['title' => 'LMS Pillar (Platform Belajar)', 'type' => 'custom', 'url' => '/layanan/lms-pillar', 'icon' => 'fa-solid fa-graduation-cap', 'badge' => 'Utama', 'badge_color' => 'emerald', 'order' => 1],
-            ['title' => 'Tutorial & Course LMS', 'type' => 'route', 'route_name' => 'lms-guide', 'icon' => 'fa-solid fa-chalkboard-user', 'badge' => 'Course', 'badge_color' => 'amber', 'order' => 2],
-            ['title' => 'Studio Multimedia MOOC', 'type' => 'custom', 'url' => '/layanan/studio-multimedia-mooc', 'icon' => 'fa-solid fa-video', 'order' => 3],
-            ['title' => 'Helpdesk Terpadu 24/7', 'type' => 'custom', 'url' => '/layanan/helpdesk-terpadu', 'icon' => 'fa-solid fa-headset', 'order' => 4],
-            ['title' => 'Lab Siber & Virtual Classroom', 'type' => 'custom', 'url' => '/layanan/lab-siber-virtual-classroom', 'icon' => 'fa-solid fa-server', 'order' => 5],
-            ['title' => 'Pengembangan Bahan Ajar', 'type' => 'custom', 'url' => '/layanan/pengembangan-bahan-ajar-modular', 'icon' => 'fa-solid fa-book-open', 'order' => 6],
-            ['title' => 'Aplikasi Mobile SiberGo!', 'type' => 'custom', 'url' => '/layanan/aplikasi-mobile-sibergo', 'icon' => 'fa-solid fa-mobile-screen', 'order' => 7],
-            ['title' => 'Semua Layanan & Fasilitas →', 'type' => 'route', 'route_name' => 'services.index', 'icon' => 'fa-solid fa-arrow-right', 'order' => 8],
-        ];
+        $services = Service::where('is_active', true)->orderBy('id', 'asc')->get();
+        $srvOrder = 1;
+        if ($services->isNotEmpty()) {
+            foreach ($services as $srv) {
+                $icon = match (true) {
+                    str_contains(strtolower($srv->slug), 'lms') => 'fa-solid fa-graduation-cap',
+                    str_contains(strtolower($srv->slug), 'multimedia') || str_contains(strtolower($srv->slug), 'studio') => 'fa-solid fa-video',
+                    str_contains(strtolower($srv->slug), 'helpdesk') => 'fa-solid fa-headset',
+                    str_contains(strtolower($srv->slug), 'lab') => 'fa-solid fa-server',
+                    str_contains(strtolower($srv->slug), 'bahan-ajar') => 'fa-solid fa-book-open',
+                    str_contains(strtolower($srv->slug), 'mobile') || str_contains(strtolower($srv->slug), 'sibergo') => 'fa-solid fa-mobile-screen',
+                    default => 'fa-solid fa-gear',
+                };
 
-        foreach ($layananChildren as $child) {
-            MenuItem::create(array_merge($child, [
-                'location' => 'header',
-                'parent_id' => $layanan->id,
-                'is_active' => true,
-            ]));
+                $badge = str_contains(strtolower($srv->slug), 'lms') ? 'Utama' : null;
+                $badgeColor = 'emerald';
+
+                MenuItem::create([
+                    'location' => 'header',
+                    'parent_id' => $layanan->id,
+                    'title' => $srv->title,
+                    'type' => 'custom',
+                    'url' => '/layanan/'.$srv->slug,
+                    'icon' => $icon,
+                    'badge' => $badge,
+                    'badge_color' => $badgeColor,
+                    'order' => $srvOrder++,
+                    'is_active' => true,
+                ]);
+            }
         }
+
+        MenuItem::create([
+            'location' => 'header',
+            'parent_id' => $layanan->id,
+            'title' => 'Tutorial & Course LMS',
+            'type' => 'route',
+            'route_name' => 'lms-guide',
+            'icon' => 'fa-solid fa-chalkboard-user',
+            'badge' => 'Course',
+            'badge_color' => 'amber',
+            'order' => $srvOrder++,
+            'is_active' => true,
+        ]);
+
+        MenuItem::create([
+            'location' => 'header',
+            'parent_id' => $layanan->id,
+            'title' => 'Semua Layanan & Fasilitas →',
+            'type' => 'route',
+            'route_name' => 'services.index',
+            'icon' => 'fa-solid fa-arrow-right',
+            'order' => $srvOrder,
+            'is_active' => true,
+        ]);
 
         // 5. EduShare
         MenuItem::create([
