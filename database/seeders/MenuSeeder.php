@@ -14,11 +14,15 @@ class MenuSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Seed Sample Dynamic Page
+        MenuItem::query()->delete();
+
+        // 1. Seed Sample Dynamic Pages
         $samplePage = $this->seedSamplePage();
+        $edusharePage = $this->seedEdusharePage();
+        $upbjjPage = $this->seedUpbjjPage();
 
         // 2. Seed Header Menu
-        $this->seedHeaderMenu($samplePage);
+        $this->seedHeaderMenu($samplePage, $edusharePage, $upbjjPage);
 
         // 3. Seed Footer Menu
         $this->seedFooterMenu($samplePage);
@@ -30,11 +34,13 @@ class MenuSeeder extends Seeder
     public function seedLocation(string $location): void
     {
         $samplePage = Page::where('slug', 'maklumat-pelayanan-upt-pjj')->first() ?? $this->seedSamplePage();
+        $edusharePage = Page::where('slug', 'edushare')->first() ?? $this->seedEdusharePage();
+        $upbjjPage = Page::where('slug', 'upbjj')->first() ?? $this->seedUpbjjPage();
 
         MenuItem::where('location', $location)->delete();
 
         if ($location === 'header') {
-            $this->seedHeaderMenu($samplePage);
+            $this->seedHeaderMenu($samplePage, $edusharePage, $upbjjPage);
         } elseif ($location === 'footer') {
             $this->seedFooterMenu($samplePage);
         }
@@ -102,8 +108,109 @@ class MenuSeeder extends Seeder
         );
     }
 
-    protected function seedHeaderMenu(Page $samplePage): void
+    protected function seedEdusharePage(): Page
     {
+        $admin = User::first();
+
+        return Page::firstOrCreate(
+            ['slug' => 'edushare'],
+            [
+                'title' => 'EduShare - Repositori Sumber Belajar Terbuka & Microlearning UPT PJJ',
+                'excerpt' => 'Platform berbagi materi kuliah digital, open educational resources (OER), modul SCORM, rekaman kuliah studio, dan podcast akademik UIN Siber Syekh Nurjati Cirebon.',
+                'content' => '
+<h2>Selamat Datang di EduShare UIN Siber Syekh Nurjati Cirebon</h2>
+<p><strong>EduShare UPT PJJ UINSSC</strong> adalah portal repositori digital terbuka (<em>Open Educational Resources / OER</em>) yang dikembangkan untuk memperluas akses pengetahuan keislaman dan sains siber ke seluruh lapisan masyarakat. Di platform ini, mahasiswa, dosen, guru madrasah, dan pembelajar mandiri di seluruh penjuru dunia dapat mengakses modul kuliah bermutu tinggi secara legal, gratis, dan fleksibel.</p>
+
+<div class="my-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200">
+    <h3 class="text-emerald-900 font-bold mb-2">Pilar Utama Ekosistem EduShare</h3>
+    <ul class="space-y-2 text-sm text-emerald-950">
+        <li><strong>1. Modul Kuliah Digital Modular:</strong> Ratusan modul terstruktur standar CPL nasional yang dilengkapi rangkuman, latihan interaktif, dan lembar kerja mandiri.</li>
+        <li><strong>2. Rekaman MOOC Berstandar Studio 4K:</strong> Tayangan video instruksional yang diproduksi secara profesional di Studio Multimedia UPT PJJ bersama pakar dan guru besar.</li>
+        <li><strong>3. Podcast & Audio Kajian Keislaman:</strong> Materi audio asinkron yang dapat didengarkan kapan saja saat beraktivitas untuk kemudahan belajar tanpa batasan kuota.</li>
+        <li><strong>4. Bank Soal & Evaluasi Daring Mandiri:</strong> Fitur kuis formatif untuk menguji pemahaman konsep sebelum menempuh ujian terawasi.</li>
+    </ul>
+</div>
+
+<h3>Integrasi EduShare dengan LMS Pillar</h3>
+<p>Bagi mahasiswa resmi Program Studi PJJ (S1 dan S2), seluruh materi EduShare telah terintegrasi secara otomatis ke dalam akun portal perkuliahan <strong>LMS Pillar</strong>. Nilai pengerjaan modul, partisipasi forum, dan kuis otomatis tersinkronisasi ke transkrip akademik semester aktif.</p>
+
+<div class="my-6 flex flex-wrap gap-3">
+    <a href="https://sso-lms.uinssc.ac.id" target="_blank" class="px-5 py-2.5 rounded-xl bg-[#006837] text-white font-bold text-xs inline-flex items-center gap-2">
+        <i class="fa-solid fa-graduation-cap"></i> Buka Portal LMS Pillar
+    </a>
+    <a href="/panduan-lms" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs inline-flex items-center gap-2">
+        <i class="fa-solid fa-book-open"></i> Panduan Course & Tutorial LMS
+    </a>
+</div>
+                ',
+                'template' => 'default',
+                'is_published' => true,
+                'published_at' => now(),
+                'views_count' => 280,
+                'meta_title' => 'EduShare - Sumber Belajar Digital UPT PJJ UINSSC',
+                'meta_description' => 'Platform EduShare UIN Siber Syekh Nurjati Cirebon menyediakan modul pembelajaran terbuka, video kuliah siber, dan podcast akademik.',
+                'user_id' => $admin?->id,
+            ]
+        );
+    }
+
+    protected function seedUpbjjPage(): Page
+    {
+        $admin = User::first();
+
+        return Page::firstOrCreate(
+            ['slug' => 'upbjj'],
+            [
+                'title' => 'UPBJJ & Sentra Layanan Pendidikan Jarak Jauh UINSSC',
+                'excerpt' => 'Informasi jaringan sentra layanan mahasiswa, laboratorium ujian CBT daerah, pendampingan akademik, dan kemitraan wilayah UPT PJJ UIN Siber Syekh Nurjati Cirebon.',
+                'content' => '
+<h2>Sentra Layanan & Jaringan UPBJJ UIN Siber Syekh Nurjati Cirebon</h2>
+<p>Sebagai Cyber Islamic University pertama di Indonesia, UIN Siber Syekh Nurjati Cirebon menyelenggarakan perkuliahan 100% online yang didukung oleh <strong>Sentra Layanan Belajar Jarak Jauh (UPBJJ)</strong> dan pos kemitraan wilayah. Sentra ini bertindak sebagai perpanjangan tangan kampus utama dalam memberikan pelayanan prima bagi sivitas akademika di berbagai pulau dan pelosok nusantara.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <h4 class="font-bold text-slate-900 text-emerald-800 mb-1"><i class="fa-solid fa-headset mr-1"></i> Helpdesk & Admisi Terpadu</h4>
+        <p class="text-xs text-slate-600">Pelayanan registrasi, validasi berkas fisik PMB, pengurusan surat keterangan kuliah, dan informasi beasiswa Kemenag / LPDP.</p>
+    </div>
+    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <h4 class="font-bold text-slate-900 text-emerald-800 mb-1"><i class="fa-solid fa-laptop mr-1"></i> Lab Ujian CBT Terawasi</h4>
+        <p class="text-xs text-slate-600">Penyediaan fasilitas workstation komputer dan koneksi internet stabil bagi mahasiswa yang membutuhkan ruang ujian semester mandiri.</p>
+    </div>
+    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <h4 class="font-bold text-slate-900 text-emerald-800 mb-1"><i class="fa-solid fa-chalkboard-user mr-1"></i> Klinik Akademik & Konseling</h4>
+        <p class="text-xs text-slate-600">Konsultasi bimbingan akademik bersama tutor daerah, pendampingan belajar, dan pelatihan literasi teknologi LMS Pillar.</p>
+    </div>
+    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <h4 class="font-bold text-slate-900 text-emerald-800 mb-1"><i class="fa-solid fa-handshake mr-1"></i> Kemitraan Kemenag & Pemda</h4>
+        <p class="text-xs text-slate-600">Koordinasi sinergis dengan Kantor Wilayah Kementerian Agama, Pokjawas Madrasah, dan organisasi mitra di seluruh provinsi.</p>
+    </div>
+</div>
+
+<h3>Kantor Pusat Operasional & Koordinasi Sentra</h3>
+<p>Seluruh sistem sentra layanan terkoordinasi secara terpusat di Kantor UPT Pendidikan Jarak Jauh (UPT PJJ) Lantai 3 Gedung Siber UINSSC Cirebon. Mahasiswa dapat memanfaatkan helpdesk digital 24/7 tanpa harus datang langsung ke lokasi fisik.</p>
+
+<div class="my-6 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1">
+    <p><strong>Alamat Kantor Pusat:</strong> Gedung Siber Lt. 3, Kampus UIN Siber Syekh Nurjati Cirebon, Jl. Perjuangan By Pass Sunyaragi, Kota Cirebon, Jawa Barat 45132</p>
+    <p><strong>Helpdesk WhatsApp Resmi:</strong> +62 811-2345-678</p>
+    <p><strong>Email Resmi Layanan:</strong> pjj@uinssc.ac.id</p>
+</div>
+                ',
+                'template' => 'default',
+                'is_published' => true,
+                'published_at' => now(),
+                'views_count' => 310,
+                'meta_title' => 'UPBJJ & Sentra Layanan UPT PJJ UINSSC',
+                'meta_description' => 'Sentra Layanan Belajar Jarak Jauh (UPBJJ) UIN Siber Syekh Nurjati Cirebon menghadirkan pendampingan akademik, ujian online, dan helpdesk daerah.',
+                'user_id' => $admin?->id,
+            ]
+        );
+    }
+
+    protected function seedHeaderMenu(Page $samplePage, ?Page $edusharePage = null, ?Page $upbjjPage = null): void
+    {
+        $edusharePage ??= $this->seedEdusharePage();
+        $upbjjPage ??= $this->seedUpbjjPage();
+
         // 1. Home
         MenuItem::create([
             'location' => 'header',
@@ -182,8 +289,8 @@ class MenuSeeder extends Seeder
             ]));
         }
 
-        // 4. Layanan
-        MenuItem::create([
+        // 4. Layanan (Dropdown with LMS Pillar & Course Tutorial)
+        $layanan = MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Layanan',
@@ -193,58 +300,105 @@ class MenuSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        // 5. Pengumuman
+        $layananChildren = [
+            ['title' => 'LMS Pillar (Platform Belajar)', 'type' => 'custom', 'url' => '/layanan/lms-pillar', 'icon' => 'fa-solid fa-graduation-cap', 'badge' => 'Utama', 'badge_color' => 'emerald', 'order' => 1],
+            ['title' => 'Tutorial & Course LMS', 'type' => 'route', 'route_name' => 'lms-guide', 'icon' => 'fa-solid fa-chalkboard-user', 'badge' => 'Course', 'badge_color' => 'amber', 'order' => 2],
+            ['title' => 'Studio Multimedia MOOC', 'type' => 'custom', 'url' => '/layanan/studio-multimedia-mooc', 'icon' => 'fa-solid fa-video', 'order' => 3],
+            ['title' => 'Helpdesk Terpadu 24/7', 'type' => 'custom', 'url' => '/layanan/helpdesk-terpadu', 'icon' => 'fa-solid fa-headset', 'order' => 4],
+            ['title' => 'Lab Siber & Virtual Classroom', 'type' => 'custom', 'url' => '/layanan/lab-siber-virtual-classroom', 'icon' => 'fa-solid fa-server', 'order' => 5],
+            ['title' => 'Pengembangan Bahan Ajar', 'type' => 'custom', 'url' => '/layanan/pengembangan-bahan-ajar-modular', 'icon' => 'fa-solid fa-book-open', 'order' => 6],
+            ['title' => 'Aplikasi Mobile SiberGo!', 'type' => 'custom', 'url' => '/layanan/aplikasi-mobile-sibergo', 'icon' => 'fa-solid fa-mobile-screen', 'order' => 7],
+            ['title' => 'Semua Layanan & Fasilitas →', 'type' => 'route', 'route_name' => 'services.index', 'icon' => 'fa-solid fa-arrow-right', 'order' => 8],
+        ];
+
+        foreach ($layananChildren as $child) {
+            MenuItem::create(array_merge($child, [
+                'location' => 'header',
+                'parent_id' => $layanan->id,
+                'is_active' => true,
+            ]));
+        }
+
+        // 5. EduShare
+        MenuItem::create([
+            'location' => 'header',
+            'parent_id' => null,
+            'title' => 'EduShare',
+            'type' => 'page',
+            'page_id' => $edusharePage->id,
+            'icon' => 'fa-solid fa-book-bookmark',
+            'badge' => 'OER',
+            'badge_color' => 'teal',
+            'order' => 5,
+            'is_active' => true,
+        ]);
+
+        // 6. UPBJJ
+        MenuItem::create([
+            'location' => 'header',
+            'parent_id' => null,
+            'title' => 'UPBJJ',
+            'type' => 'page',
+            'page_id' => $upbjjPage->id,
+            'icon' => 'fa-solid fa-network-wired',
+            'badge' => 'Sentra',
+            'badge_color' => 'blue',
+            'order' => 6,
+            'is_active' => true,
+        ]);
+
+        // 7. Pengumuman
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Pengumuman',
             'type' => 'route',
             'route_name' => 'announcements.index',
-            'order' => 5,
+            'order' => 7,
             'is_active' => true,
         ]);
 
-        // 6. FAQs
+        // 8. Berita
+        MenuItem::create([
+            'location' => 'header',
+            'parent_id' => null,
+            'title' => 'Berita',
+            'type' => 'route',
+            'route_name' => 'posts.index',
+            'order' => 8,
+            'is_active' => true,
+        ]);
+
+        // 9. FAQs
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'FAQs',
             'type' => 'route',
             'route_name' => 'faqs',
-            'order' => 6,
+            'order' => 9,
             'is_active' => true,
         ]);
 
-        // 7. Course LMS
-        MenuItem::create([
-            'location' => 'header',
-            'parent_id' => null,
-            'title' => 'Course',
-            'type' => 'route',
-            'route_name' => 'lms-guide',
-            'order' => 7,
-            'is_active' => true,
-        ]);
-
-        // 8. Downloads
+        // 10. Downloads
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Downloads',
             'type' => 'route',
             'route_name' => 'downloads.index',
-            'order' => 8,
+            'order' => 10,
             'is_active' => true,
         ]);
 
-        // 9. Kontak
+        // 11. Kontak
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Kontak',
             'type' => 'route',
             'route_name' => 'contact.index',
-            'order' => 9,
+            'order' => 11,
             'is_active' => true,
         ]);
     }

@@ -414,44 +414,46 @@
 
 <!-- 8. Tanya Jawab (FAQ) Accordion Section -->
 <section class="py-20 bg-slate-50 border-t border-slate-200">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div class="text-center mb-12 space-y-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-[#006837] bg-emerald-50 px-3 py-1 rounded-full">
-                Frequently Asked Questions
-            </span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Pertanyaan yang Sering Diajukan (FAQs)
-            </h2>
-            <p class="text-xs text-slate-500">
-                Informasi penting seputar perkuliahan jarak jauh, legalitas ijazah, dan pendaftaran.
-            </p>
-        </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            
+            <div class="text-center mb-12 space-y-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#006837] bg-emerald-50 px-3 py-1 rounded-full">
+                    Frequently Asked Questions
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                    Pertanyaan yang Sering Diajukan (FAQs)
+                </h2>
+                <p class="text-xs text-slate-500">
+                    Informasi penting seputar perkuliahan jarak jauh, legalitas ijazah, dan pendaftaran.
+                </p>
+            </div>
 
-        <div class="space-y-3" x-data="{ openFaq: 0 }">
-            @foreach($faqs as $fIndex => $faq)
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition">
-                    <button @click="openFaq = (openFaq === {{ $fIndex }} ? null : {{ $fIndex }})" class="w-full p-5 text-left flex items-center justify-between gap-4">
-                        <span class="text-xs sm:text-sm font-bold text-slate-800" :class="openFaq === {{ $fIndex }} ? 'text-[#006837]' : ''">
-                            {{ $faq->question }}
-                        </span>
-                        <div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center shrink-0 text-slate-600 transition-transform duration-300" :class="openFaq === {{ $fIndex }} ? 'rotate-180 text-[#006837] bg-emerald-50' : ''">
-                            <i class="fa-solid fa-chevron-down text-xs"></i>
+            <div class="space-y-3" x-data="{ openFaq: 0 }">
+                @foreach($faqs as $fIndex => $faq)
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition">
+                        <button @click="openFaq = (openFaq === {{ $fIndex }} ? null : {{ $fIndex }})" class="w-full p-5 text-left flex items-center justify-between gap-4">
+                            <span class="text-xs sm:text-sm font-bold text-slate-800" :class="openFaq === {{ $fIndex }} ? 'text-[#006837]' : ''">
+                                {{ $faq->question }}
+                            </span>
+                            <div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center shrink-0 text-slate-600 transition-transform duration-300" :class="openFaq === {{ $fIndex }} ? 'rotate-180 text-[#006837] bg-emerald-50' : ''">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </div>
+                        </button>
+                        <div x-show="openFaq === {{ $fIndex }}" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="px-5 pb-5 pt-1 text-xs text-slate-600 leading-relaxed border-t border-slate-100">
+                            {{ $faq->answer }}
                         </div>
-                    </button>
-                    <div x-show="openFaq === {{ $fIndex }}" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="px-5 pb-5 pt-1 text-xs text-slate-600 leading-relaxed border-t border-slate-100">
-                        {{ $faq->answer }}
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
 
-        <div class="mt-8 text-center">
-            <a href="{{ route('faqs') }}" class="text-xs font-bold text-[#006837] hover:underline">
-                Lihat Semua Pertanyaan & Jawaban (FAQ) →
-            </a>
-        </div>
+            <div class="mt-8 text-center">
+                <a href="{{ route('faqs') }}" class="text-xs font-bold text-[#006837] hover:underline">
+                    Lihat Semua Pertanyaan & Jawaban (FAQ) →
+                </a>
+            </div>
 
+        </div>
     </div>
 </section>
 

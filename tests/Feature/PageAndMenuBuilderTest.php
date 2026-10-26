@@ -238,9 +238,14 @@ class PageAndMenuBuilderTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(200);
 
-        // Check seeded dynamic page link in navbar
+        // Check seeded dynamic page links in navbar
         $response->assertSee('Maklumat Pelayanan');
         $response->assertSee('/halaman/maklumat-pelayanan-upt-pjj');
+        $response->assertSee('EduShare');
+        $response->assertSee('/halaman/edushare');
+        $response->assertSee('UPBJJ');
+        $response->assertSee('/halaman/upbjj');
+        $response->assertSee('Tutorial & Course LMS');
     }
 
     public function test_admin_can_update_menu_item_and_toggle_active_status(): void

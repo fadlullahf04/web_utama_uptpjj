@@ -27,7 +27,7 @@
     </div>
 </div>
 
-<div class="py-14 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10" x-data="{ openFaq: null }">
+<div class="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10" x-data="{ openFaq: null }">
     @forelse($faqs as $catName => $items)
         <div class="space-y-4">
             <h2 class="text-base font-extrabold text-slate-900 uppercase tracking-wider text-[#006837] pb-2 border-b border-slate-200 flex items-center gap-2">

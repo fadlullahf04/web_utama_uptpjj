@@ -112,35 +112,77 @@
         </div>
     </div>
 
-    <!-- 2. Main Navigation Header (Clean White / Frosted with Proportional Spacing) -->
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-sm transition-all duration-300" id="main-header">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20 gap-3">
-                
-                <!-- Logo & Official Branding (UINSSC + BLU + CIU Badges & Green Typography) -->
-                <a href="{{ route('home') }}" class="flex items-center group shrink-0 py-1">
-                    <img src="{{ asset('images/logo_uptpjj.png') }}" alt="Logo UPT Pendidikan Jarak Jauh UIN Siber Syekh Nurjati Cirebon" class="h-10 sm:h-11 md:h-12 w-auto max-w-[240px] sm:max-w-none object-contain transition-transform duration-300 group-hover:scale-[1.02]">
-                </a>
+    <!-- 2. Main University Header (2-Tier Layout: Brand Row + Main Navigation Below Logo) -->
+    <header class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300" id="main-header">
+        
+        <!-- Top Tier: Official University Branding & Quick Utility Actions -->
+        <div class="bg-white border-b border-slate-200/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20 sm:h-22 gap-4">
+                    
+                    <!-- Official Identity (Logo UPT PJJ UINSSC) -->
+                    <a href="{{ route('home') }}" class="flex items-center group shrink-0 py-1" title="Beranda UPT PJJ UINSSC">
+                        <img src="{{ asset('images/logo_uptpjj.png') }}" alt="Logo UPT Pendidikan Jarak Jauh UIN Siber Syekh Nurjati Cirebon" class="h-11 sm:h-12 md:h-14 w-auto max-w-[260px] sm:max-w-none object-contain transition-transform duration-300 group-hover:scale-[1.01]">
+                    </a>
 
-                <!-- Desktop Navigation Menu (Proportional, Balanced, Clean Typography, Never Wrapped) -->
+                    <!-- Right Quick Actions: Search + LMS Pillar + PMB Online -->
+                    <div class="flex items-center gap-2.5 sm:gap-3.5">
+                        
+                        <!-- Search Trigger (Desktop) -->
+                        <button @click="searchModal = true" class="hidden md:flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-100/90 hover:bg-emerald-50 text-slate-500 hover:text-[#006837] border border-slate-200 transition text-xs font-medium shadow-2xs group cursor-pointer" title="Cari di Portal UPT PJJ">
+                            <i class="fa-solid fa-magnifying-glass text-slate-400 group-hover:text-[#006837] text-xs"></i>
+                            <span class="text-slate-500 group-hover:text-[#006837]">Cari informasi, prodi, panduan...</span>
+                            <kbd class="hidden xl:inline-block px-1.5 py-0.5 text-[10px] bg-white border border-slate-200 rounded text-slate-400 font-mono shadow-2xs">Ctrl K</kbd>
+                        </button>
+
+                        <!-- LMS Pillar Quick Direct Link -->
+                        <a href="{{ \App\Models\Setting::get('lms_url', 'https://sso-lms.uinssc.ac.id') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-[#006837] text-slate-700 hover:text-white border border-slate-200 hover:border-[#006837] transition text-xs font-bold shadow-2xs group" title="Masuk ke Portal LMS Pillar">
+                            <i class="fa-solid fa-graduation-cap text-[#006837] group-hover:text-amber-300 transition-colors"></i>
+                            <span>LMS Pillar</span>
+                        </a>
+
+                        <!-- DAFTAR PMB Direct Link -->
+                        <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-extrabold uppercase tracking-wide shadow-sm transition transform hover:-translate-y-0.5" title="Daftar Mahasiswa Baru PJJ Online">
+                            <i class="fa-solid fa-user-plus text-xs"></i>
+                            <span>Daftar PMB</span>
+                        </a>
+
+                        <!-- Mobile Search Button -->
+                        <button @click="searchModal = true" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837] md:hidden" title="Pencarian">
+                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                        </button>
+
+                        <!-- Mobile Navigation Toggle -->
+                        <button @click="mobileMenu = !mobileMenu" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837] transition lg:hidden" title="Buka Menu">
+                            <i class="fa-solid text-lg" :class="mobileMenu ? 'fa-xmark' : 'fa-bars'"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Tier: Main Navigation Bar (Positioned Under the Logo with Full Width Availability) -->
+        <div class="hidden lg:block bg-gradient-to-r from-[#006837] via-[#005c31] to-[#004d29] shadow-md border-t border-emerald-600/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 @php
                     $headerNavItems = \App\Models\MenuItem::getTree('header');
                 @endphp
-                <nav class="hidden lg:flex items-center space-x-0.5 xl:space-x-1.5 2xl:space-x-2">
+                <nav class="flex items-center space-x-0.5 xl:space-x-1 py-1">
                     @if($headerNavItems->isNotEmpty())
                         @foreach($headerNavItems as $navItem)
                             @if($navItem->activeChildren->isNotEmpty())
                                 <!-- Dropdown Menu -->
                                 <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                                    <button class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ $navItem->isActiveRoute() ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                                    <button class="whitespace-nowrap px-3 xl:px-3.5 py-2.5 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ $navItem->isActiveRoute() ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                         @if($navItem->icon)
-                                            <i class="{{ $navItem->icon }} text-xs opacity-75"></i>
+                                            <i class="{{ $navItem->icon }} text-xs opacity-80"></i>
                                         @endif
                                         <span>{{ $navItem->title }}</span>
                                         @if($navItem->badge)
-                                            <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-{{ $navItem->badge_color }}-100 text-{{ $navItem->badge_color }}-800">{{ $navItem->badge }}</span>
+                                            <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-400 text-slate-950">{{ $navItem->badge }}</span>
                                         @endif
-                                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform" :class="{'rotate-180': open}"></i>
+                                        <i class="fa-solid fa-chevron-down text-[9px] text-emerald-200/80 transition-transform duration-200" :class="{'rotate-180 text-amber-300': open}"></i>
                                     </button>
                                     <div x-show="open" x-cloak 
                                          x-transition:enter="transition ease-out duration-200" 
@@ -149,9 +191,9 @@
                                          x-transition:leave="transition ease-in duration-150" 
                                          x-transition:leave-start="opacity-100 translate-y-0" 
                                          x-transition:leave-end="opacity-0 translate-y-2" 
-                                         class="absolute left-0 mt-1 min-w-[240px] max-w-xs rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 z-50">
+                                         class="absolute left-0 mt-0.5 min-w-[270px] max-w-sm rounded-2xl bg-white border border-slate-200 shadow-2xl py-2.5 z-50 text-slate-800">
                                         @foreach($navItem->activeChildren as $childNav)
-                                            <a href="{{ $childNav->getUrl() }}" target="{{ $childNav->target }}" class="flex items-center justify-between px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80 transition">
+                                            <a href="{{ $childNav->getUrl() }}" target="{{ $childNav->target }}" class="flex items-center justify-between px-4 py-2.5 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80 transition">
                                                 <span class="flex items-center gap-2.5 truncate">
                                                     @if($childNav->icon)
                                                         <i class="{{ $childNav->icon }} text-[#006837] w-4 text-center"></i>
@@ -168,48 +210,32 @@
                                     </div>
                                 </div>
                             @else
-                                <a href="{{ $navItem->getUrl() }}" target="{{ $navItem->target }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ $navItem->isActiveRoute() ? 'text-[#006837] bg-emerald-50/90 font-bold border-b-2 border-[#006837] rounded-b-none' : 'text-slate-700 hover:text-[#006837] hover:bg-slate-100/70' }}">
+                                <a href="{{ $navItem->getUrl() }}" target="{{ $navItem->target }}" class="whitespace-nowrap px-3 xl:px-3.5 py-2.5 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ $navItem->isActiveRoute() ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                     @if($navItem->icon)
-                                        <i class="{{ $navItem->icon }} text-xs opacity-75"></i>
+                                        <i class="{{ $navItem->icon }} text-xs opacity-80"></i>
                                     @endif
                                     <span>{{ $navItem->title }}</span>
                                     @if($navItem->badge)
-                                        <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-{{ $navItem->badge_color }}-100 text-{{ $navItem->badge_color }}-800">{{ $navItem->badge }}</span>
+                                        <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-400 text-slate-950">{{ $navItem->badge }}</span>
                                     @endif
                                 </a>
                             @endif
                         @endforeach
                     @else
                         <!-- Fallback Standard Navigation -->
-                        <a href="{{ route('home') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg {{ request()->routeIs('home') ? 'text-[#006837] bg-emerald-50 font-bold' : 'text-slate-700 hover:text-[#006837]' }}">Home</a>
-                        <a href="{{ route('profile.overview') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg text-slate-700 hover:text-[#006837]">Profil</a>
-                        <a href="{{ route('programs.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg text-slate-700 hover:text-[#006837]">Prodi PJJ</a>
-                        <a href="{{ route('services.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg text-slate-700 hover:text-[#006837]">Layanan</a>
-                        <a href="{{ route('announcements.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg text-slate-700 hover:text-[#006837]">Pengumuman</a>
-                        <a href="{{ route('faqs') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg text-slate-700 hover:text-[#006837]">FAQs</a>
-                        <a href="{{ route('lms-guide') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg text-slate-700 hover:text-[#006837]">Course</a>
-                        <a href="{{ route('downloads.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg text-slate-700 hover:text-[#006837]">Downloads</a>
-                        <a href="{{ route('contact.index') }}" class="whitespace-nowrap px-2.5 xl:px-3 py-2 text-[13px] font-semibold rounded-lg text-slate-700 hover:text-[#006837]">Kontak</a>
+                        <a href="{{ route('home') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg {{ request()->routeIs('home') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white hover:bg-white/15' }}">Home</a>
+                        <a href="{{ route('profile.overview') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Profil</a>
+                        <a href="{{ route('programs.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Prodi PJJ</a>
+                        <a href="{{ route('services.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Layanan</a>
+                        <a href="{{ url('/halaman/edushare') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">EduShare</a>
+                        <a href="{{ url('/halaman/upbjj') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">UPBJJ</a>
+                        <a href="{{ route('announcements.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Pengumuman</a>
+                        <a href="{{ route('posts.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Berita</a>
+                        <a href="{{ route('faqs') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">FAQs</a>
+                        <a href="{{ route('downloads.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Downloads</a>
+                        <a href="{{ route('contact.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Kontak</a>
                     @endif
                 </nav>
-
-                <!-- Action Items (Clean, Proportional Search Button) -->
-                <div class="hidden lg:flex items-center shrink-0">
-                    <button @click="searchModal = true" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100/80 hover:bg-emerald-50 text-slate-600 hover:text-[#006837] border border-slate-200/80 transition text-xs font-medium shadow-sm group" title="Pencarian Situs">
-                        <i class="fa-solid fa-magnifying-glass text-slate-400 group-hover:text-[#006837] text-xs"></i>
-                        <span class="text-slate-500 group-hover:text-[#006837]">Cari</span>
-                    </button>
-                </div>
-
-                <!-- Mobile Navigation Toggle -->
-                <div class="flex items-center gap-2 lg:hidden">
-                    <button @click="searchModal = true" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837]">
-                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
-                    </button>
-                    <button @click="mobileMenu = !mobileMenu" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837] transition">
-                        <i class="fa-solid text-lg" :class="mobileMenu ? 'fa-xmark' : 'fa-bars'"></i>
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -262,6 +288,9 @@
                                 <i class="{{ $mItem->icon }} text-[#006837] mr-2"></i>
                             @endif
                             <span>{{ $mItem->title }}</span>
+                            @if($mItem->badge)
+                                <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-emerald-100 text-[#006837] ml-2">{{ $mItem->badge }}</span>
+                            @endif
                         </a>
                     @endif
                 @endforeach
@@ -269,8 +298,11 @@
                 <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">Home</a>
             @endif
 
-            <div class="pt-3 border-t border-slate-200">
-                <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="w-full text-center py-2.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs uppercase tracking-wider shadow-md block">
+            <div class="pt-3 border-t border-slate-200 space-y-2">
+                <a href="{{ \App\Models\Setting::get('lms_url', 'https://sso-lms.uinssc.ac.id') }}" target="_blank" class="w-full text-center py-2.5 rounded-xl bg-slate-800 hover:bg-[#006837] text-white font-bold text-xs uppercase tracking-wider shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-amber-300"></i> LOGIN LMS PILLAR
+                </a>
+                <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs uppercase tracking-wider shadow-md block">
                     <i class="fa-solid fa-user-plus mr-1"></i> DAFTAR PMB ONLINE
                 </a>
             </div>
