@@ -619,11 +619,11 @@
         </div>
     </footer>
 
-    <!-- Floating Helpdesk WhatsApp Widget -->
-    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', \App\Models\Setting::get('whatsapp', '628112345678')) }}?text=Halo%20Admin%20UPT%20PJJ%20UINSSC,%20saya%20ingin%20bertanya" target="_blank" class="fixed bottom-6 left-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs shadow-2xl shadow-emerald-950/40 transition transform hover:scale-105 group" title="Chat WhatsApp Helpdesk PJJ">
-        <i class="fa-brands fa-whatsapp text-lg text-emerald-300"></i>
-        <span class="hidden md:inline">Helpdesk PJJ 24/7</span>
-    </a>
+    <!-- Floating Accessibility & Disability Support Tools (Menu Aksesibilitas Disabilitas) -->
+    @include('partials.accessibility-widget')
+
+    <!-- Floating Contact Center & Direct Q&A Assistant (Contact Center Tanya Jawab Langsung) -->
+    @include('partials.contact-center-widget')
 
     @stack('scripts')
 </body>
