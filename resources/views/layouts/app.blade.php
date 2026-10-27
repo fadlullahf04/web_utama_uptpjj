@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 
     <!-- Open Graph (Facebook / WhatsApp / LinkedIn) -->
-    <meta property="og:locale" content="id_ID">
+    <meta property="og:locale" content="{{ app()->getLocale() === 'ar' ? 'ar_SA' : (app()->getLocale() === 'en' ? 'en_US' : 'id_ID') }}">
     <meta property="og:type" content="@yield('meta_type', 'website')">
     <meta property="og:site_name" content="UPT PJJ UIN Siber Syekh Nurjati Cirebon">
     <meta property="og:title" content="@yield('title', 'UPT Pendidikan Jarak Jauh - UIN Siber Syekh Nurjati Cirebon')">
@@ -48,27 +48,35 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Alpine.js CDN (ensures reactivity works even if local Vite dev loopback is unavailable) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+
     <!-- Scripts & Styles via Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         [x-cloak] { display: none !important; }
+        @if(app()->getLocale() === 'ar')
+            html, body {
+                font-family: 'Noto Kufi Arabic', 'Plus Jakarta Sans', sans-serif !important;
+            }
+        @endif
     </style>
     @stack('styles')
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-[#006837] selection:text-white" x-data="{ mobileMenu: false, searchModal: false }">
 
     <!-- 1. Top Bar (Dark University Bar like uptpjj.uinssc.ac.id) -->
-    <div class="bg-[#0f172a] text-slate-300 text-xs py-2 px-4 border-b border-slate-800/80">
+    <div class="bg-[#0f172a] text-slate-300 text-xs py-2 px-4 border-b border-slate-800/80 relative z-[60]">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
             
             <!-- Left Contact & Social Icons -->
-            <div class="flex items-center space-x-4 text-xs">
+            <div class="flex items-center gap-2.5 sm:gap-4 text-xs">
                 <a href="mailto:{{ \App\Models\Setting::get('email', 'pjj@uinssc.ac.id') }}" class="hover:text-emerald-400 transition flex items-center gap-1.5" title="Email UPT PJJ">
                     <i class="fa-solid fa-envelope text-emerald-400"></i>
                     <span class="hidden sm:inline">{{ \App\Models\Setting::get('email', 'pjj@uinssc.ac.id') }}</span>
@@ -79,7 +87,7 @@
                     <span class="hidden md:inline">{{ \App\Models\Setting::get('phone', '(0231) 481264') }}</span>
                 </a>
                 <span class="text-slate-700">|</span>
-                <div class="flex items-center space-x-3 text-slate-300">
+                <div class="flex items-center gap-2.5 text-slate-300">
                     <a href="{{ \App\Models\Setting::get('facebook_url', 'https://facebook.com') }}" target="_blank" class="hover:text-emerald-400 transition" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                     <a href="{{ \App\Models\Setting::get('twitter_url', 'https://twitter.com') }}" target="_blank" class="hover:text-emerald-400 transition" title="Twitter/X"><i class="fa-brands fa-x-twitter"></i></a>
                     <a href="{{ \App\Models\Setting::get('instagram_url', 'https://instagram.com') }}" target="_blank" class="hover:text-emerald-400 transition" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
@@ -88,23 +96,21 @@
             </div>
 
             <!-- Right Quick University Links & Language -->
-            <div class="flex items-center space-x-4 text-xs font-medium">
+            <div class="flex items-center gap-2 sm:gap-3.5 text-xs font-medium">
                 <a href="https://uinssc.ac.id" target="_blank" class="hover:text-emerald-400 transition hidden md:inline-flex items-center gap-1">
                     <i class="fa-solid fa-building-columns text-emerald-400"></i> UINSSC
                 </a>
                 <a href="https://info.syekhnurjati.ac.id" target="_blank" class="hover:text-emerald-400 transition hidden lg:inline-flex items-center gap-1">
-                    <i class="fa-solid fa-newspaper text-teal-400"></i> Berita Kampus
+                    <i class="fa-solid fa-newspaper text-teal-400"></i> {{ __('Berita Kampus') }}
                 </a>
                 <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="hover:text-amber-400 transition flex items-center gap-1 text-amber-300 font-semibold">
-                    <i class="fa-solid fa-user-graduate"></i> Informasi Penerimaan
+                    <i class="fa-solid fa-user-graduate"></i> {{ __('Informasi Penerimaan') }}
                 </a>
                 <span class="text-slate-700">|</span>
-                <!-- Language Selector -->
-                <div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-800/90 text-[11px] text-white font-semibold">
-                    <span>🇮🇩 ID</span>
-                </div>
+                <!-- Language Selector Dropdown (Top Bar) -->
+                @include('partials.language-switcher', ['variant' => 'dark'])
                 <span class="text-slate-700">|</span>
-                <a href="{{ route('login') }}" class="hover:text-emerald-400 transition flex items-center gap-1 text-slate-300" title="Login CMS Admin">
+                <a href="{{ route('login') }}" class="hover:text-emerald-400 transition flex items-center gap-1 text-slate-300" title="{{ __('Login CMS') }}">
                     <i class="fa-solid fa-lock text-emerald-400"></i> CMS
                 </a>
             </div>
@@ -125,35 +131,35 @@
                         <img src="{{ asset('images/logo_uptpjj.png') }}" alt="Logo UPT Pendidikan Jarak Jauh UIN Siber Syekh Nurjati Cirebon" class="h-11 sm:h-12 md:h-14 w-auto max-w-[260px] sm:max-w-none object-contain transition-transform duration-300 group-hover:scale-[1.01]">
                     </a>
 
-                    <!-- Right Quick Actions: Search + LMS Pillar + PMB Online -->
-                    <div class="flex items-center gap-2.5 sm:gap-3.5">
+                    <!-- Right Quick Actions: Search + LMS Pillar + PMB Online + Language Switcher -->
+                    <div class="flex items-center gap-2 sm:gap-3">
                         
                         <!-- Search Trigger (Desktop) -->
-                        <button @click="searchModal = true" class="hidden md:flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-100/90 hover:bg-emerald-50 text-slate-500 hover:text-[#006837] border border-slate-200 transition text-xs font-medium shadow-2xs group cursor-pointer" title="Cari di Portal UPT PJJ">
+                        <button @click="searchModal = true" class="hidden md:flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-100/90 hover:bg-emerald-50 text-slate-500 hover:text-[#006837] border border-slate-200 transition text-xs font-medium shadow-2xs group cursor-pointer" title="{{ __('Cari di Portal UPT PJJ') }}">
                             <i class="fa-solid fa-magnifying-glass text-slate-400 group-hover:text-[#006837] text-xs"></i>
-                            <span class="text-slate-500 group-hover:text-[#006837]">Cari informasi, prodi, panduan...</span>
+                            <span class="text-slate-500 group-hover:text-[#006837]">{{ __('Cari informasi, prodi, panduan...') }}</span>
                             <kbd class="hidden xl:inline-block px-1.5 py-0.5 text-[10px] bg-white border border-slate-200 rounded text-slate-400 font-mono shadow-2xs">Ctrl K</kbd>
                         </button>
 
                         <!-- LMS Pillar Quick Direct Link -->
-                        <a href="{{ \App\Models\Setting::get('lms_url', 'https://sso-lms.uinssc.ac.id') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-[#006837] text-slate-700 hover:text-white border border-slate-200 hover:border-[#006837] transition text-xs font-bold shadow-2xs group" title="Masuk ke Portal LMS Pillar">
+                        <a href="{{ \App\Models\Setting::get('lms_url', 'https://sso-lms.uinssc.ac.id') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-[#006837] text-slate-700 hover:text-white border border-slate-200 hover:border-[#006837] transition text-xs font-bold shadow-2xs group" title="{{ __('Masuk ke Portal LMS Pillar') }}">
                             <i class="fa-solid fa-graduation-cap text-[#006837] group-hover:text-amber-300 transition-colors"></i>
-                            <span>LMS Pillar</span>
+                            <span>{{ __('LMS Pillar') }}</span>
                         </a>
 
                         <!-- DAFTAR PMB Direct Link -->
-                        <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-extrabold uppercase tracking-wide shadow-sm transition transform hover:-translate-y-0.5" title="Daftar Mahasiswa Baru PJJ Online">
+                        <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-extrabold uppercase tracking-wide shadow-sm transition transform hover:-translate-y-0.5" title="{{ __('Daftar PMB') }}">
                             <i class="fa-solid fa-user-plus text-xs"></i>
-                            <span>Daftar PMB</span>
+                            <span>{{ __('Daftar PMB') }}</span>
                         </a>
 
                         <!-- Mobile Search Button -->
-                        <button @click="searchModal = true" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837] md:hidden" title="Pencarian">
+                        <button @click="searchModal = true" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837] md:hidden" title="{{ __('Pencarian') }}">
                             <i class="fa-solid fa-magnifying-glass text-sm"></i>
                         </button>
 
                         <!-- Mobile Navigation Toggle -->
-                        <button @click="mobileMenu = !mobileMenu" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837] transition lg:hidden" title="Buka Menu">
+                        <button @click="mobileMenu = !mobileMenu" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-[#006837] transition lg:hidden" title="{{ __('Buka Menu') }}">
                             <i class="fa-solid text-lg" :class="mobileMenu ? 'fa-xmark' : 'fa-bars'"></i>
                         </button>
                     </div>
@@ -179,11 +185,11 @@
                                         <a href="{{ $navItem->getUrl() }}" 
                                            target="{{ $navItem->target }}" 
                                            class="whitespace-nowrap pl-3 pr-1.5 xl:pl-3.5 xl:pr-1.5 py-2.5 text-[13px] xl:text-[13.5px] font-semibold flex items-center gap-1.5 text-inherit"
-                                           title="Buka Semua {{ $navItem->title }}">
+                                           title="Buka Semua {{ __($navItem->title) }}">
                                             @if($navItem->icon)
                                                 <i class="{{ $navItem->icon }} text-xs opacity-80"></i>
                                             @endif
-                                            <span>{{ $navItem->title }}</span>
+                                            <span>{{ __($navItem->title) }}</span>
                                             @if($navItem->badge)
                                                 <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-400 text-slate-950">{{ $navItem->badge }}</span>
                                             @endif
@@ -192,7 +198,7 @@
                                         <button @click.stop="open = !open" 
                                                 type="button" 
                                                 class="pr-2.5 pl-1 py-2.5 text-xs text-inherit opacity-80 hover:opacity-100 transition-opacity cursor-pointer" 
-                                                title="Pilihan {{ $navItem->title }}">
+                                                title="{{ __('Pilihan') }} {{ __($navItem->title) }}">
                                             <i class="fa-solid fa-chevron-down text-[9px] transition-transform duration-200" :class="{'rotate-180': open}"></i>
                                         </button>
                                     </div>
@@ -206,8 +212,8 @@
                                                 <div class="px-3 pt-1 pb-2 border-b border-slate-100">
                                                     <a href="{{ $navItem->getUrl() }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-xs font-bold text-[#006837] transition group/all">
                                                         <span class="flex items-center gap-2">
-                                                            <i class="fa-solid fa-layer-group text-[#006837]"></i>
-                                                            <span>Lihat Semua {{ $navItem->title }}</span>
+                                                             <i class="fa-solid fa-layer-group text-[#006837]"></i>
+                                                             <span>{{ __('Lihat Semua') }} {{ __($navItem->title) }}</span>
                                                         </span>
                                                         <i class="fa-solid fa-arrow-right text-[10px] transform group-hover/all:translate-x-1 transition-transform"></i>
                                                     </a>
@@ -223,7 +229,7 @@
                                                             @else
                                                                 <i class="fa-solid fa-angle-right text-emerald-600 w-4 text-center text-[10px]"></i>
                                                             @endif
-                                                            <span class="truncate">{{ $childNav->title }}</span>
+                                                            <span class="truncate">{{ __($childNav->title) }}</span>
                                                         </span>
                                                         @if($childNav->badge)
                                                             <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-{{ $childNav->badge_color }}-100 text-{{ $childNav->badge_color }}-800 shrink-0 ml-2">{{ $childNav->badge }}</span>
@@ -239,7 +245,7 @@
                                     @if($navItem->icon)
                                         <i class="{{ $navItem->icon }} text-xs opacity-80"></i>
                                     @endif
-                                    <span>{{ $navItem->title }}</span>
+                                    <span>{{ __($navItem->title) }}</span>
                                     @if($navItem->badge)
                                         <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-400 text-slate-950">{{ $navItem->badge }}</span>
                                     @endif
@@ -248,13 +254,13 @@
                         @endforeach
                     @else
                         <!-- Fallback Standard Navigation -->
-                        <a href="{{ route('home') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg {{ request()->routeIs('home') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white hover:bg-white/15' }}">Home</a>
+                        <a href="{{ route('home') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg {{ request()->routeIs('home') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white hover:bg-white/15' }}">{{ __('Home') }}</a>
                         
                         <!-- Fallback Profil Dropdown -->
                         <div class="nav-dropdown" x-data="{ open: false }" :class="{ 'is-open': open }" @mouseleave="open = false">
                             <div class="flex items-center rounded-lg transition-colors {{ request()->routeIs('profile.*') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                 <a href="{{ route('profile.overview') }}" class="whitespace-nowrap pl-3 pr-1.5 py-2.5 text-[13px] font-semibold flex items-center gap-1.5 text-inherit">
-                                    <span>Profil</span>
+                                    <span>{{ __('Profil') }}</span>
                                 </a>
                                 <button @click.stop="open = !open" type="button" class="pr-2.5 pl-1 py-2.5 text-xs text-inherit opacity-80">
                                     <i class="fa-solid fa-chevron-down text-[9px]" :class="{'rotate-180': open}"></i>
@@ -264,17 +270,17 @@
                                 <div class="rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 text-slate-800">
                                     <div class="px-3 pt-1 pb-2 border-b border-slate-100">
                                         <a href="{{ route('profile.overview') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
-                                            <span>Lihat Semua Profil</span>
+                                            <span>{{ __('Lihat Semua') }} {{ __('Profil') }}</span>
                                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                         </a>
                                     </div>
                                     <div class="py-1">
-                                        <a href="{{ route('profile.overview') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Selayang Pandang</a>
-                                        <a href="{{ route('profile.vision-mission') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Visi dan Misi</a>
-                                        <a href="{{ route('profile.organization') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Struktur Organisasi</a>
-                                        <a href="{{ route('profile.graduate-profile') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Profil Lulusan</a>
-                                        <a href="{{ route('profile.team') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Tim UPT PJJ</a>
-                                        <a href="{{ route('profile.facilities') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Sarana & Prasarana</a>
+                                        <a href="{{ route('profile.overview') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Selayang Pandang') }}</a>
+                                        <a href="{{ route('profile.vision-mission') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Visi dan Misi') }}</a>
+                                        <a href="{{ route('profile.organization') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Struktur Organisasi') }}</a>
+                                        <a href="{{ route('profile.graduate-profile') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Profil Lulusan') }}</a>
+                                        <a href="{{ route('profile.team') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Tim UPT PJJ') }}</a>
+                                        <a href="{{ route('profile.facilities') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Sarana & Prasarana') }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -284,7 +290,7 @@
                         <div class="nav-dropdown" x-data="{ open: false }" :class="{ 'is-open': open }" @mouseleave="open = false">
                             <div class="flex items-center rounded-lg transition-colors {{ request()->routeIs('programs.*') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                 <a href="{{ route('programs.index') }}" class="whitespace-nowrap pl-3 pr-1.5 py-2.5 text-[13px] font-semibold flex items-center gap-1.5 text-inherit">
-                                    <span>Prodi PJJ</span>
+                                    <span>{{ __('Prodi PJJ') }}</span>
                                 </a>
                                 <button @click.stop="open = !open" type="button" class="pr-2.5 pl-1 py-2.5 text-xs text-inherit opacity-80">
                                     <i class="fa-solid fa-chevron-down text-[9px]" :class="{'rotate-180': open}"></i>
@@ -294,17 +300,17 @@
                                 <div class="rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 text-slate-800">
                                     <div class="px-3 pt-1 pb-2 border-b border-slate-100">
                                         <a href="{{ route('programs.index') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
-                                            <span>Lihat Semua Program Studi</span>
+                                            <span>{{ __('Lihat Semua') }} {{ __('Program Studi') }}</span>
                                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                         </a>
                                     </div>
                                     <div class="py-1">
-                                        <a href="/prodi/pjj-pendidikan-agama-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PAI (S1)</a>
-                                        <a href="/prodi/pjj-pendidikan-guru-madrasah-ibtidaiyah" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PGMI (S1)</a>
-                                        <a href="/prodi/pjj-pendidikan-bahasa-arab" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PBA (S1)</a>
-                                        <a href="/prodi/pjj-hukum-keluarga-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ HKI (S1)</a>
-                                        <a href="/prodi/pjj-sejarah-peradaban-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ SPI (S1)</a>
-                                        <a href="/prodi/pjj-magister-pendidikan-agama-islam-s2" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">PJJ PAI S2</a>
+                                        <a href="/prodi/pjj-pendidikan-agama-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('PJJ Pendidikan Agama Islam (PAI)') }}</a>
+                                        <a href="/prodi/pjj-pendidikan-guru-madrasah-ibtidaiyah" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('PJJ Pendidikan Guru Madrasah Ibtidaiyah (PGMI)') }}</a>
+                                        <a href="/prodi/pjj-pendidikan-bahasa-arab" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('PJJ Pendidikan Bahasa Arab (PBA)') }}</a>
+                                        <a href="/prodi/pjj-hukum-keluarga-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('PJJ Hukum Keluarga Islam / Ahwal Syakhshiyyah (HKI)') }}</a>
+                                        <a href="/prodi/pjj-sejarah-peradaban-islam" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('PJJ Sejarah Peradaban Islam (SPI)') }}</a>
+                                        <a href="/prodi/pjj-magister-pendidikan-agama-islam-s2" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('PJJ Pendidikan Agama Islam (S2 PAI)') }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -314,7 +320,7 @@
                         <div class="nav-dropdown" x-data="{ open: false }" :class="{ 'is-open': open }" @mouseleave="open = false">
                             <div class="flex items-center rounded-lg transition-colors {{ request()->routeIs('services.*') ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
                                 <a href="{{ route('services.index') }}" class="whitespace-nowrap pl-3 pr-1.5 py-2.5 text-[13px] font-semibold flex items-center gap-1.5 text-inherit">
-                                    <span>Layanan</span>
+                                    <span>{{ __('Layanan') }}</span>
                                 </a>
                                 <button @click.stop="open = !open" type="button" class="pr-2.5 pl-1 py-2.5 text-xs text-inherit opacity-80">
                                     <i class="fa-solid fa-chevron-down text-[9px]" :class="{'rotate-180': open}"></i>
@@ -324,15 +330,15 @@
                                 <div class="rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 text-slate-800">
                                     <div class="px-3 pt-1 pb-2 border-b border-slate-100">
                                         <a href="{{ route('services.index') }}" class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-emerald-50 text-xs font-bold text-[#006837]">
-                                            <span>Lihat Semua Layanan & Fasilitas</span>
+                                            <span>{{ __('Lihat Semua') }} {{ __('Layanan & Fasilitas') }}</span>
                                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                         </a>
                                     </div>
                                     <div class="py-1">
-                                        <a href="/layanan/lms-pillar" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">LMS Pillar (Platform Belajar)</a>
-                                        <a href="{{ route('lms-guide') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Tutorial & Course LMS</a>
-                                        <a href="/layanan/studio-multimedia-mooc" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Studio Multimedia MOOC</a>
-                                        <a href="/layanan/helpdesk-terpadu" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">Helpdesk Terpadu 24/7</a>
+                                        <a href="/layanan/lms-pillar" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('LMS Pillar (Platform Pembelajaran Mandiri)') }}</a>
+                                        <a href="{{ route('lms-guide') }}" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Tutorial & Course LMS') }}</a>
+                                        <a href="/layanan/studio-multimedia-mooc" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Studio Produksi Multimedia & Penyiaran MOOC') }}</a>
+                                        <a href="/layanan/helpdesk-terpadu" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:text-[#006837] hover:bg-emerald-50/80">{{ __('Helpdesk Terpadu & Careline 24/7') }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -340,11 +346,11 @@
 
                         <a href="{{ url('/halaman/edushare') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">EduShare</a>
                         <a href="{{ url('/halaman/upbjj') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">UPBJJ</a>
-                        <a href="{{ route('announcements.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Pengumuman</a>
-                        <a href="{{ route('posts.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Berita</a>
-                        <a href="{{ route('faqs') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">FAQs</a>
-                        <a href="{{ route('downloads.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Downloads</a>
-                        <a href="{{ route('contact.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Kontak</a>
+                        <a href="{{ route('announcements.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">{{ __('Pengumuman') }}</a>
+                        <a href="{{ route('posts.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">{{ __('Berita') }}</a>
+                        <a href="{{ route('faqs') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">{{ __('FAQs') }}</a>
+                        <a href="{{ route('downloads.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">{{ __('Unduhan') }}</a>
+                        <a href="{{ route('contact.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">{{ __('Kontak') }}</a>
                     @endif
                 </nav>
             </div>
@@ -360,6 +366,14 @@
              x-transition:leave-end="opacity-0 -translate-y-4" 
              class="lg:hidden bg-white border-b border-slate-200 px-5 pt-3 pb-6 space-y-3 shadow-2xl max-h-[85vh] overflow-y-auto">
             
+            <!-- Mobile Language Switcher -->
+            <div class="pb-3 border-b border-slate-200">
+                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 px-1">
+                    <i class="fa-solid fa-globe text-emerald-600"></i> {{ __('Pilih Bahasa') }}
+                </div>
+                @include('partials.language-switcher', ['variant' => 'mobile'])
+            </div>
+
             @if(isset($headerNavItems) && $headerNavItems->isNotEmpty())
                 @foreach($headerNavItems as $mItem)
                     @if($mItem->activeChildren->isNotEmpty())
@@ -372,13 +386,13 @@
                                     @else
                                         <i class="fa-solid fa-folder text-[#006837] text-xs w-4"></i>
                                     @endif
-                                    <span>{{ $mItem->title }}</span>
+                                    <span>{{ __($mItem->title) }}</span>
                                     @if($mItem->badge)
                                         <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-emerald-100 text-[#006837] ml-1">{{ $mItem->badge }}</span>
                                     @endif
                                 </a>
                                 <!-- Mobile Chevron Button: Toggles dropdown accordion -->
-                                <button @click.stop="open = !open" type="button" class="p-1.5 text-slate-400 hover:text-[#006837] transition-colors" title="Buka Submenu {{ $mItem->title }}">
+                                <button @click.stop="open = !open" type="button" class="p-1.5 text-slate-400 hover:text-[#006837] transition-colors" title="{{ __('Buka Submenu') }} {{ __($mItem->title) }}">
                                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180 text-[#006837]': open }"></i>
                                 </button>
                             </div>
@@ -387,7 +401,7 @@
                                     <a href="{{ $mItem->getUrl() }}" class="flex items-center justify-between pl-3 pr-2 py-2 text-xs font-bold text-[#006837] bg-emerald-50/90 rounded-lg hover:bg-emerald-100 transition mb-1">
                                         <span class="flex items-center gap-2">
                                             <i class="fa-solid fa-layer-group text-[11px] w-3.5"></i>
-                                            <span>Lihat Semua {{ $mItem->title }}</span>
+                                            <span>{{ __('Lihat Semua') }} {{ __($mItem->title) }}</span>
                                         </span>
                                         <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                     </a>
@@ -400,7 +414,7 @@
                                             @else
                                                 <i class="fa-solid fa-angle-right text-emerald-600 text-[10px] w-3.5"></i>
                                             @endif
-                                            <span class="truncate">{{ $mChild->title }}</span>
+                                            <span class="truncate">{{ __($mChild->title) }}</span>
                                         </span>
                                         @if($mChild->badge)
                                             <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-{{ $mChild->badge_color }}-100 text-{{ $mChild->badge_color }}-800 shrink-0 ml-1">{{ $mChild->badge }}</span>
@@ -414,7 +428,7 @@
                             @if($mItem->icon)
                                 <i class="{{ $mItem->icon }} text-[#006837] mr-2"></i>
                             @endif
-                            <span>{{ $mItem->title }}</span>
+                            <span>{{ __($mItem->title) }}</span>
                             @if($mItem->badge)
                                 <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-emerald-100 text-[#006837] ml-2">{{ $mItem->badge }}</span>
                             @endif
@@ -422,15 +436,15 @@
                     @endif
                 @endforeach
             @else
-                <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">Home</a>
+                <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">{{ __('Home') }}</a>
             @endif
 
             <div class="pt-3 border-t border-slate-200 space-y-2">
                 <a href="{{ \App\Models\Setting::get('lms_url', 'https://sso-lms.uinssc.ac.id') }}" target="_blank" class="w-full text-center py-2.5 rounded-xl bg-slate-800 hover:bg-[#006837] text-white font-bold text-xs uppercase tracking-wider shadow-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-graduation-cap text-amber-300"></i> LOGIN LMS PILLAR
+                    <i class="fa-solid fa-graduation-cap text-amber-300"></i> {{ __('Masuk ke Portal LMS Pillar') }}
                 </a>
                 <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs uppercase tracking-wider shadow-md block">
-                    <i class="fa-solid fa-user-plus mr-1"></i> DAFTAR PMB ONLINE
+                    <i class="fa-solid fa-user-plus mr-1"></i> {{ __('Daftar PMB') }}
                 </a>
             </div>
         </div>
@@ -441,7 +455,7 @@
         <div @click.away="searchModal = false" class="relative w-full max-w-2xl bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-2xl">
             <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                 <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-magnifying-glass text-[#006837]"></i> Pencarian Portal UPT PJJ
+                    <i class="fa-solid fa-magnifying-glass text-[#006837]"></i> {{ __('Pencarian Portal UPT PJJ') }}
                 </h3>
                 <button @click="searchModal = false" class="text-slate-400 hover:text-slate-700">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -449,15 +463,15 @@
             </div>
             <form action="{{ route('posts.index') }}" method="GET" class="mt-5">
                 <div class="relative">
-                    <input type="text" name="cari" placeholder="Ketik kata kunci pencarian (misal: LMS Pillar, PMB, kurikulum, pedoman...)" class="w-full pl-11 pr-24 py-3.5 bg-slate-50 border border-slate-300 rounded-2xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-[#006837] focus:ring-2 focus:ring-[#006837]/20">
+                    <input type="text" name="cari" placeholder="{{ __('Ketik kata kunci pencarian (misal: LMS Pillar, PMB, kurikulum, pedoman...)') }}" class="w-full pl-11 pr-24 py-3.5 bg-slate-50 border border-slate-300 rounded-2xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-[#006837] focus:ring-2 focus:ring-[#006837]/20">
                     <i class="fa-solid fa-search absolute left-4 top-4 text-slate-400"></i>
                     <button type="submit" class="absolute right-2 top-2 px-5 py-2 bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs rounded-xl shadow transition">
-                        Cari
+                        {{ __('Cari') }}
                     </button>
                 </div>
             </form>
             <div class="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
-                <span class="font-semibold text-slate-700">Topik Populer:</span>
+                <span class="font-semibold text-slate-700">{{ __('Topik Populer:') }}</span>
                 <a href="{{ route('posts.index', ['cari' => 'LMS Pillar']) }}" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-emerald-50 hover:text-[#006837] transition font-medium">#LMS Pillar</a>
                 <a href="{{ route('posts.index', ['cari' => 'PMB']) }}" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-emerald-50 hover:text-[#006837] transition font-medium">#PMB Online</a>
                 <a href="{{ route('posts.index', ['cari' => 'PAI S1']) }}" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-emerald-50 hover:text-[#006837] transition font-medium">#PAI S1</a>
@@ -513,7 +527,7 @@
                     <div class="pt-2">
                         <a href="{{ \App\Models\Setting::get('pmb_url', 'https://uinssc.ac.id/pmb') }}" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-[#006837] text-white text-xs font-bold transition-all border border-slate-700">
                             <i class="fa-solid fa-user-graduate text-amber-400"></i>
-                            <span>Informasi Penerimaan →</span>
+                            <span>{{ __('Informasi Penerimaan') }} →</span>
                         </a>
                     </div>
                 </div>
@@ -527,18 +541,18 @@
                 <!-- Col 2: Tentang & Navigasi -->
                 <div>
                     <h4 class="text-sm font-bold text-white tracking-wider uppercase mb-4 text-emerald-400 flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap"></i> Informasi & Layanan
+                        <i class="fa-solid fa-graduation-cap"></i> {{ __('Informasi & Layanan') }}
                     </h4>
                     <div class="flex flex-col space-y-2">
                         @forelse($col2Items as $fItem)
                             <a href="{{ $fItem->getUrl() }}" target="{{ $fItem->target }}" class="px-3.5 py-2 rounded-xl bg-[#27272a] hover:bg-[#006837] text-slate-200 text-xs font-medium transition flex items-center gap-2">
                                 <i class="{{ $fItem->icon ?: 'fa-solid fa-angle-right' }} text-emerald-400 text-[11px]"></i>
-                                <span>{{ $fItem->title }}</span>
+                                <span>{{ __($fItem->title) }}</span>
                             </a>
                         @empty
-                            <a href="{{ route('profile.vision-mission') }}" class="px-3.5 py-2 rounded-xl bg-[#27272a] text-slate-200 text-xs font-medium">Visi dan Misi</a>
-                            <a href="{{ route('profile.facilities') }}" class="px-3.5 py-2 rounded-xl bg-[#27272a] text-slate-200 text-xs font-medium">Sarana Prasarana</a>
-                            <a href="{{ route('programs.index') }}" class="px-3.5 py-2 rounded-xl bg-[#27272a] text-slate-200 text-xs font-medium">Program Studi PJJ</a>
+                            <a href="{{ route('profile.vision-mission') }}" class="px-3.5 py-2 rounded-xl bg-[#27272a] text-slate-200 text-xs font-medium">{{ __('Visi dan Misi') }}</a>
+                            <a href="{{ route('profile.facilities') }}" class="px-3.5 py-2 rounded-xl bg-[#27272a] text-slate-200 text-xs font-medium">{{ __('Sarana Prasarana') }}</a>
+                            <a href="{{ route('programs.index') }}" class="px-3.5 py-2 rounded-xl bg-[#27272a] text-slate-200 text-xs font-medium">{{ __('Program Studi PJJ') }}</a>
                         @endforelse
                     </div>
                 </div>
@@ -546,13 +560,13 @@
                 <!-- Col 3: Link Cepat & Eksternal -->
                 <div>
                     <h4 class="text-sm font-bold text-white tracking-wider uppercase mb-4 text-emerald-400 flex items-center gap-2">
-                        <i class="fa-solid fa-link"></i> Link Terkait
+                        <i class="fa-solid fa-link"></i> {{ __('Link Terkait') }}
                     </h4>
                     <div class="flex flex-col space-y-2">
                         @forelse($col3Items as $fItem)
                             <a href="{{ $fItem->getUrl() }}" target="{{ $fItem->target }}" class="px-3.5 py-2 rounded-xl bg-[#27272a] hover:bg-[#006837] text-slate-200 text-xs font-medium transition flex items-center gap-2">
                                 <i class="{{ $fItem->icon ?: 'fa-solid fa-globe' }} text-emerald-400 text-[11px]"></i>
-                                <span>{{ $fItem->title }}</span>
+                                <span>{{ __($fItem->title) }}</span>
                             </a>
                         @empty
                             <a href="https://uinssc.ac.id" target="_blank" class="px-3.5 py-2 rounded-xl bg-[#27272a] text-slate-200 text-xs font-medium">Website UINSSC</a>
@@ -563,7 +577,7 @@
                 <!-- Col 4: Lokasi Kampus & SiberGo Mobile App -->
                 <div class="space-y-4">
                     <h4 class="text-sm font-bold text-white tracking-wider uppercase mb-2 text-emerald-400 flex items-center gap-2">
-                        <i class="fa-solid fa-location-dot"></i> Lokasi Kampus
+                        <i class="fa-solid fa-location-dot"></i> {{ __('Lokasi Kampus') }}
                     </h4>
                     <p class="text-xs text-slate-400">
                         {{ \App\Models\Setting::get('address', 'Jl. Perjuangan By Pass Sunyaragi, Cirebon, Jawa Barat 45132') }}
@@ -585,12 +599,12 @@
                         <div>
                             <div class="text-xs font-bold text-white flex items-center gap-1.5">
                                 <span class="text-amber-400 font-extrabold">SiberGo!</span>
-                                <span class="text-[10px] text-slate-400 font-normal">App Mahasiswa</span>
+                                <span class="text-[10px] text-slate-400 font-normal">{{ __('App Mahasiswa') }}</span>
                             </div>
-                            <div class="text-[10px] text-slate-400">Tersedia di Google Play Store</div>
+                            <div class="text-[10px] text-slate-400">{{ __('Tersedia di Google Play Store') }}</div>
                         </div>
                         <a href="{{ \App\Models\Setting::get('sibergo_url', 'https://play.google.com/store/apps/details?id=com.uinssc.pustikom.sibergo&hl=id') }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shrink-0 transition flex items-center gap-1.5 shadow">
-                            <i class="fa-brands fa-google-play"></i> Unduh
+                            <i class="fa-brands fa-google-play"></i> {{ __('Unduh') }}
                         </a>
                     </div>
 
@@ -609,11 +623,11 @@
             <div class="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
                 <p>© {{ date('Y') }} Pusat Teknologi Informasi dan Komunikasi UINSSC. All Rights Reserved.</p>
                 <div class="flex items-center space-x-4 text-slate-400">
-                    <a href="{{ route('profile.overview') }}" class="hover:text-white transition">Tentang Kami</a>
+                    <a href="{{ route('profile.overview') }}" class="hover:text-white transition">{{ __('Tentang Kami') }}</a>
                     <span>•</span>
-                    <a href="{{ route('contact.index') }}" class="hover:text-white transition">Helpdesk</a>
+                    <a href="{{ route('contact.index') }}" class="hover:text-white transition">{{ __('Helpdesk') }}</a>
                     <span>•</span>
-                    <a href="{{ route('login') }}" class="text-emerald-400 hover:underline font-semibold">Login CMS</a>
+                    <a href="{{ route('login') }}" class="text-emerald-400 hover:underline font-semibold">{{ __('Login CMS') }}</a>
                 </div>
             </div>
         </div>

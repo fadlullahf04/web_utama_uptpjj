@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,16 +14,24 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+
     <!-- Scripts & Styles via Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         [x-cloak] { display: none !important; }
+        @if(app()->getLocale() === 'ar')
+            html, body {
+                font-family: 'Noto Kufi Arabic', 'Plus Jakarta Sans', sans-serif !important;
+            }
+        @endif
     </style>
     @stack('styles')
 </head>
@@ -172,7 +180,7 @@
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-100">
             
             <!-- Admin Top Navigation Bar -->
-            <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8 relative z-30">
                 
                 <!-- Left: Sidebar Toggle & Page Title / Breadcrumb -->
                 <div class="flex items-center gap-4">
@@ -186,8 +194,11 @@
                 </div>
 
                 <!-- Right: Quick Action, Site Link & Profile Dropdown -->
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center gap-2.5 sm:gap-3">
                     
+                    <!-- Admin Language Switcher -->
+                    @include('partials.language-switcher', ['variant' => 'light'])
+
                     <a href="{{ route('admin.posts.create') }}" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs shadow-md transition">
                         <i class="fa-solid fa-plus"></i> Tambah Berita
                     </a>
@@ -203,7 +214,7 @@
                             <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                         </button>
 
-                        <div x-show="userMenu" x-cloak @click.away="userMenu = false" class="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-2xl py-2 z-50">
+                        <div x-show="userMenu" x-cloak @click.away="userMenu = false" class="absolute {{ app()->getLocale() === 'ar' ? 'left-0' : 'right-0' }} mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-2xl py-2 z-50">
                             <div class="px-4 py-2 border-b border-slate-100">
                                 <div class="text-xs font-bold text-slate-900">{{ auth()->user()->name }}</div>
                                 <div class="text-[11px] text-slate-500 truncate">{{ auth()->user()->email }}</div>

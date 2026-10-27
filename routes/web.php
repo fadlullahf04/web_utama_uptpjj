@@ -24,6 +24,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LmsGuideController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -37,6 +38,9 @@ use Illuminate\Support\Facades\Route;
 | Public Frontend Routes (UPT PJJ UINSSC Portal)
 |--------------------------------------------------------------------------
 */
+
+// Language Switcher Route
+Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.xml');

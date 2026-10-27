@@ -109,32 +109,32 @@
             <div class="text-2xl sm:text-4xl font-black text-[#006837] mb-1">
                 {{ \App\Models\Setting::get('stats_students', '8,500+') }}
             </div>
-            <div class="text-xs font-bold text-slate-800">Mahasiswa PJJ Aktif</div>
-            <p class="text-[11px] text-slate-500 mt-0.5">38 Provinsi & Luar Negeri</p>
+            <div class="text-xs font-bold text-slate-800">{{ __('Mahasiswa PJJ Aktif') }}</div>
+            <p class="text-[11px] text-slate-500 mt-0.5">{{ __('38 Provinsi & Luar Negeri') }}</p>
         </div>
 
         <div class="p-2 border-r border-slate-100 last:border-0">
             <div class="text-2xl sm:text-4xl font-black text-amber-600 mb-1">
                 {{ \App\Models\Setting::get('stats_programs', '6') }}
             </div>
-            <div class="text-xs font-bold text-slate-800">Program Studi PJJ</div>
-            <p class="text-[11px] text-slate-500 mt-0.5">Sarjana (S1) & Magister (S2)</p>
+            <div class="text-xs font-bold text-slate-800">{{ __('Program Studi PJJ') }}</div>
+            <p class="text-[11px] text-slate-500 mt-0.5">{{ __('Sarjana (S1) & Magister (S2)') }}</p>
         </div>
 
         <div class="p-2 border-r border-slate-100 last:border-0">
             <div class="text-2xl sm:text-4xl font-black text-teal-700 mb-1">
                 {{ \App\Models\Setting::get('stats_lecturers', '180+') }}
             </div>
-            <div class="text-xs font-bold text-slate-800">Dosen & Tutor Siber</div>
-            <p class="text-[11px] text-slate-500 mt-0.5">Tersertifikasi Pedagogi Daring</p>
+            <div class="text-xs font-bold text-slate-800">{{ __('Dosen & Tutor Siber') }}</div>
+            <p class="text-[11px] text-slate-500 mt-0.5">{{ __('Tersertifikasi Pedagogi Daring') }}</p>
         </div>
 
         <div class="p-2">
             <div class="text-2xl sm:text-4xl font-black text-blue-700 mb-1">
                 {{ \App\Models\Setting::get('stats_modules', '1,250+') }}
             </div>
-            <div class="text-xs font-bold text-slate-800">Modul & Video LMS</div>
-            <p class="text-[11px] text-slate-500 mt-0.5">Materi Digital Interaktif</p>
+            <div class="text-xs font-bold text-slate-800">{{ __('Modul & Video LMS') }}</div>
+            <p class="text-[11px] text-slate-500 mt-0.5">{{ __('Materi Digital Interaktif') }}</p>
         </div>
 
     </div>
@@ -151,7 +151,7 @@
                     <img src="{{ \App\Models\Setting::get('head_photo', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop') }}" alt="Kepala UPT PJJ" class="w-full h-[380px] object-cover object-top group-hover:scale-105 transition-transform duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
                     <div class="absolute bottom-4 left-4 right-4 text-white text-left">
-                        <span class="text-[10px] font-extrabold uppercase tracking-wider bg-[#006837] px-2 py-0.5 rounded text-white">Kepala UPT</span>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider bg-[#006837] px-2 py-0.5 rounded text-white">{{ __('Kepala UPT') }}</span>
                         <h4 class="text-base font-extrabold text-white mt-1">{{ \App\Models\Setting::get('head_name', 'Dr. Moh. Ali, M.Pd.I') }}</h4>
                     </div>
                 </div>
@@ -182,7 +182,7 @@
                 <!-- Action Button (Emerald Pill matching live site) -->
                 <div class="pt-2">
                     <a href="{{ route('profile.overview') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs uppercase tracking-wider shadow-md transition transform hover:-translate-y-0.5">
-                        <span>Selengkapnya</span>
+                        <span>{{ __('Selengkapnya') }}</span>
                         <i class="fa-solid fa-arrow-right text-xs"></i>
                     </a>
                 </div>
@@ -203,7 +203,7 @@
                 <span>Terbaru</span>
             </div>
             <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Berita dan Informasi
+                {{ __('Berita dan Informasi') }}
             </h2>
         </div>
 
@@ -235,7 +235,7 @@
 
                         <div class="pt-2">
                             <a href="{{ route('posts.show', $post->slug) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-sm">
-                                <span>Selengkapnya</span>
+                                <span>{{ __('Selengkapnya') }}</span>
                                 <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </a>
                         </div>
@@ -248,7 +248,7 @@
         <!-- Lihat Lebih Banyak Button -->
         <div class="mt-12 text-center">
             <a href="{{ route('posts.index') }}" class="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs uppercase tracking-wider shadow-md transition transform hover:-translate-y-0.5">
-                <span>Lihat Lebih Banyak</span>
+                <span>{{ __('Lihat Semua') }}</span>
                 <i class="fa-solid fa-arrow-right text-xs"></i>
             </a>
         </div>
@@ -266,7 +266,7 @@
         
         <div class="text-center mb-14">
             <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
-                Program Studi PJJ
+                {{ __('Program Studi PJJ') }}
             </h2>
             <p class="text-xs sm:text-sm text-slate-300 mt-2 max-w-2xl mx-auto">
                 Program studi berbasis siber terakreditasi resmi di UIN Siber Syekh Nurjati Cirebon.
@@ -302,7 +302,7 @@
                             Detail Kurikulum <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                         <a href="{{ $prodi->registration_url ?? \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-[#006837] hover:bg-[#004d29] text-white font-bold text-[11px] transition">
-                            Daftar PMB
+                            {{ __('Daftar PMB') }}
                         </a>
                     </div>
 
@@ -364,7 +364,7 @@
         
         <div class="text-center max-w-3xl mx-auto mb-16 space-y-2">
             <span class="text-xs font-bold uppercase tracking-wider text-[#006837] bg-emerald-50 px-3 py-1 rounded-full">
-                Layanan Unggulan
+                {{ __('Layanan Unggulan') }}
             </span>
             <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
                 Ekosistem Layanan & Pembelajaran Siber
@@ -422,7 +422,7 @@
                     Frequently Asked Questions
                 </span>
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                    Pertanyaan yang Sering Diajukan (FAQs)
+                    {{ __('Pertanyaan yang Sering Diajukan') }} (FAQs)
                 </h2>
                 <p class="text-xs text-slate-500">
                     Informasi penting seputar perkuliahan jarak jauh, legalitas ijazah, dan pendaftaran.
@@ -476,10 +476,10 @@
 
             <div class="flex flex-col sm:flex-row items-center gap-3 shrink-0">
                 <a href="{{ \App\Models\Setting::get('pmb_url', 'https://pmb.uinssc.ac.id') }}" target="_blank" class="px-7 py-3.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
-                    <i class="fa-solid fa-user-plus"></i> Daftar PMB Online
+                    <i class="fa-solid fa-user-plus"></i> {{ __('Daftar PMB') }}
                 </a>
                 <a href="{{ route('contact.index') }}" class="px-6 py-3.5 rounded-full bg-white/20 hover:bg-white/30 text-white font-bold text-xs uppercase tracking-wider backdrop-blur transition">
-                    Kontak Kami
+                    {{ __('Kontak') }}
                 </a>
             </div>
 
