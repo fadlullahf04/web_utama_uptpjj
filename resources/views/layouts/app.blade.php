@@ -109,10 +109,6 @@
                 <span class="text-slate-700">|</span>
                 <!-- Language Selector Dropdown (Top Bar) -->
                 @include('partials.language-switcher', ['variant' => 'dark'])
-                <span class="text-slate-700">|</span>
-                <a href="{{ route('login') }}" class="hover:text-emerald-400 transition flex items-center gap-1 text-slate-300" title="{{ __('Login CMS') }}">
-                    <i class="fa-solid fa-lock text-emerald-400"></i> CMS
-                </a>
             </div>
 
         </div>
@@ -636,8 +632,8 @@
     <!-- Floating Accessibility & Disability Support Tools (Menu Aksesibilitas Disabilitas) -->
     @include('partials.accessibility-widget')
 
-    <!-- Floating Contact Center & Direct Q&A Assistant (Contact Center Tanya Jawab Langsung) -->
-    @include('partials.contact-center-widget')
+    <!-- Floating Contact Center & Direct Q&A Assistant (Contact Center Tanya Jawab Langsung) - Disabled -->
+    {{-- @include('partials.contact-center-widget') --}}
 
     @stack('scripts')
 </body>
