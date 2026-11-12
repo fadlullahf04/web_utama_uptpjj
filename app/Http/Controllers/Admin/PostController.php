@@ -46,8 +46,22 @@ class PostController extends Controller
 
     public function importXml(Request $request, PostXmlImportService $importService): RedirectResponse
     {
+        @set_time_limit(600);
+        @ini_set('memory_limit', '1024M');
+
+        if (! extension_loaded('simplexml') || ! extension_loaded('libxml')) {
+            return redirect()->back()->with('error', 'Ekstensi PHP SimpleXML / LibXML belum aktif di server. Silakan aktifkan ekstensi php-xml pada panel hosting/VPS Anda.');
+        }
+
+        // Tangkap error jika ukuran file melebihi upload_max_filesize di php.ini server
+        if (isset($_FILES['xml_file']['error']) && in_array($_FILES['xml_file']['error'], [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) {
+            $maxUpload = ini_get('upload_max_filesize');
+
+            return redirect()->back()->with('error', "Ukuran file XML melebihi batas upload_max_filesize di server ({$maxUpload}). Silakan naikkan upload_max_filesize & post_max_size di php.ini atau gunakan tab 'Tempel Teks XML'.");
+        }
+
         $request->validate([
-            'xml_file' => 'nullable|file|mimes:xml,txt|max:20480',
+            'xml_file' => 'nullable|file|max:204800',
             'xml_content' => 'nullable|string',
             'default_category_id' => 'nullable|exists:categories,id',
             'auto_create_category' => 'nullable|boolean',
@@ -55,31 +69,57 @@ class PostController extends Controller
             'duplicate_handling' => 'required|in:allow,skip',
         ]);
 
+        $safeInputs = $request->except(['xml_file', 'xml_content']);
         $xmlString = '';
 
-        if ($request->hasFile('xml_file')) {
-            $file = $request->file('xml_file');
-            $xmlString = file_get_contents($file->getRealPath());
-        } elseif ($request->filled('xml_content')) {
-            $xmlString = $request->input('xml_content');
-        } else {
+        try {
+            if ($request->hasFile('xml_file')) {
+                $file = $request->file('xml_file');
+                if (! $file || ! $file->isValid()) {
+                    return redirect()->back()
+                        ->withInput($safeInputs)
+                        ->with('error', 'Gagal mengunggah file XML (Error Code: '.($file ? $file->getError() : 'Unknown').'). Pastikan ukuran file tidak melebihi batas upload server.');
+                }
+
+                $ext = strtolower($file->getClientOriginalExtension());
+                if (! in_array($ext, ['xml', 'txt', 'rss', 'wxr'], true)) {
+                    return redirect()->back()
+                        ->withInput($safeInputs)
+                        ->with('error', 'Format berkas harus berupa file .xml, .rss, atau .txt.');
+                }
+
+                $xmlString = (string) $file->getContent();
+            } elseif ($request->filled('xml_content')) {
+                $xmlString = (string) $request->input('xml_content');
+            } else {
+                return redirect()->back()
+                    ->withInput($safeInputs)
+                    ->with('error', 'Harap pilih berkas file XML atau tempel kode XML pada kolom yang tersedia.');
+            }
+
+            $result = $importService->import($xmlString, [
+                'default_category_id' => $request->filled('default_category_id') ? (int) $request->input('default_category_id') : null,
+                'auto_create_category' => $request->boolean('auto_create_category', true),
+                'status_mode' => $request->input('status_mode', 'keep'),
+                'duplicate_handling' => $request->input('duplicate_handling', 'allow'),
+                'user_id' => Auth::id(),
+            ]);
+        } catch (\Throwable $e) {
             return redirect()->back()
-                ->withInput()
-                ->with('error', 'Harap pilih berkas file XML atau tempel kode XML pada kolom yang tersedia.');
+                ->withInput($safeInputs)
+                ->with('error', 'Terjadi kesalahan saat memproses XML: '.$e->getMessage());
         }
 
-        $result = $importService->import($xmlString, [
-            'default_category_id' => $request->filled('default_category_id') ? (int) $request->input('default_category_id') : null,
-            'auto_create_category' => $request->boolean('auto_create_category', true),
-            'status_mode' => $request->input('status_mode', 'keep'),
-            'duplicate_handling' => $request->input('duplicate_handling', 'allow'),
-            'user_id' => Auth::id(),
-        ]);
-
         if (! $result['success'] && count($result['errors']) > 0) {
+            $sampleErrors = array_slice($result['errors'], 0, 3);
+            $errorSummary = implode(' | ', $sampleErrors);
+            if (count($result['errors']) > 3) {
+                $errorSummary .= ' (dan '.(count($result['errors']) - 3).' kesalahan lainnya)';
+            }
+
             return redirect()->back()
-                ->withInput()
-                ->with('error', 'Impor gagal: '.implode(' | ', $result['errors']));
+                ->withInput($safeInputs)
+                ->with('error', 'Impor gagal: '.$errorSummary);
         }
 
         $message = "Berhasil mengimpor {$result['imported_count']} artikel berita dari XML!";
@@ -87,7 +127,7 @@ class PostController extends Controller
             $message .= " ({$result['skipped_count']} artikel dilewati).";
         }
         if (count($result['created_categories']) > 0) {
-            $message .= ' Kategori baru dibuat: '.implode(', ', $result['created_categories']).'.';
+            $message .= ' Kategori baru dibuat: '.implode(', ', array_slice($result['created_categories'], 0, 5)).'.';
         }
 
         return redirect()->route('admin.posts.index')->with('success', $message);

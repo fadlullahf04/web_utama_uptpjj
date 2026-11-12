@@ -35,8 +35,8 @@ class PostXmlImportService
             'titles' => [],
         ];
 
-        libxml_use_internal_errors(true);
         try {
+            libxml_use_internal_errors(true);
             $cleanXml = $this->sanitizeXml($xmlContent);
             if (trim($cleanXml) === '') {
                 $result['errors'][] = 'Konten XML kosong.';
@@ -44,7 +44,12 @@ class PostXmlImportService
                 return $result;
             }
 
-            $xml = simplexml_load_string($cleanXml, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NONET);
+            $flags = LIBXML_NOCDATA | LIBXML_NONET;
+            if (defined('LIBXML_PARSEHUGE')) {
+                $flags |= LIBXML_PARSEHUGE;
+            }
+
+            $xml = simplexml_load_string($cleanXml, 'SimpleXMLElement', $flags);
         } catch (\Throwable $e) {
             $result['errors'][] = 'Gagal memproses XML: '.$e->getMessage();
 
@@ -131,31 +136,44 @@ class PostXmlImportService
                 if (empty($featuredImage) && ! empty($parsed['content'])) {
                     $featuredImage = $this->extractImageFromHtml($parsed['content']);
                 }
+                // Guard against >255 chars or base64 data URLs breaking VARCHAR(255) in MySQL strict mode
+                if (! empty($featuredImage) && (strlen($featuredImage) > 250 || str_starts_with($featuredImage, 'data:image'))) {
+                    $featuredImage = null;
+                }
 
-                // Generate Unique Slug
-                $baseSlug = ! empty($parsed['slug']) ? Str::slug($parsed['slug']) : Str::slug($parsed['title']);
-                $slug = $baseSlug.'-'.Str::random(5);
+                // Safe truncation for VARCHAR(255) columns in MySQL strict mode
+                $safeTitle = Str::limit($parsed['title'], 245, '');
+                $baseSlug = ! empty($parsed['slug']) ? Str::slug($parsed['slug']) : Str::slug($safeTitle);
+                if ($baseSlug === '') {
+                    $baseSlug = 'berita';
+                }
+                $slug = Str::limit($baseSlug, 235, '').'-'.Str::lower(Str::random(5));
+                $safeTags = ! empty($parsed['tags']) ? Str::limit($parsed['tags'], 245, '') : null;
 
                 $post = Post::create([
-                    'title' => $parsed['title'],
+                    'title' => $safeTitle,
                     'slug' => $slug,
                     'category_id' => $categoryId,
                     'user_id' => $userId,
                     'excerpt' => $excerpt,
-                    'content' => $parsed['content'] ?: '<p>'.e($parsed['title']).'</p>',
+                    'content' => $parsed['content'] ?: '<p>'.e($safeTitle).'</p>',
                     'featured_image' => $featuredImage,
                     'views_count' => $parsed['views_count'] ?? 0,
                     'is_featured' => $parsed['is_featured'] ?? false,
                     'is_published' => $isPublished,
                     'published_at' => $publishedAt,
-                    'tags' => $parsed['tags'],
+                    'tags' => $safeTags,
                 ]);
 
                 $result['imported_count']++;
                 $result['titles'][] = $post->title;
             } catch (\Throwable $e) {
-                Log::warning('Error importing XML post item: '.$e->getMessage());
-                $result['errors'][] = 'Gagal mengimpor artikel "'.($parsed['title'] ?? 'Tanpa Judul').'": '.$e->getMessage();
+                try {
+                    Log::warning('Error importing XML post item: '.$e->getMessage());
+                } catch (\Throwable) {
+                    // Ignore logging permission errors on server
+                }
+                $result['errors'][] = 'Gagal mengimpor artikel "'.Str::limit($parsed['title'] ?? 'Tanpa Judul', 60).'": '.$e->getMessage();
             }
         }
 
@@ -171,12 +189,18 @@ class PostXmlImportService
     protected function sanitizeXml(string $content): string
     {
         // Remove UTF-8 BOM if present
-        $content = preg_replace('/^\xEF\xBB\xBF/', '', $content);
+        $content = preg_replace('/^\xEF\xBB\xBF/', '', $content) ?? $content;
+
+        // Strip invalid XML 1.0 control characters often found in WordPress WXR exports
+        $content = preg_replace('/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]/u', '', $content) ?? $content;
 
         // Reject XML External Entity (XXE) and billion laughs attempts
-        if (preg_match('/<!ENTITY|<!DOCTYPE/i', $content)) {
-            throw new \InvalidArgumentException('Berkas XML mengandung deklarasi DOCTYPE atau ENTITY yang berpotensi membahayakan keamanan server.');
+        if (preg_match('/<!ENTITY/i', $content)) {
+            throw new \InvalidArgumentException('Berkas XML mengandung deklarasi ENTITY yang berpotensi membahayakan keamanan server.');
         }
+
+        // Strip benign DOCTYPE declarations if present so simplexml_load_string does not choke
+        $content = preg_replace('/<!DOCTYPE[^>]*>/i', '', $content) ?? $content;
 
         return trim($content);
     }
@@ -433,9 +457,11 @@ class PostXmlImportService
             }
 
             if ($autoCreate) {
+                $safeCatName = Str::limit($categoryName, 240, '');
+                $safeCatSlug = Str::limit(Str::slug($safeCatName) ?: 'kategori', 235, '').'-'.Str::lower(Str::random(4));
                 $newCategory = Category::create([
-                    'name' => $categoryName,
-                    'slug' => Str::slug($categoryName),
+                    'name' => $safeCatName,
+                    'slug' => $safeCatSlug,
                     'type' => 'berita',
                     'color' => 'emerald',
                     'description' => 'Kategori hasil impor XML',

@@ -21,7 +21,9 @@
         const file = e.target.files[0];
         if (file) {
             this.fileName = file.name;
-            this.fileSize = (file.size / 1024).toFixed(1) + ' KB';
+            this.fileSize = file.size >= 1048576
+                ? (file.size / 1048576).toFixed(2) + ' MB'
+                : (file.size / 1024).toFixed(1) + ' KB';
         } else {
             this.fileName = '';
             this.fileSize = '';
@@ -85,7 +87,7 @@
                                 Klik untuk memilih berkas atau seret file XML ke sini
                             </div>
                             <div class="text-[11px] text-slate-500">
-                                Mendukung berkas XML WordPress (.xml), RSS feed, atau XML Kustom (maks. 20MB)
+                                Mendukung berkas XML WordPress (.xml), RSS feed, atau XML Kustom (maks. 200MB)
                             </div>
                         </div>
 
