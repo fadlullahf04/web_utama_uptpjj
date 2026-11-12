@@ -126,7 +126,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Posts XML Import & Template
     Route::get('/posts/import/xml', [AdminPostController::class, 'showImport'])->name('posts.import');
-    Route::post('/posts/import/xml', [AdminPostController::class, 'importXml'])->name('posts.import.process')->middleware('throttle:10,1');
+    Route::post('/posts/import/xml', [AdminPostController::class, 'importXml'])->name('posts.import.process');
     Route::get('/posts/template/xml', [AdminPostController::class, 'downloadXmlTemplate'])->name('posts.template.xml');
 
     // Posts / Berita

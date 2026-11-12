@@ -107,7 +107,7 @@
                         <label for="xml_content" class="block text-xs font-bold text-slate-700">Kode / Isi Dokumen XML</label>
                         <span class="text-[10px] text-slate-500">Tempelkan seluruh kode XML secara lengkap</span>
                     </div>
-                    <textarea name="xml_content" id="xml_content" rows="12" placeholder="<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#10;<posts>&#10;    <post>&#10;        <title>Judul Berita...</title>&#10;        ...&#10;    </post>&#10;</posts>" class="w-full font-mono text-xs p-3.5 bg-slate-900 text-emerald-400 rounded-xl border border-slate-700 focus:outline-none focus:border-[#006837] focus:ring-1 focus:ring-[#006837] leading-relaxed">{{ old('xml_content') }}</textarea>
+                    <textarea name="xml_content" id="xml_content" rows="12" placeholder="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;posts&gt;&#10;    &lt;post&gt;&#10;        &lt;title&gt;Judul Berita...&lt;/title&gt;&#10;        ...&#10;    &lt;/post&gt;&#10;&lt;/posts&gt;" class="w-full font-mono text-xs p-3.5 bg-slate-900 text-emerald-400 rounded-xl border border-slate-700 focus:outline-none focus:border-[#006837] focus:ring-1 focus:ring-[#006837] leading-relaxed">{{ old('xml_content') }}</textarea>
                 </div>
 
                 <!-- Configuration Options -->
