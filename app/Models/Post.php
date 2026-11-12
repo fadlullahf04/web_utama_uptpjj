@@ -60,7 +60,10 @@ class Post extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('is_published', true)->whereNotNull('published_at')->where('published_at', '<=', now())->orderBy('published_at', 'desc');
+        return $query->where('is_published', true)
+            ->orderByDesc('created_at')
+            ->orderByDesc('published_at')
+            ->orderByDesc('id');
     }
 
     public function scopeFeatured($query)

@@ -209,7 +209,7 @@
 
         <!-- News Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach($featuredPosts as $post)
+            @foreach($latestPosts as $post)
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
                     
                     <div class="relative h-48 overflow-hidden bg-slate-100">

@@ -17,8 +17,8 @@ class HomeController extends Controller
     {
         $heroSlides = HeroSlide::active()->get();
         $studyPrograms = StudyProgram::active()->get();
-        $featuredPosts = Post::published()->featured()->take(3)->get();
-        $latestPosts = Post::published()->take(6)->get();
+        $featuredPosts = Post::published()->featured()->with('category')->take(3)->get();
+        $latestPosts = Post::published()->with('category')->take(6)->get();
         $pinnedAnnouncements = Announcement::active()->where('is_pinned', true)->take(3)->get();
         $latestAnnouncements = Announcement::active()->take(4)->get();
         $services = Service::active()->take(6)->get();
