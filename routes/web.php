@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
 use App\Http\Controllers\Admin\TeamMemberController as AdminTeamMemberController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
+use App\Http\Controllers\Admin\UpbjjZoneController as AdminUpbjjZoneController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
@@ -140,6 +141,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Dynamic Pages / Halaman Dinamis
     Route::resource('pages', AdminPageController::class)->except(['show']);
+
+    // UPBJJ Zones & Wilayah Layanan
+    Route::resource('upbjj-zones', AdminUpbjjZoneController::class)->except(['create', 'edit', 'show']);
 
     // Admin & Editor Only: Contact Messages / Helpdesk Inbox
     Route::middleware(['role:admin,editor'])->group(function () {

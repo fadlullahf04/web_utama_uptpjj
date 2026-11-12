@@ -134,7 +134,6 @@
                         <button @click="searchModal = true" class="hidden md:flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-100/90 hover:bg-emerald-50 text-slate-500 hover:text-[#006837] border border-slate-200 transition text-xs font-medium shadow-2xs group cursor-pointer" title="{{ __('Cari di Portal UPT PJJ') }}">
                             <i class="fa-solid fa-magnifying-glass text-slate-400 group-hover:text-[#006837] text-xs"></i>
                             <span class="text-slate-500 group-hover:text-[#006837]">{{ __('Cari informasi, prodi, panduan...') }}</span>
-                            <kbd class="hidden xl:inline-block px-1.5 py-0.5 text-[10px] bg-white border border-slate-200 rounded text-slate-400 font-mono shadow-2xs">Ctrl K</kbd>
                         </button>
 
                         <!-- LMS Pillar Quick Direct Link -->
@@ -170,21 +169,18 @@
                 @php
                     $headerNavItems = \App\Models\MenuItem::getTree('header');
                 @endphp
-                <nav class="flex items-center space-x-0.5 xl:space-x-1 py-1">
+                <nav class="flex items-center justify-between py-1">
                     @if($headerNavItems->isNotEmpty())
                         @foreach($headerNavItems as $navItem)
                             @if($navItem->activeChildren->isNotEmpty())
                                 <!-- Dropdown Menu (Click to view all, hover or chevron to open dropdown) -->
                                 <div class="nav-dropdown" x-data="{ open: false }" :class="{ 'is-open': open }" @mouseleave="open = false">
-                                    <div class="flex items-center rounded-lg transition-colors {{ $navItem->isActiveRoute() ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
+                                    <div class="flex items-center rounded-lg transition-colors {{ $navItem->isActiveRoute() ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/95 hover:text-white hover:bg-white/15' }}">
                                         <!-- Main Parent Clickable Link -->
                                         <a href="{{ $navItem->getUrl() }}" 
                                            target="{{ $navItem->target }}" 
-                                           class="whitespace-nowrap pl-3 pr-1.5 xl:pl-3.5 xl:pr-1.5 py-2.5 text-[13px] xl:text-[13.5px] font-semibold flex items-center gap-1.5 text-inherit"
+                                           class="whitespace-nowrap pl-3 pr-1 xl:pl-3.5 xl:pr-1.5 py-2.5 text-[13px] xl:text-[13.5px] font-semibold flex items-center gap-1.5 text-inherit"
                                            title="Buka Semua {{ __($navItem->title) }}">
-                                            @if($navItem->icon)
-                                                <i class="{{ $navItem->icon }} text-xs opacity-80"></i>
-                                            @endif
                                             <span>{{ __($navItem->title) }}</span>
                                             @if($navItem->badge)
                                                 <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-400 text-slate-950">{{ $navItem->badge }}</span>
@@ -237,10 +233,7 @@
                                     </div>
                                 </div>
                             @else
-                                <a href="{{ $navItem->getUrl() }}" target="{{ $navItem->target }}" class="whitespace-nowrap px-3 xl:px-3.5 py-2.5 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ $navItem->isActiveRoute() ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/90 hover:text-white hover:bg-white/15' }}">
-                                    @if($navItem->icon)
-                                        <i class="{{ $navItem->icon }} text-xs opacity-80"></i>
-                                    @endif
+                                <a href="{{ $navItem->getUrl() }}" target="{{ $navItem->target }}" class="whitespace-nowrap px-3 xl:px-3.5 py-2.5 text-[13px] xl:text-[13.5px] font-semibold rounded-lg transition-colors flex items-center gap-1.5 {{ $navItem->isActiveRoute() ? 'text-amber-300 bg-black/25 font-bold border-b-2 border-amber-400 rounded-b-none' : 'text-white/95 hover:text-white hover:bg-white/15' }}">
                                     <span>{{ __($navItem->title) }}</span>
                                     @if($navItem->badge)
                                         <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-amber-400 text-slate-950">{{ $navItem->badge }}</span>
@@ -342,6 +335,7 @@
 
                         <a href="{{ url('/halaman/edushare') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">EduShare</a>
                         <a href="{{ url('/halaman/upbjj') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">UPBJJ</a>
+                        <a href="{{ url('/halaman/tutor') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">Tutor</a>
                         <a href="{{ route('announcements.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">{{ __('Pengumuman') }}</a>
                         <a href="{{ route('posts.index') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">{{ __('Berita') }}</a>
                         <a href="{{ route('faqs') }}" class="whitespace-nowrap px-3 py-2.5 text-[13px] font-semibold rounded-lg text-white/90 hover:text-white hover:bg-white/15">{{ __('FAQs') }}</a>
@@ -632,8 +626,8 @@
     <!-- Floating Accessibility & Disability Support Tools (Menu Aksesibilitas Disabilitas) -->
     @include('partials.accessibility-widget')
 
-    <!-- Floating Contact Center & Direct Q&A Assistant (Contact Center Tanya Jawab Langsung) - Disabled -->
-    {{-- @include('partials.contact-center-widget') --}}
+    <!-- Floating Contact Center & Direct Q&A Assistant (Contact Center Tanya Jawab Langsung) -->
+    @include('partials.contact-center-widget')
 
     @stack('scripts')
 </body>

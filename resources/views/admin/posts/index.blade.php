@@ -37,7 +37,7 @@
                 <i class="fa-solid fa-plus"></i> Tambah Berita Baru
             </a>
         </div>
-    </div>
+    </div> 
 
     <!-- Posts Table -->
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

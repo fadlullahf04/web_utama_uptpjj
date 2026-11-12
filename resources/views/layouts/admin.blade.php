@@ -82,6 +82,13 @@
                     <span class="text-[10px] px-2 py-0.5 rounded-full {{ request()->routeIs('admin.pages.*') ? 'bg-black/20 text-white' : 'bg-slate-100 text-slate-600' }} font-bold">{{ \App\Models\Page::count() }}</span>
                 </a>
 
+                <a href="{{ route('admin.upbjj-zones.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.upbjj-zones.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-map-location-dot text-sm {{ request()->routeIs('admin.upbjj-zones.*') ? 'text-white' : 'text-emerald-600' }}"></i> Wilayah & Zona UPBJJ
+                    </div>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full {{ request()->routeIs('admin.upbjj-zones.*') ? 'bg-black/20 text-white' : 'bg-emerald-100 text-emerald-800' }} font-bold">{{ \Illuminate\Support\Facades\Schema::hasTable('upbjj_zones') ? \App\Models\UpbjjZone::count() : 7 }}</span>
+                </a>
+
                 <a href="{{ route('admin.announcements.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.announcements.*') ? 'bg-[#006837] text-white shadow-md shadow-[#006837]/30' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-bullhorn text-sm {{ request()->routeIs('admin.announcements.*') ? 'text-white' : 'text-amber-600' }}"></i> Pengumuman
@@ -183,6 +190,9 @@
             <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8 relative z-30">
                 
                 <!-- Left: Sidebar Toggle & Page Title / Breadcrumb -->
+
+
+                
                 <div class="flex items-center gap-4">
                     <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 lg:hidden">
                         <i class="fa-solid fa-bars text-lg"></i>

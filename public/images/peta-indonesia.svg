@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" fill="none">
+  <defs>
+    <!-- Soft Modern Cartographic Ocean Gradient -->
+    <linearGradient id="oceanBg" x1="0" y1="0" x2="1000" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="45%" stop-color="#ecfeff"/>
+      <stop offset="100%" stop-color="#d1fae5"/>
+    </linearGradient>
+
+    <!-- Radial Glow around Central Indonesia -->
+    <radialGradient id="oceanGlow" cx="45%" cy="55%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
+      <stop offset="60%" stop-color="#cffafe" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#bae6fd" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Lush Topographic Land Gradient for Indonesian Islands -->
+    <linearGradient id="indoLand" x1="0" y1="70" x2="0" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <!-- Subtle Highland Topographic Overlay -->
+    <linearGradient id="highlandGrad" x1="0" y1="100" x2="1000" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6ee7b7" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#047857" stop-opacity="0.25"/>
+    </linearGradient>
+
+    <!-- Neighboring Countries Land Fill -->
+    <linearGradient id="neighborLand" x1="0" y1="0" x2="0" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cbd5e1" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#94a3b8" stop-opacity="0.45"/>
+    </linearGradient>
+
+    <!-- Elevation Drop Shadow for Islands -->
+    <filter id="islandShadow" x="-8%" y="-8%" width="116%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#065f46" flood-opacity="0.22"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+
+    <!-- Fine Cartographic Grid & Dot Pattern -->
+    <pattern id="atlasGrid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#0284c7" stroke-width="0.5" stroke-opacity="0.1"/>
+      <circle cx="25" cy="25" r="0.8" fill="#0284c7" fill-opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <!-- 1. Ocean Base & Bathymetry Glow -->
+  <rect width="1000" height="450" fill="url(#oceanBg)"/>
+  <rect width="1000" height="450" fill="url(#oceanGlow)"/>
+  <rect width="1000" height="450" fill="url(#atlasGrid)"/>
+
+  <!-- Latitude / Longitude Graticule Lines -->
+  <g stroke="#0284c7" stroke-opacity="0.12" stroke-width="0.7" stroke-dasharray="3 3">
+    <line x1="0" y1="110" x2="1000" y2="110"/>
+    <line x1="0" y1="310" x2="1000" y2="310"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="800" y1="0" x2="800" y2="450"/>
+  </g>
+
+  <!-- Equator Line (Garis Khatulistiwa 0°) -->
+  <line x1="0" y1="210" x2="1000" y2="210" stroke="#0d9488" stroke-width="1.2" stroke-dasharray="8 5" stroke-opacity="0.35"/>
+  <rect x="12" y="196" width="136" height="14" rx="7" fill="#ffffff" fill-opacity="0.75"/>
+  <text x="80" y="206" text-anchor="middle" fill="#0f766e" font-family="sans-serif" font-size="8" font-weight="800" letter-spacing="1">GARIS KHATULISTIWA 0°</text>
+
+  <!-- 2. Neighboring Countries (Context Map: Malaysia, Singapore, Brunei, Philippines South, Timor-Leste, PNG) -->
+  <g fill="url(#neighborLand)" stroke="#94a3b8" stroke-width="1" stroke-opacity="0.6">
+    <!-- Semenanjung Malaya & Thailand Selatan -->
+    <path d="M132,28 C145,42 158,60 168,78 C178,96 196,118 212,142 C218,152 210,164 198,160 C184,155 170,136 158,115 C144,92 135,66 126,40 Z"/>
+    <!-- Sarawak, Brunei & Sabah (Kalimantan Utara/Barat Laut) -->
+    <path d="M348,168 C365,158 388,148 412,134 C436,118 458,98 482,86 C495,82 510,94 514,112 C516,125 500,134 482,136 C462,138 446,148 428,168 C406,178 375,180 348,168 Z"/>
+    <!-- Mindanao Selatan (Filipina) -->
+    <path d="M605,52 C622,48 645,55 654,70 C658,82 642,92 625,88 C608,84 596,65 605,52 Z"/>
+    <!-- Papua Nugini (PNG) -->
+    <path d="M904,230 C935,236 968,252 992,278 C1002,295 995,332 972,342 C948,346 926,322 904,312 Z"/>
+  </g>
+
+  <!-- 3. Shallow Coastal Water Contour Halo around Indonesian Islands -->
+  <g fill="none" stroke="#99f6e4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity="0.55">
+    <!-- Sumatera Halo -->
+    <path d="M45,82 C68,78 96,102 125,130 C155,160 188,195 215,232 C234,258 244,285 236,306 C222,316 198,298 176,272 C146,236 116,198 86,156 C64,126 48,100 45,82 Z"/>
+    <!-- Jawa Halo -->
+    <path d="M234,324 C268,316 312,324 358,330 C396,334 432,336 452,346 C455,356 432,362 396,358 C348,352 292,344 246,338 C232,335 228,328 234,324 Z"/>
+    <!-- Kalimantan Halo -->
+    <path d="M332,182 C362,174 398,178 428,168 C452,148 472,134 496,136 C510,148 502,172 506,194 C510,214 492,242 476,266 C458,278 428,268 398,270 C368,266 342,246 332,218 C326,202 326,188 332,182 Z"/>
+    <!-- Sulawesi Halo -->
+    <path d="M546,162 C578,152 618,148 642,146 C648,156 626,170 594,174 C570,178 564,198 588,198 C612,196 630,192 630,204 C612,214 580,218 582,232 C594,246 616,264 606,278 C590,272 574,248 564,252 C556,266 556,294 540,294 C532,276 540,242 540,212 C538,188 538,168 546,162 Z"/>
+    <!-- Papua Halo -->
+    <path d="M756,202 C784,192 814,206 812,224 C834,224 868,216 904,230 L904,312 C884,318 872,340 852,334 C854,314 840,296 812,282 C788,266 782,242 760,232 C748,222 748,208 756,202 Z"/>
+  </g>
+
+  <!-- 4. INDONESIAN ARCHIPELAGO ISLANDS (Smooth Bezier Coastlines) -->
+  <g fill="url(#indoLand)" stroke="#047857" stroke-width="1.3" stroke-linejoin="round" filter="url(#islandShadow)">
+    
+    <!-- PULAU SUMATERA -->
+    <path d="M45,82 C58,76 76,86 95,102 C118,122 138,144 160,168 C182,192 204,214 220,240 C234,262 244,286 236,306 C228,316 212,310 198,296 C180,276 162,254 142,230 C122,204 102,178 82,150 C64,124 48,102 42,88 C40,84 42,82 45,82 Z"/>
+    <!-- Kepulauan Pantai Barat Sumatera (Simeulue, Nias, Mentawai, Enggano) -->
+    <ellipse cx="48" cy="128" rx="6" ry="3.5" transform="rotate(28 48 128)"/>
+    <ellipse cx="72" cy="162" rx="8" ry="4.5" transform="rotate(32 72 162)"/>
+    <ellipse cx="98" cy="210" rx="7" ry="3.5" transform="rotate(35 98 210)"/>
+    <ellipse cx="118" cy="240" rx="8" ry="4" transform="rotate(35 118 240)"/>
+    <ellipse cx="152" cy="282" rx="5" ry="3" transform="rotate(30 152 282)"/>
+    <!-- Kepulauan Riau, Batam, Bintan & Natuna -->
+    <ellipse cx="226" cy="174" rx="7" ry="4"/>
+    <ellipse cx="246" cy="188" rx="6" ry="3.5"/>
+    <ellipse cx="290" cy="140" rx="6" ry="4"/>
+    <!-- Pulau Bangka & Belitung -->
+    <path d="M242,238 C256,236 270,246 272,258 C268,266 252,266 242,254 C236,246 238,240 242,238 Z"/>
+    <ellipse cx="292" cy="264" rx="9" ry="6"/>
+
+    <!-- PULAU JAWA & MADURA -->
+    <path d="M234,324 C254,316 278,318 304,324 C332,330 362,330 392,334 C418,336 438,338 452,346 C454,354 442,360 424,360 C394,358 360,352 324,348 C290,344 258,340 236,334 C228,331 228,326 234,324 Z"/>
+    <!-- Pulau Madura -->
+    <path d="M416,324 C430,322 444,324 448,330 C446,334 430,334 416,331 C412,329 412,325 416,324 Z"/>
+
+    <!-- PULAU KALIMANTAN -->
+    <path d="M332,182 C354,174 382,180 408,176 C428,172 444,154 462,140 C476,132 494,132 504,144 C510,156 498,172 504,188 C510,202 502,218 492,236 C484,252 476,268 458,272 C440,276 420,266 398,270 C374,268 352,254 338,232 C328,214 324,190 332,182 Z"/>
+
+    <!-- PULAU SULAWESI -->
+    <path d="M546,162 C572,154 606,150 634,144 C644,142 648,152 638,160 C622,170 594,170 574,178 C562,184 564,198 580,198 C598,198 618,190 628,196 C634,202 622,212 604,214 C586,216 576,222 586,234 C598,248 616,262 608,274 C600,282 586,266 574,254 C564,244 558,256 556,274 C554,288 548,296 538,292 C532,284 538,262 540,238 C542,212 534,170 546,162 Z"/>
+    <!-- Pulau Buton, Muna, Selayar & Sangihe -->
+    <ellipse cx="602" cy="288" rx="6" ry="9" transform="rotate(15 602 288)"/>
+    <ellipse cx="556" cy="306" rx="3.5" ry="8"/>
+    <ellipse cx="640" cy="124" rx="4.5" ry="6" transform="rotate(20 640 124)"/>
+
+    <!-- BALI & KEPULAUAN NUSA TENGGARA -->
+    <!-- Bali -->
+    <path d="M456,346 C466,344 476,346 476,354 C472,358 460,358 456,352 Z"/>
+    <!-- Lombok -->
+    <path d="M482,348 C492,346 500,348 498,356 C494,360 484,358 482,354 Z"/>
+    <!-- Sumbawa -->
+    <path d="M506,348 C522,344 540,346 544,354 C542,360 520,360 506,356 Z"/>
+    <!-- Sumba -->
+    <path d="M536,372 C550,370 566,374 568,382 C564,388 546,386 536,380 Z"/>
+    <!-- Flores, Komodo, Solor, Alor -->
+    <path d="M552,350 C578,346 608,346 628,352 C628,358 600,360 552,358 Z"/>
+    <!-- Timor & Rote -->
+    <path d="M618,368 C636,360 656,356 666,364 C664,372 640,380 620,380 Z"/>
+
+    <!-- KEPULAUAN MALUKU -->
+    <!-- Halmahera & Morotai -->
+    <path d="M674,146 C688,140 702,152 694,168 C688,176 706,182 702,194 C696,202 682,192 678,204 C672,212 664,206 666,192 C668,176 662,154 674,146 Z"/>
+    <!-- Pulau Buru -->
+    <ellipse cx="660" cy="244" rx="12" ry="7"/>
+    <!-- Pulau Seram & Ambon -->
+    <path d="M682,236 C704,232 728,236 736,246 C734,254 706,254 682,248 Z"/>
+    <!-- Kepulauan Kei, Tanimbar & Aru -->
+    <ellipse cx="722" cy="320" rx="8" ry="6" transform="rotate(-25 722 320)"/>
+    <ellipse cx="760" cy="296" rx="5" ry="10"/>
+
+    <!-- PULAU PAPUA & KEPULAUAN RAJA AMPAT / BIAK -->
+    <ellipse cx="748" cy="198" rx="8" ry="4"/>
+    <ellipse cx="742" cy="222" rx="7" ry="3.5"/>
+    <ellipse cx="840" cy="206" rx="9" ry="4"/>
+    <!-- Daratan Utama Papua -->
+    <path d="M756,202 C776,192 804,196 814,212 C818,220 804,226 818,226 C842,222 874,218 904,230 L904,312 C888,316 874,336 856,336 C846,334 858,314 846,300 C832,288 806,280 790,262 C780,250 780,238 762,232 C748,226 746,208 756,202 Z"/>
+  </g>
+
+  <!-- 5. Subtle Geographic Region & Sea Labels -->
+  <g fill="#0f766e" fill-opacity="0.45" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="1.8">
+    <text x="115" y="195" transform="rotate(38 115 195)">SUMATERA</text>
+    <text x="395" y="218">KALIMANTAN</text>
+    <text x="330" y="346">JAWA</text>
+    <text x="555" y="215">SULAWESI</text>
+    <text x="815" y="268">PAPUA</text>
+  </g>
+
+  <g fill="#0369a1" fill-opacity="0.38" font-family="sans-serif" font-size="8.5" font-style="italic" font-weight="600" letter-spacing="1.5">
+    <text x="75" y="385">SAMUDRA HINDIA</text>
+    <text x="315" y="302">LAUT JAWA</text>
+    <text x="635" y="295">LAUT BANDA</text>
+    <text x="785" y="160">SAMUDRA PASIFIK</text>
+    <text x="255" y="112">LAUT NATUNA UTARA</text>
+  </g>
+
+  <!-- 6. Cartographic Compass Rose (Top Right Corner) -->
+  <g transform="translate(945, 52)" opacity="0.65">
+    <circle cx="0" cy="0" r="22" fill="#ffffff" fill-opacity="0.7" stroke="#0d9488" stroke-width="1"/>
+    <circle cx="0" cy="0" r="17" fill="none" stroke="#0d9488" stroke-width="0.6" stroke-dasharray="2 2"/>
+    <polygon points="0,-16 3.5,-3.5 0,-6 -3.5,-3.5" fill="#006837"/>
+    <polygon points="0,16 3.5,3.5 0,6 -3.5,3.5" fill="#64748b"/>
+    <polygon points="16,0 3.5,3.5 6,0 3.5,-3.5" fill="#64748b"/>
+    <polygon points="-16,0 -3.5,3.5 -6,0 -3.5,-3.5" fill="#64748b"/>
+    <text x="0" y="-18" text-anchor="middle" fill="#006837" font-family="sans-serif" font-size="7" font-weight="900">U</text>
+  </g>
+</svg>

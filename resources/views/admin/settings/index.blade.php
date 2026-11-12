@@ -74,6 +74,38 @@
                         <textarea name="site_description" rows="3" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">{{ \App\Models\Setting::get('site_description') }}</textarea>
                         <span class="text-[11px] text-slate-400 mt-1 block">Tampil pada hasil pencarian Google saat pengguna mencari informasi UPT PJJ.</span>
                     </div>
+
+                    <!-- Statistik Capaian UPT PJJ (Tampil di Beranda) -->
+                    <div class="pt-4 border-t border-slate-100 space-y-4">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-chart-simple text-[#006837]"></i> Statistik Capaian Beranda
+                            </h4>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Angka statistik utama yang ditampilkan pada kartu ringkasan di bawah banner halaman Beranda.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Mahasiswa PJJ Aktif</label>
+                                <input type="text" name="stats_students" value="{{ \App\Models\Setting::get('stats_students', '8,500+') }}" placeholder="8,500+" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs font-bold focus:bg-white focus:outline-none focus:border-[#006837]">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Program Studi PJJ</label>
+                                <input type="text" name="stats_programs" value="{{ \App\Models\Setting::get('stats_programs', '6') }}" placeholder="6" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs font-bold focus:bg-white focus:outline-none focus:border-[#006837]">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Dosen & Tutor Siber</label>
+                                <input type="text" name="stats_lecturers" value="{{ \App\Models\Setting::get('stats_lecturers', '180+') }}" placeholder="180+" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs font-bold focus:bg-white focus:outline-none focus:border-[#006837]">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Modul & Video LMS</label>
+                                <input type="text" name="stats_modules" value="{{ \App\Models\Setting::get('stats_modules', '1,250+') }}" placeholder="1,250+" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs font-bold focus:bg-white focus:outline-none focus:border-[#006837]">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 2. Tab Profile & Sambutan -->

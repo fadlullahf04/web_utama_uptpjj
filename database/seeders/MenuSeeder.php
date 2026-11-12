@@ -6,6 +6,7 @@ use App\Models\MenuItem;
 use App\Models\Page;
 use App\Models\Service;
 use App\Models\StudyProgram;
+use App\Models\UpbjjZone;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -17,14 +18,16 @@ class MenuSeeder extends Seeder
     public function run(): void
     {
         MenuItem::query()->delete();
+        UpbjjZone::seedDefaultsIfEmpty();
 
         // 1. Seed Sample Dynamic Pages
         $samplePage = $this->seedSamplePage();
         $edusharePage = $this->seedEdusharePage();
         $upbjjPage = $this->seedUpbjjPage();
+        $tutorPage = $this->seedTutorPage();
 
         // 2. Seed Header Menu
-        $this->seedHeaderMenu($samplePage, $edusharePage, $upbjjPage);
+        $this->seedHeaderMenu($samplePage, $edusharePage, $upbjjPage, $tutorPage);
 
         // 3. Seed Footer Menu
         $this->seedFooterMenu($samplePage);
@@ -38,11 +41,12 @@ class MenuSeeder extends Seeder
         $samplePage = Page::where('slug', 'maklumat-pelayanan-upt-pjj')->first() ?? $this->seedSamplePage();
         $edusharePage = Page::where('slug', 'edushare')->first() ?? $this->seedEdusharePage();
         $upbjjPage = Page::where('slug', 'upbjj')->first() ?? $this->seedUpbjjPage();
+        $tutorPage = Page::where('slug', 'tutor')->first() ?? $this->seedTutorPage();
 
         MenuItem::where('location', $location)->delete();
 
         if ($location === 'header') {
-            $this->seedHeaderMenu($samplePage, $edusharePage, $upbjjPage);
+            $this->seedHeaderMenu($samplePage, $edusharePage, $upbjjPage, $tutorPage);
         } elseif ($location === 'footer') {
             $this->seedFooterMenu($samplePage);
         }
@@ -114,7 +118,7 @@ class MenuSeeder extends Seeder
     {
         $admin = User::first();
 
-        return Page::firstOrCreate(
+        return Page::updateOrCreate(
             ['slug' => 'edushare'],
             [
                 'title' => 'EduShare - Repositori Sumber Belajar Terbuka & Microlearning UPT PJJ',
@@ -137,10 +141,13 @@ class MenuSeeder extends Seeder
 <p>Bagi mahasiswa resmi Program Studi PJJ (S1 dan S2), seluruh materi EduShare telah terintegrasi secara otomatis ke dalam akun portal perkuliahan <strong>LMS Pillar</strong>. Nilai pengerjaan modul, partisipasi forum, dan kuis otomatis tersinkronisasi ke transkrip akademik semester aktif.</p>
 
 <div class="my-6 flex flex-wrap gap-3">
-    <a href="https://sso-lms.uinssc.ac.id" target="_blank" class="px-5 py-2.5 rounded-xl bg-[#006837] text-white font-bold text-xs inline-flex items-center gap-2">
+    <a href="https://edushare.uinssc.ac.id/" target="_blank" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs inline-flex items-center gap-2 transition no-underline shadow-sm">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Website EduShare UINSSC
+    </a>
+    <a href="https://sso-lms.uinssc.ac.id" target="_blank" class="px-5 py-2.5 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs inline-flex items-center gap-2 transition no-underline">
         <i class="fa-solid fa-graduation-cap"></i> Buka Portal LMS Pillar
     </a>
-    <a href="/panduan-lms" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs inline-flex items-center gap-2">
+    <a href="/panduan-lms" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs inline-flex items-center gap-2 transition no-underline">
         <i class="fa-solid fa-book-open"></i> Panduan Course & Tutorial LMS
     </a>
 </div>
@@ -160,58 +167,294 @@ class MenuSeeder extends Seeder
     {
         $admin = User::first();
 
-        return Page::firstOrCreate(
+        return Page::updateOrCreate(
             ['slug' => 'upbjj'],
             [
-                'title' => 'UPBJJ & Sentra Layanan Pendidikan Jarak Jauh UINSSC',
-                'excerpt' => 'Informasi jaringan sentra layanan mahasiswa, laboratorium ujian CBT daerah, pendampingan akademik, dan kemitraan wilayah UPT PJJ UIN Siber Syekh Nurjati Cirebon.',
+                'title' => 'UPBJJ (Unit Program Belajar Jarak Jauh) & Sentra Layanan Daerah UINSSC',
+                'excerpt' => 'Unit pelaksana layanan pendidikan jarak jauh di wilayah daerah untuk mendekatkan layanan administrasi akademik, tutorial, bahan ajar digital, ujian siber, serta pembinaan Sentra Layanan dan Kelompok Belajar (Pokjar) mahasiswa UIN Siber Syekh Nurjati Cirebon di seluruh Indonesia dan luar negeri.',
                 'content' => '
-<h2>Sentra Layanan & Jaringan UPBJJ UIN Siber Syekh Nurjati Cirebon</h2>
-<p>Sebagai Cyber Islamic University pertama di Indonesia, UIN Siber Syekh Nurjati Cirebon menyelenggarakan perkuliahan 100% online yang didukung oleh <strong>Sentra Layanan Belajar Jarak Jauh (UPBJJ)</strong> dan pos kemitraan wilayah. Sentra ini bertindak sebagai perpanjangan tangan kampus utama dalam memberikan pelayanan prima bagi sivitas akademika di berbagai pulau dan pelosok nusantara.</p>
+<h2>Apa itu UPBJJ UIN Siber Syekh Nurjati Cirebon?</h2>
+<p class="text-justify"><strong>Unit Program Belajar Jarak Jauh (UPBJJ)</strong> di lingkungan <strong>UPT Pendidikan Jarak Jauh UIN Siber Syekh Nurjati Cirebon (UINSSC)</strong> merupakan unit pelaksana operasional dan jaringan layanan wilayah yang dibentuk untuk mendekatkan akses pendidikan tinggi siber kepada mahasiswa yang tersebar di 38 provinsi di Indonesia maupun di luar negeri. Sebagaimana tata kelola pendidikan jarak jauh nasional, kehadiran UPBJJ memastikan mahasiswa tidak perlu datang ke kampus pusat di Cirebon untuk mengurus keperluan administrasi maupun akademik.</p>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
-        <h4 class="font-bold text-slate-900 text-emerald-800 mb-1"><i class="fa-solid fa-headset mr-1"></i> Helpdesk & Admisi Terpadu</h4>
-        <p class="text-xs text-slate-600">Pelayanan registrasi, validasi berkas fisik PMB, pengurusan surat keterangan kuliah, dan informasi beasiswa Kemenag / LPDP.</p>
-    </div>
-    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
-        <h4 class="font-bold text-slate-900 text-emerald-800 mb-1"><i class="fa-solid fa-laptop mr-1"></i> Lab Ujian CBT Terawasi</h4>
-        <p class="text-xs text-slate-600">Penyediaan fasilitas workstation komputer dan koneksi internet stabil bagi mahasiswa yang membutuhkan ruang ujian semester mandiri.</p>
-    </div>
-    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
-        <h4 class="font-bold text-slate-900 text-emerald-800 mb-1"><i class="fa-solid fa-chalkboard-user mr-1"></i> Klinik Akademik & Konseling</h4>
-        <p class="text-xs text-slate-600">Konsultasi bimbingan akademik bersama tutor daerah, pendampingan belajar, dan pelatihan literasi teknologi LMS Pillar.</p>
-    </div>
-    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
-        <h4 class="font-bold text-slate-900 text-emerald-800 mb-1"><i class="fa-solid fa-handshake mr-1"></i> Kemitraan Kemenag & Pemda</h4>
-        <p class="text-xs text-slate-600">Koordinasi sinergis dengan Kantor Wilayah Kementerian Agama, Pokjawas Madrasah, dan organisasi mitra di seluruh provinsi.</p>
-    </div>
+<p class="text-justify">Seluruh operasional UPBJJ dikoordinasikan langsung oleh <strong>UPT PJJ UINSSC</strong> bekerja sama dengan jaringan Kantor Wilayah Kementerian Agama (Kanwil Kemenag), Perguruan Tinggi Keagamaan Islam (PTKI) Mitra, Pesantren, Madrasah, serta Atase Pendidikan/KBRI untuk melayani ribuan mahasiswa Program Studi PJJ jenjang Sarjana (S1) dan Magister (S2).</p>
+
+<h3>Direktori Zona Wilayah Layanan UPBJJ UINSSC</h3>
+<p class="text-justify">UPT Pendidikan Jarak Jauh UIN Siber Syekh Nurjati Cirebon melayani mahasiswa di seluruh wilayah Indonesia dan luar negeri yang terbagi ke dalam 7 (tujuh) Zona Koordinasi Layanan:</p>
+
+<div class="overflow-x-auto my-6">
+    <table class="w-full text-left border-collapse border border-slate-300 text-xs">
+        <thead>
+            <tr class="bg-emerald-50 text-emerald-950 font-bold">
+                <th class="p-3 border border-slate-300">Kode Zona</th>
+                <th class="p-3 border border-slate-300">Wilayah Layanan UPBJJ</th>
+                <th class="p-3 border border-slate-300">Cakupan Provinsi & Sentra Pokjar</th>
+                <th class="p-3 border border-slate-300">Mitra Koordinasi Wilayah</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">ZONA 01</td>
+                <td class="p-3 border border-slate-300 font-semibold">UPBJJ Wilayah Jawa Barat, DKI Jakarta & Banten (Pusat Cirebon)</td>
+                <td class="p-3 border border-slate-300">Cirebon, Indramayu, Majalengka, Kuningan, Bandung, Bogor, Bekasi, Tangerang, Serang, DKI Jakarta</td>
+                <td class="p-3 border border-slate-300">Kampus Pusat Gedung Siber UINSSC & Kanwil Kemenag Jabar/DKI/Banten</td>
+            </tr>
+            <tr class="bg-slate-50/60">
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">ZONA 02</td>
+                <td class="p-3 border border-slate-300 font-semibold">UPBJJ Wilayah Jawa Tengah, DI Yogyakarta & Jawa Timur</td>
+                <td class="p-3 border border-slate-300">Semarang, Brebes, Tegal, Banyumas, Surakarta, Yogyakarta, Surabaya, Malang, Jember, Madura</td>
+                <td class="p-3 border border-slate-300">Jaringan Kemenag Kab/Kota, Madrasah & Pesantren Mitra</td>
+            </tr>
+            <tr>
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">ZONA 03</td>
+                <td class="p-3 border border-slate-300 font-semibold">UPBJJ Wilayah Sumatera</td>
+                <td class="p-3 border border-slate-300">Banda Aceh, Medan, Padang, Pekanbaru, Batam, Jambi, Palembang, Bengkulu, Bandar Lampung, Pangkalpinang</td>
+                <td class="p-3 border border-slate-300">Sentra Layanan Daerah & Pokjar Guru Madrasah Sumatera</td>
+            </tr>
+            <tr class="bg-slate-50/60">
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">ZONA 04</td>
+                <td class="p-3 border border-slate-300 font-semibold">UPBJJ Wilayah Kalimantan</td>
+                <td class="p-3 border border-slate-300">Pontianak, Palangkaraya, Banjarmasin, Samarinda, Balikpapan, Ibu Kota Nusantara (IKN), Tarakan</td>
+                <td class="p-3 border border-slate-300">Sentra Layanan Daerah & Pokjar Kemenag Kalimantan</td>
+            </tr>
+            <tr>
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">ZONA 05</td>
+                <td class="p-3 border border-slate-300 font-semibold">UPBJJ Wilayah Sulawesi</td>
+                <td class="p-3 border border-slate-300">Makassar, Parepare, Palu, Kendari, Mamuju, Gorontalo, Manado</td>
+                <td class="p-3 border border-slate-300">Sentra Layanan Daerah & Pokjar Madrasah Sulawesi</td>
+            </tr>
+            <tr class="bg-slate-50/60">
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">ZONA 06</td>
+                <td class="p-3 border border-slate-300 font-semibold">UPBJJ Wilayah Bali, Nusa Tenggara, Maluku & Papua</td>
+                <td class="p-3 border border-slate-300">Denpasar, Mataram, Kupang, Ambon, Ternate, Sorong, Manokwari, Jayapura, Merauke</td>
+                <td class="p-3 border border-slate-300">Sentra Layanan Afirmasi 3T & Kemitraan Kemenag Timur</td>
+            </tr>
+            <tr>
+                <td class="p-3 border border-slate-300 font-bold text-amber-700">ZONA LN</td>
+                <td class="p-3 border border-slate-300 font-semibold">Unit Layanan Mahasiswa Luar Negeri (Overseas)</td>
+                <td class="p-3 border border-slate-300">Malaysia, Singapura, Brunei Darussalam, Arab Saudi, Mesir, Taiwan, Hongkong, Jepang, Korea Selatan</td>
+                <td class="p-3 border border-slate-300">Pusat Layanan Internasional UINSSC & Komunitas Pekerja/Mahasiswa RI</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
-<h3>Kantor Pusat Operasional & Koordinasi Sentra</h3>
-<p>Seluruh sistem sentra layanan terkoordinasi secara terpusat di Kantor UPT Pendidikan Jarak Jauh (UPT PJJ) Lantai 3 Gedung Siber UINSSC Cirebon. Mahasiswa dapat memanfaatkan helpdesk digital 24/7 tanpa harus datang langsung ke lokasi fisik.</p>
+<h3>Kantor Pusat Koordinasi UPBJJ & Layanan Digital 24/7</h3>
+<p class="text-justify">Seluruh layanan administrasi dan akademik UPBJJ UINSSC telah terdigitalisasi secara penuh melalui <strong>Sistem Layanan Terpadu Satu Pintu</strong>. Mahasiswa dari zona wilayah mana pun maupun luar negeri dapat mengurus administrasi, mengakses tutorial, dan berkonsultasi secara daring 24/7, atau mengunjungi Kantor Pusat UPT PJJ UINSSC:</p>
 
-<div class="my-6 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1">
-    <p><strong>Alamat Kantor Pusat:</strong> Gedung Siber Lt. 3, Kampus UIN Siber Syekh Nurjati Cirebon, Jl. Perjuangan By Pass Sunyaragi, Kota Cirebon, Jawa Barat 45132</p>
-    <p><strong>Helpdesk WhatsApp Resmi:</strong> +62 811-2345-678</p>
-    <p><strong>Email Resmi Layanan:</strong> pjj@uinssc.ac.id</p>
+<div class="my-6 p-5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+    <p><strong><i class="fa-solid fa-location-dot text-[#006837] mr-1.5"></i> Kantor Pusat UPT PJJ / UPBJJ Pusat:</strong> Gedung Siber Lt. 3, Kampus UIN Siber Syekh Nurjati Cirebon, Jl. Perjuangan By Pass Sunyaragi, Kota Cirebon, Jawa Barat 45132</p>
+    <p><strong><i class="fa-solid fa-clock text-[#006837] mr-1.5"></i> Jam Operasional Layanan Tatap Muka:</strong> Senin – Jumat, Pukul 07.30 – 16.00 WIB (Helpdesk Online & LMS Pillar Aktif 24 Jam)</p>
+    <p><strong><i class="fa-brands fa-whatsapp text-[#006837] mr-1.5"></i> Helpdesk WhatsApp Resmi:</strong> +62 811-2345-678</p>
+    <p><strong><i class="fa-solid fa-envelope text-[#006837] mr-1.5"></i> Email Layanan UPBJJ & Pokjar:</strong> pjj@uinssc.ac.id</p>
+</div>
+
+<div class="my-6 flex flex-wrap gap-3">
+    <a href="https://sso-lms.uinssc.ac.id" target="_blank" class="px-5 py-2.5 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs inline-flex items-center gap-2 transition no-underline">
+        <i class="fa-solid fa-graduation-cap"></i> Masuk Portal LMS Pillar
+    </a>
+    <a href="https://pmb.uinssc.ac.id" target="_blank" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs inline-flex items-center gap-2 transition no-underline">
+        <i class="fa-solid fa-user-plus"></i> Daftar Mahasiswa Baru (PMB PJJ)
+    </a>
+    <a href="/kontak" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs inline-flex items-center gap-2 transition no-underline">
+        <i class="fa-solid fa-headset"></i> Hubungi Helpdesk & Pengajuan Pokjar
+    </a>
 </div>
                 ',
                 'template' => 'default',
                 'is_published' => true,
                 'published_at' => now(),
                 'views_count' => 310,
-                'meta_title' => 'UPBJJ & Sentra Layanan UPT PJJ UINSSC',
-                'meta_description' => 'Sentra Layanan Belajar Jarak Jauh (UPBJJ) UIN Siber Syekh Nurjati Cirebon menghadirkan pendampingan akademik, ujian online, dan helpdesk daerah.',
+                'meta_title' => 'UPBJJ (Unit Program Belajar Jarak Jauh) & Sentra Layanan Daerah - UPT PJJ UINSSC',
+                'meta_description' => 'Informasi lengkap Unit Program Belajar Jarak Jauh (UPBJJ), Sentra Layanan PJJ, dan Kelompok Belajar (Pokjar) UIN Siber Syekh Nurjati Cirebon di seluruh Indonesia.',
                 'user_id' => $admin?->id,
             ]
         );
     }
 
-    protected function seedHeaderMenu(Page $samplePage, ?Page $edusharePage = null, ?Page $upbjjPage = null): void
+    protected function seedTutorPage(): Page
+    {
+        $admin = User::first();
+
+        return Page::updateOrCreate(
+            ['slug' => 'tutor'],
+            [
+                'title' => 'Rekrutmen Tutor Online UPT PJJ - UIN Siber Syekh Nurjati Cirebon',
+                'excerpt' => 'Portal informasi dan pendaftaran Rekrutmen Tutor Online Pendidikan Jarak Jauh (PJJ) UIN Siber Syekh Nurjati Cirebon. Bergabunglah menjadi pengajar siber berstandar global.',
+                'content' => '
+<h2>Rekrutmen Tutor Online UPT PJJ UIN Siber Syekh Nurjati Cirebon</h2>
+<p class="text-justify"><strong>Unit Pelaksana Teknis Pendidikan Jarak Jauh (UPT PJJ) UIN Siber Syekh Nurjati Cirebon (UINSSC)</strong> membuka kesempatan seluas-luasnya bagi para akademisi, dosen, peneliti, dan praktisi profesional di seluruh Indonesia maupun mancanegara untuk bergabung sebagai <strong>Tutor Online (Dosen Pengampu Tutorial Daring)</strong> pada ekosistem <em>World Class Cyber Islamic University</em>.</p>
+
+<p class="text-justify">Sebagai Tutor Online PJJ UINSSC, Anda berperan strategis dalam memfasilitasi, membimbing, dan mengevaluasi proses belajar mandiri ribuan mahasiswa jarak jauh melalui platform pembelajaran digital <strong>LMS Pillar</strong> secara fleksibel, terukur, dan profesional.</p>
+
+<div class="my-6 flex flex-wrap gap-3">
+    <a href="https://tutor.uinssc.ac.id/" target="_blank" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs inline-flex items-center gap-2 transition no-underline shadow-sm">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Portal Rekrutmen Tutor (tutor.uinssc.ac.id)
+    </a>
+    <a href="https://sso-lms.uinssc.ac.id" target="_blank" class="px-5 py-2.5 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs inline-flex items-center gap-2 transition no-underline">
+        <i class="fa-solid fa-graduation-cap"></i> Masuk Portal LMS Pillar
+    </a>
+    <a href="/panduan-lms" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs inline-flex items-center gap-2 transition no-underline">
+        <i class="fa-solid fa-book-open"></i> Panduan LMS Tutor
+    </a>
+</div>
+
+<div class="my-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200">
+    <h3 class="text-emerald-900 font-bold mb-2"><i class="fa-solid fa-award text-[#006837] mr-1.5"></i> Keunggulan & Benefit Menjadi Tutor Online PJJ UINSSC</h3>
+    <ul class="space-y-2 text-sm text-emerald-950 text-justify">
+        <li class="text-justify"><strong>1. Fleksibilitas Waktu & Tempat 100% Daring:</strong> Kegiatan tutorial, diskusi asinkron, dan penilaian dilakukan sepenuhnya secara online melalui LMS Pillar dari lokasi masing-masing.</li>
+        <li class="text-justify"><strong>2. Honorarium & Insentif Kompetitif:</strong> Mendapatkan honorarium pengajaran, pembimbingan, dan koreksi evaluasi sesuai standar Badan Layanan Umum (BLU) UIN Siber Syekh Nurjati Cirebon.</li>
+        <li class="text-justify"><strong>3. Sertifikasi & Bimtek Pedagogi Siber:</strong> Memperoleh pelatihan penyusunan bahan ajar digital interaktif, manajemen kelas maya, serta e-Sertifikat resmi Tutor PJJ Nasional.</li>
+        <li class="text-justify"><strong>4. Surat Keputusan (SK) Rektor Resmi:</strong> Setiap tutor yang dinyatakan lulus dan ditugaskan akan mendapatkan SK Pengangkatan Tutor yang diakui untuk pemenuhan BKD/Sister dan portofolio akademik.</li>
+    </ul>
+</div>
+
+<h3>Kualifikasi & Persyaratan Calon Tutor Online</h3>
+<p class="text-justify">Calon pendaftar Rekrutmen Tutor Online UPT PJJ UIN Siber Syekh Nurjati Cirebon wajib memenuhi persyaratan umum dan khusus berikut:</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <h4 class="font-bold text-slate-900 text-sm mb-1.5"><i class="fa-solid fa-user-graduate text-[#006837] mr-1.5"></i> Kualifikasi Akademik & Profesi</h4>
+        <ul class="text-xs text-slate-600 space-y-1.5 text-justify">
+            <li class="text-justify">Berpendidikan minimal <strong>Magister (S2)</strong> untuk tutor jenjang S1, dan <strong>Doktor (S3)</strong> untuk tutor jenjang Pascasarjana (S2), dari perguruan tinggi terakreditasi dengan bidang ilmu yang linear.</li>
+            <li class="text-justify">Diutamakan berstatus Dosen (memiliki NIDN/NIDK/NUPTK) atau Praktisi/Profesional dengan pengalaman relevan minimal 2 tahun.</li>
+        </ul>
+    </div>
+    <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <h4 class="font-bold text-slate-900 text-sm mb-1.5"><i class="fa-solid fa-laptop-code text-[#006837] mr-1.5"></i> Kompetensi Digital & Komitmen</h4>
+        <ul class="text-xs text-slate-600 space-y-1.5 text-justify">
+            <li class="text-justify">Terampil mengoperasikan komputer, perangkat konferensi video (Zoom/Google Meet), serta sistem pembelajaran daring (<em>Learning Management System</em>).</li>
+            <li class="text-justify">Bersedia mengikuti Bimbingan Teknis (Bimtek) dan Refreshment LMS Pillar serta berkomitmen penuh mendampingi mahasiswa selama 1 (satu) semester penuh.</li>
+        </ul>
+    </div>
+</div>
+
+<h3>Dokumen Administrasi Pendaftaran</h3>
+<p class="text-justify">Sebelum melakukan pendaftaran di laman resmi <a href="https://tutor.uinssc.ac.id/" target="_blank">tutor.uinssc.ac.id</a>, pastikan Anda telah menyiapkan pindaian (scan) dokumen dalam format PDF/JPG berikut:</p>
+<ol class="text-sm text-slate-700 space-y-1.5">
+    <li class="text-justify">Kartu Tanda Penduduk (KTP) dan NPWP aktif.</li>
+    <li class="text-justify">Daftar Riwayat Hidup / <em>Curriculum Vitae</em> (CV) terbaru beserta riwayat pengajaran/publikasi.</li>
+    <li class="text-justify">Ijazah dan Transkrip Nilai asli jenjang S1, S2, dan/atau S3 yang linear dengan mata kuliah pilihan.</li>
+    <li class="text-justify">SK Jabatan Fungsional Dosen / Sertifikat Pendidik (Serdos) / Surat Keterangan Pengalaman Kerja Praktisi.</li>
+    <li class="text-justify">Sertifikat Pelatihan LMS / E-Learning / Pekerti / AA (jika memiliki).</li>
+    <li class="text-justify">Surat Pernyataan Komitmen & Pakta Integritas Tutor Online UPT PJJ UINSSC (format dapat diunduh di portal rekrutmen).</li>
+</ol>
+
+<h3>Formasi Program Studi PJJ yang Tersedia</h3>
+<div class="overflow-x-auto my-6">
+    <table class="w-full text-left border-collapse border border-slate-300 text-xs">
+        <thead>
+            <tr class="bg-emerald-50 text-emerald-950 font-bold">
+                <th class="p-3 border border-slate-300">No</th>
+                <th class="p-3 border border-slate-300">Program Studi PJJ</th>
+                <th class="p-3 border border-slate-300">Jenjang</th>
+                <th class="p-3 border border-slate-300">Kualifikasi Minimal Tutor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">1</td>
+                <td class="p-3 border border-slate-300 font-semibold">PJJ Pendidikan Agama Islam (PAI)</td>
+                <td class="p-3 border border-slate-300">Sarjana (S1)</td>
+                <td class="p-3 border border-slate-300">Magister (S2) / Doktor (S3) PAI, Pendidikan Islam, Studi Islam</td>
+            </tr>
+            <tr class="bg-slate-50/60">
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">2</td>
+                <td class="p-3 border border-slate-300 font-semibold">PJJ Pendidikan Guru Madrasah Ibtidaiyah (PGMI)</td>
+                <td class="p-3 border border-slate-300">Sarjana (S1)</td>
+                <td class="p-3 border border-slate-300">Magister (S2) / Doktor (S3) PGMI, Pendidikan Dasar, Sains/Matematika/Bahasa Dasar</td>
+            </tr>
+            <tr>
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">3</td>
+                <td class="p-3 border border-slate-300 font-semibold">PJJ Pendidikan Bahasa Arab (PBA)</td>
+                <td class="p-3 border border-slate-300">Sarjana (S1)</td>
+                <td class="p-3 border border-slate-300">Magister (S2) / Doktor (S3) Pendidikan Bahasa Arab, Sastra Arab, Linguistik Arab</td>
+            </tr>
+            <tr class="bg-slate-50/60">
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">4</td>
+                <td class="p-3 border border-slate-300 font-semibold">PJJ Hukum Keluarga Islam / Ahwal Syakhshiyyah (HKI)</td>
+                <td class="p-3 border border-slate-300">Sarjana (S1)</td>
+                <td class="p-3 border border-slate-300">Magister (S2) / Doktor (S3) Hukum Keluarga Islam, Syariah, Ilmu Hukum</td>
+            </tr>
+            <tr>
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">5</td>
+                <td class="p-3 border border-slate-300 font-semibold">PJJ Sejarah Peradaban Islam (SPI)</td>
+                <td class="p-3 border border-slate-300">Sarjana (S1)</td>
+                <td class="p-3 border border-slate-300">Magister (S2) / Doktor (S3) Sejarah Peradaban Islam, Ilmu Sejarah, Filologi, Kebudayaan Islam</td>
+            </tr>
+            <tr class="bg-slate-50/60">
+                <td class="p-3 border border-slate-300 font-bold text-amber-700">6</td>
+                <td class="p-3 border border-slate-300 font-semibold">PJJ Magister Pendidikan Agama Islam (S2 PAI)</td>
+                <td class="p-3 border border-slate-300">Magister (S2)</td>
+                <td class="p-3 border border-slate-300">Doktor (S3) Pendidikan Agama Islam / Manajemen Pendidikan Islam (Bergelar Doktor)</td>
+            </tr>
+            <tr>
+                <td class="p-3 border border-slate-300 font-bold text-[#006837]">7</td>
+                <td class="p-3 border border-slate-300 font-semibold">Mata Kuliah Dasar Umum (MKDU & Penciri Siber)</td>
+                <td class="p-3 border border-slate-300">Lintas Prodi</td>
+                <td class="p-3 border border-slate-300">Magister (S2) / Doktor (S3) Pancasila, Kewarganegaraan, Bahasa Indonesia, Bahasa Inggris, TI/Literasi Digital</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h3>Tugas Pokok & Tanggung Jawab Tutor Online</h3>
+<ul class="text-sm text-slate-700 space-y-1.5">
+    <li class="text-justify"><strong>1. Pengelolaan Kelas LMS Pillar:</strong> Menyiapkan pengantar inisiasi mingguan, memeriksa kelengkapan modul digital, video pembelajaran, dan bahan suplemen di kelas yang diampu.</li>
+    <li class="text-justify"><strong>2. Fasilitasi Forum Diskusi Asinkron:</strong> Memantik diskusi ilmiah, menanggapi pertanyaan mahasiswa, dan memotivasi keaktifan belajar mahasiswa setiap sesi pekan perkuliahan.</li>
+    <li class="text-justify"><strong>3. Tutorial Tatap Maya (Sinkron):</strong> Melaksanakan pertemuan tatap maya terjadwal (webinar/review materi) sesuai pedoman akademik UPT PJJ.</li>
+    <li class="text-justify"><strong>4. Evaluasi & Penilaian Tepat Waktu:</strong> Memeriksa, memberikan umpan balik konstruktif, dan menginput nilai Tugas Tutorial, Kuis, UTS, serta UAS ke dalam sistem LMS Pillar sesuai kalender akademik.</li>
+</ul>
+
+<h3>Tahapan Seleksi Rekrutmen Tutor Online</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 my-6">
+    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-[#006837]">Tahap 01</span>
+        <h4 class="font-bold text-slate-900 text-xs mt-2 mb-1">Registrasi & Unggah Berkas</h4>
+        <p class="text-[11px] text-slate-600 text-justify">Pendaftaran akun secara daring dan pengunggahan dokumen persyaratan melalui portal resmi tutor.uinssc.ac.id.</p>
+    </div>
+    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-[#006837]">Tahap 02</span>
+        <h4 class="font-bold text-slate-900 text-xs mt-2 mb-1">Seleksi Administrasi</h4>
+        <p class="text-[11px] text-slate-600 text-justify">Verifikasi kelengkapan dokumen, keabsahan ijazah, serta kesesuaian linearitas bidang ilmu dengan mata kuliah PJJ.</p>
+    </div>
+    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-[#006837]">Tahap 03</span>
+        <h4 class="font-bold text-slate-900 text-xs mt-2 mb-1">Uji Kompetensi LMS & Wawancara</h4>
+        <p class="text-[11px] text-slate-600 text-justify">Asesmen penguasaan teknologi pembelajaran daring, praktik pengelolaan LMS Pillar, dan micro-teaching siber.</p>
+    </div>
+    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-800">Tahap 04</span>
+        <h4 class="font-bold text-slate-900 text-xs mt-2 mb-1">Bimtek & Penugasan SK</h4>
+        <p class="text-[11px] text-slate-600 text-justify">Pengumuman hasil akhir, pembekalan Bimtek Tutor PJJ, penerbitan SK Rektor, dan penugasan kelas semester aktif.</p>
+    </div>
+</div>
+
+<div class="my-6 p-5 rounded-2xl bg-gradient-to-r from-[#006837] to-[#004d29] text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+        <h4 class="text-sm font-extrabold text-white">Siap Bergabung Menjadi Tutor Online UPT PJJ UINSSC?</h4>
+        <p class="text-xs text-emerald-100 mt-1 text-justify">Kunjungi portal resmi Rekrutmen Tutor Online untuk melihat jadwal gelombang pendaftaran aktif dan membuat akun calon tutor.</p>
+    </div>
+    <a href="https://tutor.uinssc.ac.id/" target="_blank" class="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs inline-flex items-center gap-2 transition no-underline shrink-0 shadow-md">
+        <i class="fa-solid fa-user-plus"></i> Daftar di tutor.uinssc.ac.id
+    </a>
+</div>
+                ',
+                'template' => 'default',
+                'is_published' => true,
+                'published_at' => now(),
+                'views_count' => 340,
+                'meta_title' => 'Rekrutmen Tutor Online UPT PJJ - UIN Siber Syekh Nurjati Cirebon',
+                'meta_description' => 'Informasi resmi persyaratan, kualifikasi, tahapan seleksi, dan pendaftaran Rekrutmen Tutor Online UPT PJJ UIN Siber Syekh Nurjati Cirebon (tutor.uinssc.ac.id).',
+                'user_id' => $admin?->id,
+            ]
+        );
+    }
+
+    protected function seedHeaderMenu(Page $samplePage, ?Page $edusharePage = null, ?Page $upbjjPage = null, ?Page $tutorPage = null): void
     {
         $edusharePage ??= $this->seedEdusharePage();
         $upbjjPage ??= $this->seedUpbjjPage();
+        $tutorPage ??= $this->seedTutorPage();
 
         // 1. Home
         MenuItem::create([
@@ -419,9 +662,8 @@ class MenuSeeder extends Seeder
             'title' => 'EduShare',
             'type' => 'page',
             'page_id' => $edusharePage->id,
-            'icon' => 'fa-solid fa-book-bookmark',
-            'badge' => 'OER',
-            'badge_color' => 'teal',
+            'icon' => null,
+            'badge' => null,
             'order' => 5,
             'is_active' => true,
         ]);
@@ -433,65 +675,77 @@ class MenuSeeder extends Seeder
             'title' => 'UPBJJ',
             'type' => 'page',
             'page_id' => $upbjjPage->id,
-            'icon' => 'fa-solid fa-network-wired',
-            'badge' => 'Sentra',
-            'badge_color' => 'blue',
+            'icon' => null,
+            'badge' => null,
             'order' => 6,
             'is_active' => true,
         ]);
 
-        // 7. Pengumuman
+        // 7. Tutor (Rekrutmen Tutor Online UPT PJJ)
+        MenuItem::create([
+            'location' => 'header',
+            'parent_id' => null,
+            'title' => 'Tutor',
+            'type' => 'page',
+            'page_id' => $tutorPage->id,
+            'icon' => null,
+            'badge' => null,
+            'order' => 7,
+            'is_active' => true,
+        ]);
+
+        // 8. Pengumuman
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Pengumuman',
             'type' => 'route',
             'route_name' => 'announcements.index',
-            'order' => 7,
+            'order' => 8,
             'is_active' => true,
         ]);
 
-        // 8. Berita
+        // 9. Berita
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Berita',
             'type' => 'route',
             'route_name' => 'posts.index',
-            'order' => 8,
+            'order' => 9,
             'is_active' => true,
         ]);
 
-        // 9. FAQs
+        // 10. FAQs
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'FAQs',
             'type' => 'route',
             'route_name' => 'faqs',
-            'order' => 9,
+            'order' => 10,
             'is_active' => true,
         ]);
 
-        // 10. Downloads
+        // 11. Downloads
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Downloads',
             'type' => 'route',
             'route_name' => 'downloads.index',
-            'order' => 10,
+            'order' => 11,
             'is_active' => true,
         ]);
 
-        // 11. Kontak
+        // 12. Kontak
         MenuItem::create([
             'location' => 'header',
             'parent_id' => null,
             'title' => 'Kontak',
             'type' => 'route',
             'route_name' => 'contact.index',
-            'order' => 11,
+            'order' => 12,
             'is_active' => true,
         ]);
     }
