@@ -181,8 +181,10 @@ class UpbjjZone extends Model
         static::seedDefaultsIfEmpty();
 
         $zones = static::where('is_active', true)->orderBy('order', 'asc')->orderBy('id', 'asc')->get();
+        $galleries = UpbjjGallery::with('zone')->orderBy('order', 'asc')->orderByDesc('id')->get();
 
         $mapHtml = view('partials.upbjj-map', compact('zones'))->render();
+        $galleryHtml = view('partials.upbjj-gallery', compact('galleries'))->render();
 
         $dotColors = [
             'emerald' => 'bg-emerald-500',
@@ -279,6 +281,7 @@ class UpbjjZone extends Model
             .$tfoot
             .'</table>'
             .'</div>'
+            .$galleryHtml
             .'</div>';
     }
 }

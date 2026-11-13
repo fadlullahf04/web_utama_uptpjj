@@ -36,7 +36,7 @@
         <div class="flex flex-wrap items-center gap-4 text-xs text-emerald-200/90 mt-5 pt-4 border-t border-white/10">
             <span class="flex items-center gap-1.5">
                 <i class="fa-solid fa-calendar-day text-amber-300"></i>
-                <span>{{ $page->published_at ? $page->published_at->translatedFormat('d F Y') : $page->created_at->translatedFormat('d F Y') }}</span>
+                <span>{{ $page->published_at ? $page->published_at->translatedFormat('d F Y, H:i') : $page->created_at->translatedFormat('d F Y, H:i') }} WIB</span>
             </span>
             <span class="text-white/30">•</span>
             <span class="flex items-center gap-1.5">

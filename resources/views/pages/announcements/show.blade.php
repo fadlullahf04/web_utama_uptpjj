@@ -13,9 +13,11 @@
         <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight max-w-4xl">
             {{ $announcement->title }}
         </h1>
-        <div class="flex items-center gap-3 text-xs text-emerald-100 pt-2 border-t border-white/20">
-            <span><i class="fa-regular fa-calendar mr-1"></i> Dipublikasikan: {{ $announcement->published_at ? $announcement->published_at->format('d F Y') : $announcement->created_at->format('d F Y') }}</span>
-            <span>•</span>
+        <div class="flex flex-wrap items-center gap-3 text-xs text-emerald-100 pt-2 border-t border-white/20">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-amber-300"></i> {{ $announcement->published_at ? $announcement->published_at->translatedFormat('d F Y, H:i') : $announcement->created_at->translatedFormat('d F Y, H:i') }} WIB</span>
+            <span class="text-white/30">•</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-eye text-emerald-300"></i> {{ number_format($announcement->views_count ?? 0) }}x dibaca</span>
+            <span class="text-white/30">•</span>
             <span class="text-amber-300 font-bold uppercase">{{ $announcement->category }}</span>
         </div>
     </div>

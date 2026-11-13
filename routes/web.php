@@ -144,6 +144,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // UPBJJ Zones & Wilayah Layanan
     Route::resource('upbjj-zones', AdminUpbjjZoneController::class)->except(['create', 'edit', 'show']);
+    Route::post('upbjj-zones/galleries', [AdminUpbjjZoneController::class, 'storeGallery'])->name('upbjj-zones.galleries.store');
+    Route::put('upbjj-zones/galleries/{gallery}', [AdminUpbjjZoneController::class, 'updateGallery'])->name('upbjj-zones.galleries.update');
+    Route::delete('upbjj-zones/galleries/{gallery}', [AdminUpbjjZoneController::class, 'destroyGallery'])->name('upbjj-zones.galleries.destroy');
 
     // Admin & Editor Only: Contact Messages / Helpdesk Inbox
     Route::middleware(['role:admin,editor'])->group(function () {

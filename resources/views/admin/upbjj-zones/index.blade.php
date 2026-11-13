@@ -9,11 +9,14 @@
     createModal: false,
     detailModal: false,
     editModal: false,
+    createGalleryModal: false,
+    editGalleryModal: false,
     showMapPreview: true,
     newMale: 120,
     newFemale: 130,
     detailZone: {},
-    editZone: { id: null, code: '', name: '', coverage: '', partner: '', head_name: '', vice_head_name: '', secretary_name: '', coordinator_name: '', phone: '', address: '', male_students_count: 0, female_students_count: 0, students_count: 0, bubble_color: 'emerald', map_x: 30.5, map_y: 70.0, order: 1, is_active: true } 
+    editZone: { id: null, code: '', name: '', coverage: '', partner: '', head_name: '', vice_head_name: '', secretary_name: '', coordinator_name: '', phone: '', address: '', male_students_count: 0, female_students_count: 0, students_count: 0, bubble_color: 'emerald', map_x: 30.5, map_y: 70.0, order: 1, is_active: true },
+    editGallery: { id: null, upbjj_zone_id: '', title: '', image_url: '', activity_date: '', description: '', order: 1 }
 }" class="space-y-6">
 
     <!-- Info Banner & Quick Link to Public UPBJJ Page -->
@@ -158,6 +161,84 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Galeri Dokumentasi Kegiatan UPBJJ -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-images text-[#006837]"></i> Galeri Dokumentasi Kegiatan UPBJJ
+                </h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">
+                    Simpan foto dokumentasi kegiatan koordinasi, sosialisasi, dan layanan daerah UPBJJ ({{ $galleries->count() }} dokumentasi).
+                </p>
+            </div>
+            <button type="button" @click="createGalleryModal = true" class="px-4 py-2.5 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs uppercase tracking-wider transition shadow-md shadow-[#006837]/20 flex items-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-camera"></i> Tambah Dokumentasi
+            </button>
+        </div>
+
+        <div class="p-5">
+            @if($galleries->isNotEmpty())
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    @foreach($galleries as $item)
+                        @php
+                            $galleryPayload = [
+                                'id' => $item->id,
+                                'upbjj_zone_id' => $item->upbjj_zone_id ? (string) $item->upbjj_zone_id : '',
+                                'title' => $item->title,
+                                'image_url' => str_starts_with($item->image, 'http') ? $item->image : '',
+                                'activity_date' => $item->activity_date ? $item->activity_date->format('Y-m-d') : '',
+                                'description' => $item->description ?? '',
+                                'order' => $item->order ?? 1,
+                            ];
+                        @endphp
+                        <div class="bg-slate-50/70 rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between group">
+                            <div>
+                                <div class="relative h-44 bg-slate-200 overflow-hidden">
+                                    <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                    @if($item->zone)
+                                        <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-lg bg-white/95 text-[#006837] border border-emerald-200 text-[10px] font-extrabold shadow-sm">
+                                            {{ $item->zone->code }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="p-4 space-y-1.5">
+                                    <h4 class="text-xs font-bold text-slate-900 line-clamp-2">{{ $item->title }}</h4>
+                                    @if($item->activity_date)
+                                        <div class="text-[10px] text-slate-500 flex items-center gap-1">
+                                            <i class="fa-regular fa-calendar text-[#006837]"></i> {{ $item->activity_date->translatedFormat('d M Y') }}
+                                        </div>
+                                    @endif
+                                    @if($item->description)
+                                        <p class="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">{{ $item->description }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="px-4 py-2.5 bg-white border-t border-slate-100 flex items-center justify-end gap-1.5">
+                                <button type="button"
+                                    @click="editGallery = {{ \Illuminate\Support\Js::from($galleryPayload) }}; editGalleryModal = true"
+                                    class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-amber-50 hover:text-amber-700 text-[11px] font-bold transition cursor-pointer">
+                                    <i class="fa-solid fa-pen mr-1"></i> Edit
+                                </button>
+                                <form action="{{ route('admin.upbjj-zones.galleries.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus dokumentasi kegiatan ini?');" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-red-50 hover:text-red-600 text-[11px] font-bold transition cursor-pointer">
+                                        <i class="fa-solid fa-trash mr-1"></i> Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="py-10 text-center text-xs text-slate-400">
+                    Belum ada foto dokumentasi kegiatan UPBJJ. Klik tombol <strong>Tambah Dokumentasi</strong> di atas untuk mengunggah.
+                </div>
+            @endif
         </div>
     </div>
 
@@ -528,6 +609,140 @@
 
                     <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
                         <button type="button" @click="editModal = false" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold transition cursor-pointer">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white text-xs font-bold uppercase tracking-wider transition shadow-md shadow-[#006837]/20 cursor-pointer">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Dokumentasi Galeri UPBJJ -->
+    <div x-show="createGalleryModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true">
+        <div x-show="createGalleryModal" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="createGalleryModal = false"></div>
+
+        <div x-show="createGalleryModal" x-transition class="relative z-10 w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8">
+            <div class="p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-camera text-[#006837]"></i> Tambah Dokumentasi Kegiatan UPBJJ
+                    </h3>
+                    <button type="button" @click="createGalleryModal = false" class="text-slate-400 hover:text-slate-700 text-base cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form action="{{ route('admin.upbjj-zones.galleries.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Judul / Nama Kegiatan *</label>
+                        <input type="text" name="title" required placeholder="Contoh: Rapat Koordinasi Pokjar Wilayah Jawa Barat" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Zona UPBJJ (Opsional)</label>
+                            <select name="upbjj_zone_id" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                                <option value="">Kegiatan Umum UPBJJ</option>
+                                @foreach($zones as $z)
+                                    <option value="{{ $z->id }}">{{ $z->code }} — {{ $z->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tanggal Kegiatan</label>
+                            <input type="date" name="activity_date" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Unggah Foto Dokumentasi *</label>
+                        <input type="file" name="image_file" accept="image/*" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-600 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#006837] file:text-white hover:file:bg-[#004d29]">
+                        <span class="text-[10px] text-slate-400 mt-1 block">JPG, PNG, WEBP maks 5 MB</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Atau URL Foto</label>
+                        <input type="url" name="image_url" placeholder="https://..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Keterangan Singkat</label>
+                        <textarea name="description" rows="2" placeholder="Deskripsi singkat kegiatan..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                        <button type="button" @click="createGalleryModal = false" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold transition cursor-pointer">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white text-xs font-bold uppercase tracking-wider transition shadow-md shadow-[#006837]/20 cursor-pointer">
+                            Simpan Dokumentasi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Dokumentasi Galeri UPBJJ -->
+    <div x-show="editGalleryModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true">
+        <div x-show="editGalleryModal" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="editGalleryModal = false"></div>
+
+        <div x-show="editGalleryModal" x-transition class="relative z-10 w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8">
+            <div class="p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-[#006837]"></i> Edit Dokumentasi Kegiatan UPBJJ
+                    </h3>
+                    <button type="button" @click="editGalleryModal = false" class="text-slate-400 hover:text-slate-700 text-base cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form :action="'{{ url('/admin/upbjj-zones/galleries') }}/' + editGallery.id" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    @method('PUT')
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Judul / Nama Kegiatan *</label>
+                        <input type="text" name="title" x-model="editGallery.title" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Zona UPBJJ (Opsional)</label>
+                            <select name="upbjj_zone_id" x-model="editGallery.upbjj_zone_id" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                                <option value="">Kegiatan Umum UPBJJ</option>
+                                @foreach($zones as $z)
+                                    <option value="{{ $z->id }}">{{ $z->code }} — {{ $z->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tanggal Kegiatan</label>
+                            <input type="date" name="activity_date" x-model="editGallery.activity_date" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Ganti Foto Dokumentasi</label>
+                        <input type="file" name="image_file" accept="image/*" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-600 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#006837] file:text-white hover:file:bg-[#004d29]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Atau URL Foto</label>
+                        <input type="url" name="image_url" x-model="editGallery.image_url" placeholder="https://..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Keterangan Singkat</label>
+                        <textarea name="description" x-model="editGallery.description" rows="2" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                        <button type="button" @click="editGalleryModal = false" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold transition cursor-pointer">
                             Batal
                         </button>
                         <button type="submit" class="px-5 py-2 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white text-xs font-bold uppercase tracking-wider transition shadow-md shadow-[#006837]/20 cursor-pointer">

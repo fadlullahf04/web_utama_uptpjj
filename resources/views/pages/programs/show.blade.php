@@ -49,6 +49,18 @@
             </div>
         </div>
 
+        <div class="flex flex-wrap items-center gap-4 text-xs text-emerald-200/90 mt-6 pt-4 border-t border-white/15">
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-calendar-day text-amber-300"></i>
+                <span>{{ ($program->updated_at ?? $program->created_at)?->translatedFormat('d F Y, H:i') }} WIB</span>
+            </span>
+            <span class="text-white/30">•</span>
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-eye text-emerald-300"></i>
+                <span>{{ number_format($program->views_count ?? 0) }}x dibaca</span>
+            </span>
+        </div>
+
     </div>
 </div>
 

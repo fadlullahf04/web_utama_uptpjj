@@ -16,6 +16,7 @@ class ServiceController extends Controller
     public function show($slug)
     {
         $service = Service::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $service->increment('views_count');
         $otherServices = Service::active()->where('id', '!=', $service->id)->get();
 
         return view('pages.services.show', compact('service', 'otherServices'));

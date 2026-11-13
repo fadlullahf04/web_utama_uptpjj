@@ -14,6 +14,17 @@
             {{ $service->title }}
         </h1>
         <p class="text-xs sm:text-sm text-emerald-100 font-semibold max-w-3xl">{{ $service->short_description }}</p>
+        <div class="flex flex-wrap items-center gap-4 text-xs text-emerald-200/90 pt-3 border-t border-white/15">
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-calendar-day text-amber-300"></i>
+                <span>{{ ($service->updated_at ?? $service->created_at)?->translatedFormat('d F Y, H:i') }} WIB</span>
+            </span>
+            <span class="text-white/30">•</span>
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-eye text-emerald-300"></i>
+                <span>{{ number_format($service->views_count ?? 0) }}x dibaca</span>
+            </span>
+        </div>
     </div>
 </div>
 

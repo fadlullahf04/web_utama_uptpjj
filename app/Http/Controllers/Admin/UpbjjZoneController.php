@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\UpbjjGallery;
 use App\Models\UpbjjZone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class UpbjjZoneController extends Controller
@@ -15,8 +17,9 @@ class UpbjjZoneController extends Controller
         UpbjjZone::seedDefaultsIfEmpty();
 
         $zones = UpbjjZone::orderBy('order', 'asc')->orderBy('id', 'asc')->get();
+        $galleries = UpbjjGallery::with('zone')->orderBy('order', 'asc')->orderByDesc('id')->get();
 
-        return view('admin.upbjj-zones.index', compact('zones'));
+        return view('admin.upbjj-zones.index', compact('zones', 'galleries'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -94,5 +97,83 @@ class UpbjjZoneController extends Controller
         $upbjj_zone->delete();
 
         return back()->with('success', 'Zona & Wilayah UPBJJ berhasil dihapus.');
+    }
+
+    public function storeGallery(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'upbjj_zone_id' => 'nullable|exists:upbjj_zones,id',
+            'title' => 'required|string|max:255',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image_url' => 'nullable|url',
+            'activity_date' => 'nullable|date',
+            'description' => 'nullable|string',
+            'order' => 'nullable|integer',
+        ]);
+
+        $imagePath = $request->input('image_url');
+        if ($request->hasFile('image_file')) {
+            $imagePath = $request->file('image_file')->store('upbjj-gallery', 'public');
+        }
+
+        if (! $imagePath) {
+            return back()->with('error', 'Harap unggah file foto dokumentasi atau masukkan URL gambar.');
+        }
+
+        UpbjjGallery::create([
+            'upbjj_zone_id' => $validated['upbjj_zone_id'] ?? null,
+            'title' => $validated['title'],
+            'image' => $imagePath,
+            'activity_date' => $validated['activity_date'] ?? null,
+            'description' => $validated['description'] ?? null,
+            'order' => $validated['order'] ?? (UpbjjGallery::max('order') + 1),
+        ]);
+
+        return back()->with('success', 'Dokumentasi kegiatan UPBJJ berhasil ditambahkan ke galeri!');
+    }
+
+    public function updateGallery(Request $request, UpbjjGallery $gallery): RedirectResponse
+    {
+        $validated = $request->validate([
+            'upbjj_zone_id' => 'nullable|exists:upbjj_zones,id',
+            'title' => 'required|string|max:255',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image_url' => 'nullable|url',
+            'activity_date' => 'nullable|date',
+            'description' => 'nullable|string',
+            'order' => 'nullable|integer',
+        ]);
+
+        $imagePath = $gallery->image;
+        if ($request->filled('image_url')) {
+            $imagePath = $request->input('image_url');
+        }
+        if ($request->hasFile('image_file')) {
+            if ($gallery->image && ! str_starts_with($gallery->image, 'http')) {
+                Storage::disk('public')->delete($gallery->image);
+            }
+            $imagePath = $request->file('image_file')->store('upbjj-gallery', 'public');
+        }
+
+        $gallery->update([
+            'upbjj_zone_id' => $validated['upbjj_zone_id'] ?? null,
+            'title' => $validated['title'],
+            'image' => $imagePath,
+            'activity_date' => $validated['activity_date'] ?? null,
+            'description' => $validated['description'] ?? null,
+            'order' => $validated['order'] ?? $gallery->order,
+        ]);
+
+        return back()->with('success', 'Dokumentasi kegiatan UPBJJ berhasil diperbarui!');
+    }
+
+    public function destroyGallery(UpbjjGallery $gallery): RedirectResponse
+    {
+        if ($gallery->image && ! str_starts_with($gallery->image, 'http')) {
+            Storage::disk('public')->delete($gallery->image);
+        }
+        $gallery->delete();
+
+        return back()->with('success', 'Dokumentasi kegiatan UPBJJ berhasil dihapus.');
     }
 }

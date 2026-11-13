@@ -25,6 +25,7 @@ class AnnouncementController extends Controller
     public function show($slug)
     {
         $announcement = Announcement::where('slug', $slug)->active()->firstOrFail();
+        $announcement->increment('views_count');
         $recentAnnouncements = Announcement::active()->where('id', '!=', $announcement->id)->take(4)->get();
 
         return view('pages.announcements.show', compact('announcement', 'recentAnnouncements'));
