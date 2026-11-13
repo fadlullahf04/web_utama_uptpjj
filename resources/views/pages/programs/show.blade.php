@@ -68,8 +68,12 @@
                 <h2 class="text-xl font-bold text-slate-900 text-[#006837] flex items-center gap-2">
                     <i class="fa-solid fa-circle-info"></i> Deskripsi Program Studi
                 </h2>
-                <div class="text-slate-700 text-sm leading-relaxed space-y-3">
-                    <p>{{ $program->description ?? $program->short_description }}</p>
+                <div class="text-slate-700 text-sm leading-relaxed space-y-3 [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_strong]:font-bold [&_strong]:text-slate-900">
+                    @if($program->description)
+                        {!! $program->description !!}
+                    @else
+                        <p>{{ $program->short_description }}</p>
+                    @endif
                 </div>
             </div>
 

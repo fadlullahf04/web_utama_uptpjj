@@ -30,7 +30,7 @@
         </form>
 
         <div class="flex items-center gap-2.5">
-            <a href="{{ route('admin.posts.import') }}" class="px-3.5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 text-[#006837] border border-[#006837]/30 hover:border-[#006837] font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-sm">
+            <a href="{{ route('admin.posts.import') }}" class="px-3.5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 t  ext-[#006837] border border-[#006837]/30 hover:border-[#006837] font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-sm">
                 <i class="fa-solid fa-file-import text-sm"></i> Import XML
             </a>
             <a href="{{ route('admin.posts.create') }}" class="px-4 py-2.5 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-md shadow-[#006837]/20">
