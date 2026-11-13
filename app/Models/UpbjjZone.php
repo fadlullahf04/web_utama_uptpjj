@@ -11,6 +11,9 @@ class UpbjjZone extends Model
         'name',
         'coverage',
         'partner',
+        'head_name',
+        'vice_head_name',
+        'secretary_name',
         'coordinator_name',
         'phone',
         'address',
@@ -206,6 +209,17 @@ class UpbjjZone extends Model
 
             if ($zone->partner) {
                 $detailsHtml .= '<div><span class="font-bold text-slate-700">Mitra:</span> '.e($zone->partner).'</div>';
+            }
+
+            if ($zone->head_name || $zone->vice_head_name || $zone->secretary_name) {
+                $leadershipParts = array_filter([
+                    $zone->head_name ? '<span class="font-bold text-slate-700">Ketua:</span> '.e($zone->head_name) : null,
+                    $zone->vice_head_name ? '<span class="font-bold text-slate-700">Wakil Ketua:</span> '.e($zone->vice_head_name) : null,
+                    $zone->secretary_name ? '<span class="font-bold text-slate-700">Sekretaris:</span> '.e($zone->secretary_name) : null,
+                ]);
+                if (! empty($leadershipParts)) {
+                    $detailsHtml .= '<div class="pt-1 flex flex-wrap gap-x-4 gap-y-1 text-slate-600"><span>'.implode('</span><span>', $leadershipParts).'</span></div>';
+                }
             }
 
             if ($zone->coordinator_name || $zone->phone || $zone->address) {

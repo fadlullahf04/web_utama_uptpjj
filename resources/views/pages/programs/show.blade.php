@@ -74,13 +74,31 @@
             </div>
 
             <!-- Visi & Misi Prodi -->
-            @if($program->vision_mission)
+            @if($program->vision || $program->mission)
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                    <h2 class="text-xl font-bold text-[#006837] flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye"></i> Visi & Misi Keilmuan
+                    </h2>
+                    @if($program->vision)
+                        <div class="bg-emerald-50/60 p-5 rounded-2xl border border-emerald-100 space-y-2">
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-[#006837]">Visi</h3>
+                            <div class="text-emerald-950 text-sm leading-relaxed font-medium">{!! nl2br(e($program->vision)) !!}</div>
+                        </div>
+                    @endif
+                    @if($program->mission)
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Misi</h3>
+                            <div class="text-slate-700 text-sm leading-relaxed">{!! nl2br(e($program->mission)) !!}</div>
+                        </div>
+                    @endif
+                </div>
+            @elseif($program->vision_mission)
                 <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
                     <h2 class="text-xl font-bold text-slate-900 text-[#006837] flex items-center gap-2">
                         <i class="fa-solid fa-bullseye"></i> Visi & Misi Keilmuan
                     </h2>
                     <div class="text-slate-700 text-sm leading-relaxed bg-emerald-50/60 p-5 rounded-2xl border border-emerald-100">
-                        <p class="italic text-emerald-950 font-medium">"{{ $program->vision_mission }}"</p>
+                        <div class="text-emerald-950 font-medium">{!! nl2br(e($program->vision_mission)) !!}</div>
                     </div>
                 </div>
             @endif
@@ -136,6 +154,13 @@
                         <div class="pt-2">
                             <span class="text-slate-500 block text-[11px]">Ketua Program Studi:</span>
                             <span class="font-bold text-slate-900 text-xs mt-0.5 block">{{ $program->head_of_program }}</span>
+                        </div>
+                    @endif
+
+                    @if($program->secretary_of_program)
+                        <div class="pt-2 border-t border-slate-100">
+                            <span class="text-slate-500 block text-[11px]">Sekretaris Program Studi:</span>
+                            <span class="font-bold text-slate-900 text-xs mt-0.5 block">{{ $program->secretary_of_program }}</span>
                         </div>
                     @endif
                 </div>

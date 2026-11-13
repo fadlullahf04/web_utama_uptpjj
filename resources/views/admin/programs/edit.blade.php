@@ -63,6 +63,17 @@
                         ])
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Visi Program Studi</label>
+                            <textarea name="vision" rows="5" placeholder="Tuliskan Visi Program Studi..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837] leading-relaxed">{{ old('vision', $program->vision) }}</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Misi Program Studi</label>
+                            <textarea name="mission" rows="5" placeholder="Tuliskan poin-poin Misi Program Studi..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837] leading-relaxed">{{ old('mission', $program->mission) }}</textarea>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -103,6 +114,11 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Ketua Prodi (Kaprodi)</label>
                         <input type="text" name="head_of_program" value="{{ old('head_of_program', $program->head_of_program) }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Sekretaris Prodi (Sekprodi)</label>
+                        <input type="text" name="secretary_of_program" value="{{ old('secretary_of_program', $program->secretary_of_program) }}" placeholder="Nama Sekretaris Prodi, M.Pd." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100">

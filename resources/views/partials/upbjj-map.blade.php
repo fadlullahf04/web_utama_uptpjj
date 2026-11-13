@@ -150,11 +150,11 @@
     </div>
 
     <!-- Interactive Indonesia Atlas Map Container with Curved Animated Signal Arcs & Sonar Bubbles -->
-    <div class="relative w-full bg-[#e0f2fe] overflow-x-auto border-b border-slate-200">
-        <div class="relative min-w-[680px] w-full aspect-[1000/450] select-none overflow-hidden">
+    <div class="relative w-full bg-[#e0f2fe] overflow-x-auto">
+        <div class="relative min-w-[620px] max-w-4xl mx-auto w-full aspect-[1000/450] select-none overflow-hidden">
             
             <!-- Base Map SVG of Indonesia (Modern Bright Topographic Atlas Style) -->
-            <img src="{{ asset('images/peta-indonesia.svg') }}?v=2" alt="Peta Sebaran Wilayah UPBJJ Indonesia" class="w-full h-full object-cover block pointer-events-none">
+            <img src="{{ asset('images/peta-indonesia.svg') }}?v=3" alt="Peta Sebaran Wilayah UPBJJ Indonesia" class="w-full h-full object-cover block pointer-events-none">
 
             <!-- Curved Bezier Network Arcs from Cirebon Hub (x: 30.5%, y: 72%) to Each UPBJJ Zone -->
             <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -190,10 +190,10 @@
                     $palette = $colorPalette[$zone->bubble_color] ?? $colorPalette['emerald'];
                     $count = (int) $zone->students_count;
                     $sizeClass = match (true) {
-                        $count >= 2500 => 'w-14 h-14 sm:w-16 sm:h-16 text-xs sm:text-sm',
-                        $count >= 1500 => 'w-12 h-12 sm:w-14 sm:h-14 text-xs',
-                        $count >= 800 => 'w-11 h-11 sm:w-12 sm:h-12 text-[11px]',
-                        default => 'w-10 h-10 sm:w-11 sm:h-11 text-[10px] sm:text-[11px]',
+                        $count >= 2500 => 'w-11 h-11 sm:w-12 sm:h-12 text-[11px] sm:text-xs',
+                        $count >= 1500 => 'w-10 h-10 sm:w-11 sm:h-11 text-[10px] sm:text-[11px]',
+                        $count >= 800 => 'w-9 h-9 sm:w-10 sm:h-10 text-[10px]',
+                        default => 'w-8 h-8 sm:w-9 sm:h-9 text-[9px] sm:text-[10px]',
                     };
                     $floatDelay = number_format(($index % 5) * 0.45, 2) . 's';
                 @endphp
@@ -229,150 +229,6 @@
                     </div>
                 </div>
             @endforeach
-        </div>
-    </div>
-
-    <!-- Proportional Rincian Sebaran Mahasiswa per Zona UPBJJ -->
-    <div class="p-5 sm:p-6 bg-slate-50 space-y-5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-slate-200/80 pb-3">
-            <h5 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-chart-pie text-[#006837]"></i> Rincian Sebaran Mahasiswa per Zona UPBJJ
-            </h5>
-            <span class="text-[11px] font-medium text-slate-500">Klik kartu wilayah untuk menyorot titik di peta</span>
-        </div>
-
-        <!-- Symmetrical 2-Column Grid (Last item spans full width if count is odd so layout stays balanced) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            @foreach($zones as $zone)
-                @php
-                    $palette = $colorPalette[$zone->bubble_color] ?? $colorPalette['emerald'];
-                    $pct = round(($zone->students_count / $totalStudents) * 100, 1);
-                    $isFullSpan = $loop->last && ($zones->count() % 2 === 1);
-                @endphp
-                <div @click="selectedZoneId = {{ $zone->id }}"
-                     class="p-4 sm:p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between gap-3.5 bg-white hover:shadow-md {{ $isFullSpan ? 'md:col-span-2' : '' }}"
-                     :class="selectedZoneId === {{ $zone->id }} ? '{{ $palette['card_border'] }} ring-2 ring-emerald-500/30 shadow-sm' : 'border-slate-200/90'">
-                    
-                    <!-- Top Row: Zone Badge + Title + National Percentage -->
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="inline-flex items-center gap-2">
-                                <span class="w-3 h-3 rounded-full {{ $palette['bg'] }} shrink-0 ring-2 {{ $palette['ring'] }}"></span>
-                                <span class="text-xs font-black {{ $palette['text'] }} uppercase tracking-wider">{{ $zone->code }}</span>
-                            </div>
-                            <span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold text-[11px] shrink-0">
-                                {{ $pct }}% dari Total
-                            </span>
-                        </div>
-
-                        <div class="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug">
-                            {{ $zone->name }}
-                        </div>
-
-                        <div class="text-[11px] text-slate-500 leading-relaxed line-clamp-2">
-                            <span class="font-semibold text-slate-700">Cakupan:</span> {{ $zone->coverage }}
-                        </div>
-                    </div>
-
-                    <!-- Proportional 3-Column Breakdown: Laki-Laki, Perempuan, Total -->
-                    <div class="grid grid-cols-3 gap-2.5 pt-1">
-                        <div class="p-2.5 rounded-xl bg-sky-50/80 border border-sky-200/70 text-center">
-                            <div class="text-[10px] font-bold uppercase tracking-wider text-sky-700 flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-mars"></i> Laki-Laki
-                            </div>
-                            <div class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">
-                                {{ number_format($zone->male_students_count, 0, ',', '.') }}
-                            </div>
-                        </div>
-
-                        <div class="p-2.5 rounded-xl bg-pink-50/80 border border-pink-200/70 text-center">
-                            <div class="text-[10px] font-bold uppercase tracking-wider text-pink-700 flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-venus"></i> Perempuan
-                            </div>
-                            <div class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">
-                                {{ number_format($zone->female_students_count, 0, ',', '.') }}
-                            </div>
-                        </div>
-
-                        <div class="p-2.5 rounded-xl bg-emerald-50/90 border border-emerald-200 text-center">
-                            <div class="text-[10px] font-bold uppercase tracking-wider text-[#006837] flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-users"></i> Total Mhs
-                            </div>
-                            <div class="text-xs sm:text-sm font-black text-[#006837] mt-1">
-                                {{ number_format($zone->students_count, 0, ',', '.') }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Proportional Progress Bar -->
-                    <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div class="h-full {{ $palette['bar'] }} rounded-full transition-all duration-500" style="width: {{ max($pct, 4) }}%"></div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-
-        <!-- Proportional Grand Total Summary Card (3 Equal Columns) -->
-        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#006837] to-[#004d29] text-white space-y-3.5 shadow-sm">
-            <div class="flex items-center justify-between gap-3 border-b border-white/15 pb-3">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-amber-300 text-sm shrink-0">
-                        <i class="fa-solid fa-users-viewfinder"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs sm:text-sm font-extrabold text-white uppercase tracking-wide">
-                            Rekapitulasi Total Keseluruhan Mahasiswa UPBJJ
-                        </div>
-                        <div class="text-[11px] text-emerald-100/90">
-                            Akumulasi mahasiswa aktif pada {{ $zones->count() }} Zona Wilayah (Nasional & Luar Negeri)
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
-                <div class="px-4 py-3 rounded-xl bg-white/10 border border-white/15 flex items-center justify-between">
-                    <div>
-                        <div class="text-[10px] font-bold uppercase tracking-wider text-sky-200">
-                            <i class="fa-solid fa-mars mr-1"></i> Total Laki-Laki
-                        </div>
-                        <div class="text-sm sm:text-base font-black text-white mt-0.5">
-                            {{ number_format($totalMale, 0, ',', '.') }} <span class="text-[11px] font-semibold text-emerald-100">Mhs</span>
-                        </div>
-                    </div>
-                    <span class="px-2 py-0.5 rounded-lg bg-sky-500/25 text-sky-200 text-[10px] font-bold">
-                        {{ $malePct }}%
-                    </span>
-                </div>
-
-                <div class="px-4 py-3 rounded-xl bg-white/10 border border-white/15 flex items-center justify-between">
-                    <div>
-                        <div class="text-[10px] font-bold uppercase tracking-wider text-pink-200">
-                            <i class="fa-solid fa-venus mr-1"></i> Total Perempuan
-                        </div>
-                        <div class="text-sm sm:text-base font-black text-white mt-0.5">
-                            {{ number_format($totalFemale, 0, ',', '.') }} <span class="text-[11px] font-semibold text-emerald-100">Mhs</span>
-                        </div>
-                    </div>
-                    <span class="px-2 py-0.5 rounded-lg bg-pink-500/25 text-pink-200 text-[10px] font-bold">
-                        {{ $femalePct }}%
-                    </span>
-                </div>
-
-                <div class="px-4 py-3 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-between shadow">
-                    <div>
-                        <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-800">
-                            <i class="fa-solid fa-users mr-1"></i> Total Keseluruhan
-                        </div>
-                        <div class="text-sm sm:text-base font-black text-slate-950 mt-0.5">
-                            {{ number_format($totalStudentsSum, 0, ',', '.') }} <span class="text-[11px] font-bold">Mhs</span>
-                        </div>
-                    </div>
-                    <span class="px-2 py-0.5 rounded-lg bg-slate-950/15 text-slate-950 text-[10px] font-extrabold">
-                        100%
-                    </span>
-                </div>
-            </div>
         </div>
     </div>
 
