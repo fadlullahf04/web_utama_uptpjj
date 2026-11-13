@@ -627,7 +627,7 @@
     @include('partials.accessibility-widget')
 
     <!-- Floating Contact Center & Direct Q&A Assistant (Contact Center Tanya Jawab Langsung) -->
-    @include('partials.contact-center-widget')
+    {{-- @include('partials.contact-center-widget') --}}
 
     @stack('scripts')
 </body>

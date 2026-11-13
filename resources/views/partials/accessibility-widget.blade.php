@@ -1,8 +1,8 @@
 <!-- Accessibility Tools Floating Widget (Aksesibilitas Disabilitas) -->
 <div x-data="accessibilityWidget()" x-init="initAccessibility()" class="relative z-50">
     
-    <!-- Floating Trigger Button (Stacked Above Contact Center on Bottom-Right) -->
-    <div class="fixed bottom-[86px] right-6 z-40 flex items-center gap-2 group">
+    <!-- Floating Trigger Button (Bottom-Right) -->
+    <div class="fixed bottom-6 right-6 z-40 flex items-center gap-2 group">
         <button @click="toggleModal()" 
                 type="button" 
                 class="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-900 hover:bg-[#006837] text-white shadow-xl shadow-slate-950/35 border border-slate-700/80 hover:border-emerald-500 transition-all duration-300 transform hover:scale-105 cursor-pointer focus:outline-none focus:ring-4 focus:ring-emerald-500/50"
@@ -26,7 +26,7 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0 sm:translate-x-0"
          x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:translate-x-6"
-         class="fixed bottom-36 right-4 sm:right-6 z-50 w-[94vw] sm:w-[420px] max-h-[75vh] bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden text-slate-800">
+         class="fixed bottom-20 right-4 sm:right-6 z-50 w-[94vw] sm:w-[420px] max-h-[85vh] bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden text-slate-800">
 
         <!-- Panel Header -->
         <div class="p-5 bg-gradient-to-r from-slate-900 via-slate-800 to-[#004d29] text-white flex items-center justify-between shrink-0">
