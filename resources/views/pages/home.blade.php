@@ -313,7 +313,7 @@
     </div>
 </section>
 
-<!-- 6. Sarana & Gedung Kampus Siber (Matches uptpjj.uinssc.ac.id building grid) -->
+{{-- 6. Sarana & Gedung Kampus Siber (Disembunyikan sementara sesuai permintaan)
 <section class="py-20 bg-slate-50 border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -357,6 +357,7 @@
 
     </div>
 </section>
+--}}
 
 <!-- 7. Layanan & Fasilitas PJJ -->
 <section class="py-20 bg-white">

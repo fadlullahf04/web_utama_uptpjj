@@ -7,6 +7,7 @@ use App\Models\UpbjjGallery;
 use App\Models\UpbjjZone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -17,7 +18,9 @@ class UpbjjZoneController extends Controller
         UpbjjZone::seedDefaultsIfEmpty();
 
         $zones = UpbjjZone::orderBy('order', 'asc')->orderBy('id', 'asc')->get();
-        $galleries = UpbjjGallery::with('zone')->orderBy('order', 'asc')->orderByDesc('id')->get();
+        $galleries = Schema::hasTable('upbjj_galleries')
+            ? UpbjjGallery::with('zone')->orderBy('order', 'asc')->orderByDesc('id')->get()
+            : collect();
 
         return view('admin.upbjj-zones.index', compact('zones', 'galleries'));
     }

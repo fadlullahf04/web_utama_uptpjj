@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StudyProgram;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class StudyProgramController extends Controller
 {
@@ -24,7 +25,9 @@ class StudyProgramController extends Controller
     public function show($slug)
     {
         $program = StudyProgram::where('slug', $slug)->firstOrFail();
-        $program->increment('views_count');
+        if (Schema::hasColumn($program->getTable(), 'views_count')) {
+            $program->increment('views_count');
+        }
         $otherPrograms = StudyProgram::active()->where('id', '!=', $program->id)->take(3)->get();
 
         return view('pages.programs.show', compact('program', 'otherPrograms'));

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class UpbjjZone extends Model
 {
@@ -181,7 +182,9 @@ class UpbjjZone extends Model
         static::seedDefaultsIfEmpty();
 
         $zones = static::where('is_active', true)->orderBy('order', 'asc')->orderBy('id', 'asc')->get();
-        $galleries = UpbjjGallery::with('zone')->orderBy('order', 'asc')->orderByDesc('id')->get();
+        $galleries = Schema::hasTable('upbjj_galleries')
+            ? UpbjjGallery::with('zone')->orderBy('order', 'asc')->orderByDesc('id')->get()
+            : collect();
 
         $mapHtml = view('partials.upbjj-map', compact('zones'))->render();
         $galleryHtml = view('partials.upbjj-gallery', compact('galleries'))->render();

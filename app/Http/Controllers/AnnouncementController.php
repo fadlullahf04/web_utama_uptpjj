@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class AnnouncementController extends Controller
 {
@@ -25,7 +26,9 @@ class AnnouncementController extends Controller
     public function show($slug)
     {
         $announcement = Announcement::where('slug', $slug)->active()->firstOrFail();
-        $announcement->increment('views_count');
+        if (Schema::hasColumn($announcement->getTable(), 'views_count')) {
+            $announcement->increment('views_count');
+        }
         $recentAnnouncements = Announcement::active()->where('id', '!=', $announcement->id)->take(4)->get();
 
         return view('pages.announcements.show', compact('announcement', 'recentAnnouncements'));
