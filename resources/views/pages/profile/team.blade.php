@@ -31,16 +31,19 @@
                             <div>
                                 <h3 class="text-sm font-extrabold text-slate-900 group-hover:text-[#006837] transition">{{ $m->name }}</h3>
                                 <p class="text-xs font-semibold text-[#006837] mt-0.5">{{ $m->title }}</p>
-                                @if($m->nip)
+                                @if(!empty($m->department))
+                                    <p class="text-[11px] font-medium text-slate-500 mt-0.5">{{ $m->department }}</p>
+                                @endif
+                                @if(!empty($m->nip))
                                     <p class="text-[10px] text-slate-400 mt-0.5">NIP. {{ $m->nip }}</p>
                                 @endif
                             </div>
-                            @if($m->bio)
-                                <p class="text-[11px] text-slate-600 line-clamp-3 leading-relaxed">{{ $m->bio }}</p>
+                            @if(!empty($m->bio))
+                                <p class="text-[11px] text-slate-600 line-clamp-3 leading-relaxed">{{ strip_tags(html_entity_decode($m->bio)) }}</p>
                             @endif
                         </div>
 
-                        @if($m->email)
+                        @if(!empty($m->email))
                             <div class="pt-3 border-t border-slate-100">
                                 <a href="mailto:{{ $m->email }}" class="text-[11px] text-slate-500 hover:text-[#006837] transition flex items-center justify-center gap-1">
                                     <i class="fa-solid fa-envelope text-[10px]"></i> {{ $m->email }}

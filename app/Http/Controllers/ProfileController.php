@@ -8,6 +8,7 @@ use App\Models\OrganizationCategory;
 use App\Models\Setting;
 use App\Models\StudyProgram;
 use App\Models\TeamMember;
+use Illuminate\Support\Collection;
 
 class ProfileController extends Controller
 {
@@ -26,24 +27,10 @@ class ProfileController extends Controller
         $members = TeamMember::active()->get();
         $tierByCategory = OrganizationCategory::allOrdered()->pluck('tier', 'name');
 
-        $resolveTier = function (TeamMember $member) use ($tierByCategory): int {
-            if ($tierByCategory->has($member->division)) {
-                return (int) $tierByCategory->get($member->division);
-            }
-
-            if ($member->division === 'Pimpinan') {
-                return str_contains(strtolower($member->title), 'sekretaris')
-                    ? OrganizationCategory::TIER_SEKRETARIS
-                    : OrganizationCategory::TIER_KEPALA;
-            }
-
-            return OrganizationCategory::TIER_STAFF;
-        };
-
-        $kepalaUpt = $members->filter(fn (TeamMember $m): bool => $resolveTier($m) === OrganizationCategory::TIER_KEPALA)->values();
-        $sekretarisUpt = $members->filter(fn (TeamMember $m): bool => $resolveTier($m) === OrganizationCategory::TIER_SEKRETARIS)->values();
-        $pimpinanJurusanMembers = $members->filter(fn (TeamMember $m): bool => $resolveTier($m) === OrganizationCategory::TIER_PIMPINAN_JURUSAN)->values();
-        $staffUpt = $members->filter(fn (TeamMember $m): bool => $resolveTier($m) === OrganizationCategory::TIER_STAFF)->values();
+        $kepalaUpt = $members->filter(fn (TeamMember $m): bool => $this->resolveMemberTier($m, $tierByCategory) === OrganizationCategory::TIER_KEPALA)->values();
+        $sekretarisUpt = $members->filter(fn (TeamMember $m): bool => $this->resolveMemberTier($m, $tierByCategory) === OrganizationCategory::TIER_SEKRETARIS)->values();
+        $pimpinanJurusanMembers = $members->filter(fn (TeamMember $m): bool => $this->resolveMemberTier($m, $tierByCategory) === OrganizationCategory::TIER_PIMPINAN_JURUSAN)->values();
+        $staffUpt = $members->filter(fn (TeamMember $m): bool => $this->resolveMemberTier($m, $tierByCategory) === OrganizationCategory::TIER_STAFF)->values();
 
         // Group Pimpinan Jurusan by Jurusan (department) showing Ketua Jurusan & Sekretaris Jurusan
         $jurusanGroups = collect();
@@ -120,9 +107,67 @@ class ProfileController extends Controller
 
     public function team()
     {
-        $teams = TeamMember::active()->get()->groupBy('division');
+        $members = TeamMember::active()->get();
+        $tierByCategory = OrganizationCategory::allOrdered()->pluck('tier', 'name');
+
+        $kepala = $members->filter(fn (TeamMember $m): bool => $this->resolveMemberTier($m, $tierByCategory) === OrganizationCategory::TIER_KEPALA)->values();
+        $sekretaris = $members->filter(fn (TeamMember $m): bool => $this->resolveMemberTier($m, $tierByCategory) === OrganizationCategory::TIER_SEKRETARIS)->values();
+        $pimpinanJurusan = $members->filter(fn (TeamMember $m): bool => $this->resolveMemberTier($m, $tierByCategory) === OrganizationCategory::TIER_PIMPINAN_JURUSAN)->values();
+        $staff = $members->filter(fn (TeamMember $m): bool => $this->resolveMemberTier($m, $tierByCategory) === OrganizationCategory::TIER_STAFF)->values();
+
+        if ($pimpinanJurusan->isEmpty()) {
+            $pimpinanJurusan = StudyProgram::active()->get()->flatMap(function (StudyProgram $program): array {
+                $items = [];
+                if (! empty($program->head_of_program)) {
+                    $items[] = (object) [
+                        'name' => $program->head_of_program,
+                        'title' => 'Ketua Jurusan',
+                        'department' => $program->name,
+                        'nip' => null,
+                        'bio' => null,
+                        'email' => null,
+                        'photo_url' => 'https://ui-avatars.com/api/?name='.urlencode($program->head_of_program).'&background=006837&color=ffffff&bold=true',
+                    ];
+                }
+                if (! empty($program->secretary_of_program)) {
+                    $items[] = (object) [
+                        'name' => $program->secretary_of_program,
+                        'title' => 'Sekretaris Jurusan',
+                        'department' => $program->name,
+                        'nip' => null,
+                        'bio' => null,
+                        'email' => null,
+                        'photo_url' => 'https://ui-avatars.com/api/?name='.urlencode($program->secretary_of_program).'&background=0f766e&color=ffffff&bold=true',
+                    ];
+                }
+
+                return $items;
+            });
+        }
+
+        $teams = collect([
+            'Kepala UPT PJJ' => $kepala,
+            'Sekretaris UPT PJJ' => $sekretaris,
+            'Pimpinan Jurusan' => $pimpinanJurusan,
+            'Staff UPT PJJ' => $staff,
+        ])->filter(fn (Collection $group): bool => $group->isNotEmpty());
 
         return view('pages.profile.team', compact('teams'));
+    }
+
+    protected function resolveMemberTier(TeamMember $member, Collection $tierByCategory): int
+    {
+        if ($tierByCategory->has($member->division)) {
+            return (int) $tierByCategory->get($member->division);
+        }
+
+        if ($member->division === 'Pimpinan') {
+            return str_contains(strtolower($member->title), 'sekretaris')
+                ? OrganizationCategory::TIER_SEKRETARIS
+                : OrganizationCategory::TIER_KEPALA;
+        }
+
+        return OrganizationCategory::TIER_STAFF;
     }
 
     public function facilities()

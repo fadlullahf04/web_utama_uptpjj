@@ -23,7 +23,7 @@
 }">
     <div class="flex flex-wrap items-center justify-between gap-3">
         <p class="text-xs text-slate-500">Sesuaikan informasi Profil Lulusan yang tampil pada halaman publik.</p>
-        <a href="{{ route('profile.graduate') }}" target="_blank" class="px-4 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-[#006837] font-bold text-xs transition flex items-center gap-2 shadow-sm">
+        <a href="{{ route('profile.graduate-profile') }}" target="_blank" class="px-4 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-[#006837] font-bold text-xs transition flex items-center gap-2 shadow-sm">
             <i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat Halaman Profil Lulusan
         </a>
     </div>
