@@ -82,7 +82,7 @@
             </div>
 
             <div class="pt-6">
-                {{ $documents->links() }}
+                {{ $documents->links('partials.pagination') }}
             </div>
 
         </div>

@@ -56,7 +56,7 @@
         @endforelse
 
         <div class="pt-6">
-            {{ $announcements->links() }}
+            {{ $announcements->links('partials.pagination') }}
         </div>
     </div>
 </div>

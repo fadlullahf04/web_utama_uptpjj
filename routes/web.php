@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
+use App\Http\Controllers\Admin\GraduateProfileController as AdminGraduateProfileController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\StudyProgramController as AdminStudyProgramController;
 use App\Http\Controllers\Admin\TeamMemberController as AdminTeamMemberController;
@@ -180,6 +181,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::put('team/categories/{category}', [AdminTeamMemberController::class, 'updateCategory'])->name('team.categories.update');
         Route::delete('team/categories/{category}', [AdminTeamMemberController::class, 'destroyCategory'])->name('team.categories.destroy');
         Route::resource('team', AdminTeamMemberController::class)->except(['show']);
+
+        // Profil Lulusan CMS
+        Route::get('graduate-profile', [AdminGraduateProfileController::class, 'index'])->name('graduate-profile.index');
+        Route::put('graduate-profile', [AdminGraduateProfileController::class, 'update'])->name('graduate-profile.update');
 
         // Downloads / Dokumen
         Route::resource('downloads', AdminDownloadController::class)->except(['show']);

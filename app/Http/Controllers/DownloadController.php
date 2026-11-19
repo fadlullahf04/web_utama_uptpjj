@@ -25,7 +25,7 @@ class DownloadController extends Controller
             });
         }
 
-        $documents = $query->paginate(12)->withQueryString();
+        $documents = $query->paginate(10)->withQueryString();
         $categories = DownloadDocument::select('category')->distinct()->pluck('category');
 
         return view('pages.downloads.index', compact('documents', 'categories', 'category', 'search'));

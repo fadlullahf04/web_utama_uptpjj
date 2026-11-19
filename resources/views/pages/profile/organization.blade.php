@@ -104,65 +104,67 @@
             </span>
 
             @if($jurusanGroups->isNotEmpty())
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
-                    @foreach($jurusanGroups as $group)
-                        <div class="bg-white rounded-2xl border border-teal-200 shadow-sm hover:border-teal-500 transition overflow-hidden flex flex-col">
-                            <div class="bg-gradient-to-r from-teal-700 to-emerald-700 px-3.5 py-2.5 text-white">
-                                <div class="text-[9px] font-bold uppercase tracking-wider text-teal-100">Jurusan / Prodi</div>
-                                <h4 class="text-xs font-extrabold leading-snug mt-0.5 line-clamp-2">{{ $group['jurusan'] }}</h4>
-                            </div>
-
-                            <div class="p-3.5 space-y-3 flex-1">
-                                <!-- Ketua Jurusan -->
-                                <div>
-                                    <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-teal-700 px-2 py-0.5 rounded-full bg-teal-50 border border-teal-200 mb-1.5">
-                                        Ketua Jurusan
-                                    </span>
-                                    @if($group['ketua']->isNotEmpty())
-                                        <div class="space-y-2">
-                                            @foreach($group['ketua'] as $kajur)
-                                                <div class="flex items-center gap-2.5">
-                                                    <img src="{{ $kajur->photo_url }}" alt="{{ $kajur->name }}" class="w-9 h-9 rounded-lg object-cover border border-teal-200 shadow-sm shrink-0">
-                                                    <div class="min-w-0">
-                                                        <p class="text-[11px] font-extrabold text-slate-900 leading-snug">{{ $kajur->name }}</p>
-                                                        @if(!empty($kajur->nip))
-                                                            <p class="text-[10px] text-slate-400 truncate">NIP. {{ $kajur->nip }}</p>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <p class="text-[11px] text-slate-400 italic">Belum diisi</p>
-                                    @endif
+                <div class="w-full overflow-x-auto pb-2">
+                    <div class="grid grid-flow-col auto-cols-[minmax(185px,1fr)] gap-3.5 min-w-full">
+                        @foreach($jurusanGroups as $group)
+                            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-[#006837] hover:shadow-md transition overflow-hidden flex flex-col">
+                                <div class="bg-[#006837] px-3.5 py-2.5 text-white">
+                                    <div class="text-[9px] font-bold uppercase tracking-wider text-emerald-200">Jurusan / Prodi</div>
+                                    <h4 class="text-xs font-extrabold leading-snug mt-0.5 text-white line-clamp-2">{{ $group['jurusan'] }}</h4>
                                 </div>
 
-                                <!-- Sekretaris Jurusan -->
-                                <div class="pt-2.5 border-t border-slate-100">
-                                    <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-cyan-700 px-2 py-0.5 rounded-full bg-cyan-50 border border-cyan-200 mb-1.5">
-                                        Sekretaris Jurusan
-                                    </span>
-                                    @if($group['sekretaris']->isNotEmpty())
-                                        <div class="space-y-2">
-                                            @foreach($group['sekretaris'] as $sekjur)
-                                                <div class="flex items-center gap-2.5">
-                                                    <img src="{{ $sekjur->photo_url }}" alt="{{ $sekjur->name }}" class="w-9 h-9 rounded-lg object-cover border border-cyan-200 shadow-sm shrink-0">
-                                                    <div class="min-w-0">
-                                                        <p class="text-[11px] font-extrabold text-slate-900 leading-snug">{{ $sekjur->name }}</p>
-                                                        @if(!empty($sekjur->nip))
-                                                            <p class="text-[10px] text-slate-400 truncate">NIP. {{ $sekjur->nip }}</p>
-                                                        @endif
+                                <div class="p-3.5 space-y-3 flex-1 bg-white">
+                                    <!-- Ketua Jurusan -->
+                                    <div>
+                                        <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-[#006837] px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 mb-1.5">
+                                            Ketua Jurusan
+                                        </span>
+                                        @if($group['ketua']->isNotEmpty())
+                                            <div class="space-y-2">
+                                                @foreach($group['ketua'] as $kajur)
+                                                    <div class="flex items-center gap-2">
+                                                        <img src="{{ $kajur->photo_url }}" alt="{{ $kajur->name }}" class="w-8 h-8 rounded-lg object-cover border border-emerald-200 shadow-sm shrink-0">
+                                                        <div class="min-w-0">
+                                                            <p class="text-[11px] font-bold text-slate-900 leading-snug">{{ $kajur->name }}</p>
+                                                            @if(!empty($kajur->nip))
+                                                                <p class="text-[10px] text-slate-500 truncate">NIP. {{ $kajur->nip }}</p>
+                                                            @endif
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <p class="text-[11px] text-slate-400 italic">Belum diisi</p>
-                                    @endif
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-[11px] text-slate-400 italic">Belum diisi</p>
+                                        @endif
+                                    </div>
+
+                                    <!-- Sekretaris Jurusan -->
+                                    <div class="pt-2.5 border-t border-slate-100">
+                                        <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-amber-800 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 mb-1.5">
+                                            Sekretaris Jurusan
+                                        </span>
+                                        @if($group['sekretaris']->isNotEmpty())
+                                            <div class="space-y-2">
+                                                @foreach($group['sekretaris'] as $sekjur)
+                                                    <div class="flex items-center gap-2">
+                                                        <img src="{{ $sekjur->photo_url }}" alt="{{ $sekjur->name }}" class="w-8 h-8 rounded-lg object-cover border border-amber-200 shadow-sm shrink-0">
+                                                        <div class="min-w-0">
+                                                            <p class="text-[11px] font-bold text-slate-900 leading-snug">{{ $sekjur->name }}</p>
+                                                            @if(!empty($sekjur->nip))
+                                                                <p class="text-[10px] text-slate-500 truncate">NIP. {{ $sekjur->nip }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-[11px] text-slate-400 italic">Belum diisi</p>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             @else
                 <div class="w-full max-w-sm bg-white p-5 rounded-2xl border border-dashed border-slate-300 text-center text-xs text-slate-500">

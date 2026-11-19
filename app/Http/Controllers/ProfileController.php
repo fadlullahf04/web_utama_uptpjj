@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\GraduateProfileController;
 use App\Models\GalleryItem;
 use App\Models\OrganizationCategory;
 use App\Models\Setting;
@@ -133,7 +134,27 @@ class ProfileController extends Controller
 
     public function graduateProfile()
     {
-        return view('pages.profile.graduate-profile');
+        $title = Setting::get('graduate_profile_title', 'Profil Lulusan & Capaian Pembelajaran');
+        $subtitle = Setting::get('graduate_profile_subtitle', 'Kompetensi unggul yang dimiliki oleh para lulusan sarjana (S1) dan magister (S2) PJJ UIN Siber Syekh Nurjati Cirebon.');
+        $careersTitle = Setting::get('graduate_careers_title', 'Peluang & Prospek Karir Lulusan PJJ');
+
+        $competencies = json_decode((string) Setting::get('graduate_competencies', ''), true);
+        if (! is_array($competencies) || empty($competencies)) {
+            $competencies = GraduateProfileController::defaultCompetencies();
+        }
+
+        $careers = json_decode((string) Setting::get('graduate_careers', ''), true);
+        if (! is_array($careers) || empty($careers)) {
+            $careers = GraduateProfileController::defaultCareers();
+        }
+
+        return view('pages.profile.graduate-profile', compact(
+            'title',
+            'subtitle',
+            'careersTitle',
+            'competencies',
+            'careers'
+        ));
     }
 
     public function videoProfile()
