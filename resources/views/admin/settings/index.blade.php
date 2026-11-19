@@ -233,6 +233,13 @@
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Misi Strategis</label>
                         <textarea name="mission" rows="6" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">{{ \App\Models\Setting::get('mission') }}</textarea>
                     </div>
+                    <div class="pt-2 border-t border-slate-100">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                            <i class="fa-brands fa-youtube text-red-600 mr-1"></i> URL Video Profil Utama (YouTube)
+                        </label>
+                        <input type="url" name="profile_video_url" value="{{ \App\Models\Setting::get('profile_video_url') }}" placeholder="https://www.youtube.com/watch?v=... atau https://youtu.be/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                        <p class="text-[11px] text-slate-400 mt-1">Link YouTube biasa atau embed akan otomatis dikonversi untuk halaman Video Profil. Untuk menambah daftar video lainnya, gunakan menu <strong>Galeri &amp; Sarana Siber</strong> dengan kategori <strong>Video Profil</strong>.</p>
+                    </div>
                 </div>
 
                 <!-- 3. Tab Contact -->

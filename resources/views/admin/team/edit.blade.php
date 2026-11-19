@@ -40,16 +40,27 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Divisi Organisasi *</label>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kategori / Divisi Organisasi *</label>
                             <select name="division" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
-                                <option value="Pimpinan" {{ old('division', $member->division) === 'Pimpinan' ? 'selected' : '' }}>Pimpinan</option>
-                                <option value="Divisi Kurikulum & Bahan Ajar" {{ old('division', $member->division) === 'Divisi Kurikulum & Bahan Ajar' ? 'selected' : '' }}>Divisi Kurikulum & Bahan Ajar</option>
-                                <option value="Divisi IT & LMS" {{ old('division', $member->division) === 'Divisi IT & LMS' ? 'selected' : '' }}>Divisi IT & LMS</option>
-                                <option value="Divisi Multimedia & Penyiaran" {{ old('division', $member->division) === 'Divisi Multimedia & Penyiaran' ? 'selected' : '' }}>Divisi Multimedia & Penyiaran</option>
-                                <option value="Administrasi & Layanan" {{ old('division', $member->division) === 'Administrasi & Layanan' ? 'selected' : '' }}>Administrasi & Layanan</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->name }}" {{ old('division', $member->division) === $cat->name ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                @endforeach
+                                @if(! $categories->contains('name', $member->division))
+                                    <option value="{{ $member->division }}" selected>{{ $member->division }}</option>
+                                @endif
                             </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Jurusan <span class="text-slate-400 font-normal normal-case">(khusus Pimpinan Jurusan)</span></label>
+                            <input type="text" name="department" value="{{ old('department', $member->department) }}" list="studyProgramSuggestions" placeholder="Contoh: S1 Pendidikan Agama Islam" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                            <datalist id="studyProgramSuggestions">
+                                @foreach($studyPrograms as $progName)
+                                    <option value="{{ $progName }}">
+                                @endforeach
+                            </datalist>
                         </div>
 
                         <div>

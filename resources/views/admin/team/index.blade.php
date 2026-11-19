@@ -5,12 +5,92 @@
 @section('header_subtitle', 'Kelola data pimpinan, koordinator divisi, dan tim tutor siber')
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex items-center justify-between">
-        <div></div>
-        <a href="{{ route('admin.team.create') }}" class="px-4 py-2.5 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 shadow-md shadow-[#006837]/20">
-            <i class="fa-solid fa-plus"></i> Tambah Anggota Tim
-        </a>
+<div class="space-y-6" x-data="{ showCatModal: false, editCatId: null, editCatName: '', editCatTier: 4, editCatOrder: 0 }">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <p class="text-xs text-slate-500">Kelola kategori struktur organisasi dan daftar anggota tim pada bagan struktur UPT PJJ.</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+            <button type="button" @click="showCatModal = true; editCatId = null; editCatName = ''; editCatTier = 4; editCatOrder = {{ $categories->count() + 1 }}" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-folder-plus text-[#006837]"></i> Kelola Kategori Struktur
+            </button>
+            <a href="{{ route('admin.team.create') }}" class="px-4 py-2.5 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 shadow-md shadow-[#006837]/20">
+                <i class="fa-solid fa-plus"></i> Tambah Anggota Tim
+            </a>
+        </div>
+    </div>
+
+    <!-- Ringkasan Kategori Struktur Organisasi -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
+        <div class="flex items-center justify-between">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-sitemap text-[#006837]"></i> Kategori Struktur Organisasi
+            </h3>
+            <span class="text-[11px] text-slate-500">{{ $categories->count() }} kategori tersedia</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            @foreach($categories as $cat)
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                    <span class="font-bold text-slate-800">{{ $cat->name }}</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-[#006837] font-semibold border border-emerald-200">
+                        {{ $tierLabels[$cat->tier] ?? 'Staff UPT PJJ' }}
+                    </span>
+                    <button type="button" @click="showCatModal = true; editCatId = {{ $cat->id }}; editCatName = @js($cat->name); editCatTier = {{ $cat->tier }}; editCatOrder = {{ $cat->order ?? 0 }}" class="text-slate-400 hover:text-amber-600 transition" title="Edit Kategori">
+                        <i class="fa-solid fa-pen text-[10px]"></i>
+                    </button>
+                    <form action="{{ route('admin.team.categories.destroy', $cat->id) }}" method="POST" onsubmit="return confirm('Hapus kategori {{ addslashes($cat->name) }}?');" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-slate-400 hover:text-red-600 transition" title="Hapus Kategori">
+                            <i class="fa-solid fa-trash text-[10px]"></i>
+                        </button>
+                    </form>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <!-- Modal Tambah / Edit Kategori Struktur -->
+    <div x-show="showCatModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+        <div @click.away="showCatModal = false" class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md p-6 space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h4 class="text-sm font-extrabold text-slate-900" x-text="editCatId ? 'Edit Kategori Struktur' : 'Tambah Kategori Struktur'"></h4>
+                <button type="button" @click="showCatModal = false" class="text-slate-400 hover:text-slate-700">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form :action="editCatId ? '{{ url('admin/team/categories') }}/' + editCatId : '{{ route('admin.team.categories.store') }}'" method="POST" class="space-y-4">
+                @csrf
+                <template x-if="editCatId">
+                    <input type="hidden" name="_method" value="PUT">
+                </template>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Kategori *</label>
+                    <input type="text" name="name" x-model="editCatName" required placeholder="Contoh: Koordinator IT / Ketua Jurusan" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tingkat Hierarki *</label>
+                    <select name="tier" x-model="editCatTier" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                        @foreach($tierLabels as $tierNum => $tierLabel)
+                            <option value="{{ $tierNum }}">Tingkat {{ $tierNum }} — {{ $tierLabel }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Urutan Tampil</label>
+                    <input type="number" name="order" x-model="editCatOrder" min="0" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button type="button" @click="showCatModal = false" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Batal</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-[#006837] hover:bg-[#004d29] text-white text-xs font-bold">Simpan Kategori</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -40,6 +120,9 @@
                         <td class="py-3.5 px-4 text-[#006837] font-semibold">{{ $m->title }}</td>
                         <td class="py-3.5 px-4">
                             <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-medium">{{ $m->division }}</span>
+                            @if(!empty($m->department))
+                                <div class="text-[10px] text-teal-700 font-semibold mt-1">Jurusan: {{ $m->department }}</div>
+                            @endif
                         </td>
                         <td class="py-3.5 px-4 text-slate-500 text-[11px]">{{ $m->email ?? '-' }}</td>
                         <td class="py-3.5 px-4">

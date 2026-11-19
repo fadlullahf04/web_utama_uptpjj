@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\GalleryItem;
+use App\Models\OrganizationCategory;
+use App\Models\Setting;
+use App\Models\StudyProgram;
 use App\Models\TeamMember;
 
 class ProfileController extends Controller
@@ -19,10 +22,99 @@ class ProfileController extends Controller
 
     public function organization()
     {
-        $leadership = TeamMember::active()->where('division', 'Pimpinan')->get();
-        $divisions = TeamMember::active()->where('division', '!=', 'Pimpinan')->get()->groupBy('division');
+        $members = TeamMember::active()->get();
+        $tierByCategory = OrganizationCategory::allOrdered()->pluck('tier', 'name');
 
-        return view('pages.profile.organization', compact('leadership', 'divisions'));
+        $resolveTier = function (TeamMember $member) use ($tierByCategory): int {
+            if ($tierByCategory->has($member->division)) {
+                return (int) $tierByCategory->get($member->division);
+            }
+
+            if ($member->division === 'Pimpinan') {
+                return str_contains(strtolower($member->title), 'sekretaris')
+                    ? OrganizationCategory::TIER_SEKRETARIS
+                    : OrganizationCategory::TIER_KEPALA;
+            }
+
+            return OrganizationCategory::TIER_STAFF;
+        };
+
+        $kepalaUpt = $members->filter(fn (TeamMember $m): bool => $resolveTier($m) === OrganizationCategory::TIER_KEPALA)->values();
+        $sekretarisUpt = $members->filter(fn (TeamMember $m): bool => $resolveTier($m) === OrganizationCategory::TIER_SEKRETARIS)->values();
+        $pimpinanJurusanMembers = $members->filter(fn (TeamMember $m): bool => $resolveTier($m) === OrganizationCategory::TIER_PIMPINAN_JURUSAN)->values();
+        $staffUpt = $members->filter(fn (TeamMember $m): bool => $resolveTier($m) === OrganizationCategory::TIER_STAFF)->values();
+
+        // Group Pimpinan Jurusan by Jurusan (department) showing Ketua Jurusan & Sekretaris Jurusan
+        $jurusanGroups = collect();
+
+        foreach ($pimpinanJurusanMembers as $member) {
+            $jurusanName = trim((string) ($member->department ?? ''));
+            if ($jurusanName === '') {
+                $jurusanName = 'Jurusan / Program Studi';
+            }
+
+            if (! $jurusanGroups->has($jurusanName)) {
+                $jurusanGroups->put($jurusanName, [
+                    'jurusan' => $jurusanName,
+                    'ketua' => collect(),
+                    'sekretaris' => collect(),
+                ]);
+            }
+
+            $group = $jurusanGroups->get($jurusanName);
+            $isSekretaris = str_contains(strtolower($member->division.' '.$member->title), 'sekretaris');
+
+            if ($isSekretaris) {
+                $group['sekretaris']->push($member);
+            } else {
+                $group['ketua']->push($member);
+            }
+        }
+
+        // Merge active StudyPrograms if not already covered by TeamMember department
+        $studyPrograms = StudyProgram::active()->get();
+        foreach ($studyPrograms as $program) {
+            $hasHead = ! empty($program->head_of_program);
+            $hasSec = ! empty($program->secretary_of_program);
+            if (! $hasHead && ! $hasSec) {
+                continue;
+            }
+
+            $group = $jurusanGroups->get($program->name, [
+                'jurusan' => $program->name,
+                'ketua' => collect(),
+                'sekretaris' => collect(),
+            ]);
+
+            if ($group['ketua']->isEmpty() && $hasHead) {
+                $group['ketua']->push((object) [
+                    'name' => $program->head_of_program,
+                    'title' => 'Ketua Jurusan',
+                    'nip' => null,
+                    'photo_url' => 'https://ui-avatars.com/api/?name='.urlencode($program->head_of_program).'&background=006837&color=ffffff&bold=true',
+                ]);
+            }
+
+            if ($group['sekretaris']->isEmpty() && $hasSec) {
+                $group['sekretaris']->push((object) [
+                    'name' => $program->secretary_of_program,
+                    'title' => 'Sekretaris Jurusan',
+                    'nip' => null,
+                    'photo_url' => 'https://ui-avatars.com/api/?name='.urlencode($program->secretary_of_program).'&background=0f766e&color=ffffff&bold=true',
+                ]);
+            }
+
+            $jurusanGroups->put($program->name, $group);
+        }
+
+        $jurusanGroups = $jurusanGroups->values();
+
+        return view('pages.profile.organization', compact(
+            'kepalaUpt',
+            'sekretarisUpt',
+            'jurusanGroups',
+            'staffUpt'
+        ));
     }
 
     public function team()
@@ -46,6 +138,48 @@ class ProfileController extends Controller
 
     public function videoProfile()
     {
-        return view('pages.profile.video-profile');
+        $videos = GalleryItem::where(function ($query): void {
+            $query->where('type', 'video')
+                ->orWhere('category', 'Video Profil');
+        })
+            ->orderBy('order', 'asc')
+            ->orderByDesc('id')
+            ->get()
+            ->map(function (GalleryItem $item): GalleryItem {
+                $item->embed_url = $this->toYoutubeEmbedUrl($item->media_url);
+
+                return $item;
+            });
+
+        $settingVideoUrl = Setting::get('profile_video_url', '');
+        $mainVideoUrl = $this->toYoutubeEmbedUrl($settingVideoUrl);
+
+        if (! $mainVideoUrl && $videos->isNotEmpty()) {
+            $mainVideoUrl = $videos->first()->embed_url;
+        }
+
+        if (! $mainVideoUrl) {
+            $mainVideoUrl = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
+        }
+
+        return view('pages.profile.video-profile', compact('mainVideoUrl', 'videos'));
+    }
+
+    protected function toYoutubeEmbedUrl(?string $url): ?string
+    {
+        $url = trim((string) $url);
+        if ($url === '') {
+            return null;
+        }
+
+        if (str_contains($url, 'youtube.com/embed/')) {
+            return $url;
+        }
+
+        if (preg_match('~(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/shorts/)([A-Za-z0-9_-]{11})~', $url, $matches)) {
+            return 'https://www.youtube.com/embed/'.$matches[1];
+        }
+
+        return $url;
     }
 }

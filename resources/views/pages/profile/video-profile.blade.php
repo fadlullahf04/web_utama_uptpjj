@@ -14,14 +14,44 @@
     </div>
 </div>
 
-<div class="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+<div class="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
     
     <!-- Video Player Frame -->
     <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-md">
         <div class="relative w-full rounded-2xl overflow-hidden shadow bg-black" style="padding-top: 56.25%;">
-            <iframe class="absolute inset-0 w-full h-full" src="{{ \App\Models\Setting::get('profile_video_url', 'https://www.youtube.com/embed/dQw4w9WgXcQ') }}" title="Video Profil UPT PJJ UINSSC" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe class="absolute inset-0 w-full h-full" src="{{ $mainVideoUrl }}" title="Video Profil UPT PJJ UINSSC" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
     </div>
+
+    @if($videos->isNotEmpty())
+        <div class="space-y-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900">Koleksi Video Profil &amp; Dokumentasi</h2>
+                    <p class="text-xs text-slate-500 mt-1">Tayangan profil lembaga, layanan akademik, dan aktivitas sivitas UPT PJJ UINSSC.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($videos as $video)
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="relative w-full bg-black" style="padding-top: 56.25%;">
+                            <iframe class="absolute inset-0 w-full h-full" src="{{ $video->embed_url }}" title="{{ $video->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        </div>
+                        <div class="p-5 space-y-1.5 flex-1">
+                            <span class="inline-block text-[10px] font-bold uppercase tracking-wider text-[#006837] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                                {{ $video->category }}
+                            </span>
+                            <h3 class="text-sm font-extrabold text-slate-900 leading-snug">{{ $video->title }}</h3>
+                            @if(!empty($video->description))
+                                <p class="text-xs text-slate-600 leading-relaxed">{{ strip_tags(html_entity_decode($video->description)) }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4 text-center">
         <h3 class="text-lg font-bold text-slate-900">Ingin Mengetahui Lebih Dalam Tentang Kuliah PJJ?</h3>

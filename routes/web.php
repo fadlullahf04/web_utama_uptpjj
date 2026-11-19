@@ -175,7 +175,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         // Hero Slides / Banner
         Route::resource('slides', AdminHeroSlideController::class)->except(['show']);
 
-        // Team Members / Struktur
+        // Team Members / Struktur & Kategori
+        Route::post('team/categories', [AdminTeamMemberController::class, 'storeCategory'])->name('team.categories.store');
+        Route::put('team/categories/{category}', [AdminTeamMemberController::class, 'updateCategory'])->name('team.categories.update');
+        Route::delete('team/categories/{category}', [AdminTeamMemberController::class, 'destroyCategory'])->name('team.categories.destroy');
         Route::resource('team', AdminTeamMemberController::class)->except(['show']);
 
         // Downloads / Dokumen

@@ -14,6 +14,7 @@ class TeamMember extends Model
         'title',
         'nip',
         'division',
+        'department',
         'photo',
         'bio',
         'email',

@@ -26,8 +26,9 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kategori Sarana *</label>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kategori Sarana / Media *</label>
                         <select name="category" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                            <option value="Video Profil">Video Profil</option>
                             <option value="Gedung Siber">Gedung Siber & Ruang UPT</option>
                             <option value="Studio Multimedia">Studio Rekaman MOOC</option>
                             <option value="Lab Komputer">Laboratorium Siber & CBT</option>
@@ -45,8 +46,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">URL Gambar (Online)</label>
-                        <input type="url" name="media_url" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">URL Gambar / Link Video YouTube</label>
+                        <input type="url" name="media_url" placeholder="https://www.youtube.com/watch?v=... atau https://..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
                     </div>
 
                     <div>
@@ -91,7 +92,14 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     @foreach($galleries as $g)
                         <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-200 group relative">
-                            <img src="{{ $g->thumbnail_url }}" alt="{{ $g->title }}" class="w-full h-36 object-cover">
+                            @if($g->type === 'video')
+                                <div class="w-full h-36 bg-slate-900 flex flex-col items-center justify-center text-white gap-1.5">
+                                    <i class="fa-brands fa-youtube text-3xl text-red-500"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300">Video YouTube</span>
+                                </div>
+                            @else
+                                <img src="{{ $g->thumbnail_url }}" alt="{{ $g->title }}" class="w-full h-36 object-cover">
+                            @endif
                             <div class="p-3 space-y-1">
                                 <span class="text-[9px] font-bold uppercase text-amber-600">{{ $g->category }}</span>
                                 <h5 class="text-xs font-bold text-slate-900 line-clamp-1">{{ $g->title }}</h5>
@@ -144,8 +152,9 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kategori Sarana *</label>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kategori Sarana / Media *</label>
                         <select name="category" x-model="editItem.category" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:bg-white focus:outline-none focus:border-[#006837]">
+                            <option value="Video Profil">Video Profil</option>
                             <option value="Gedung Siber">Gedung Siber & Ruang UPT</option>
                             <option value="Studio Multimedia">Studio Rekaman MOOC</option>
                             <option value="Lab Komputer">Laboratorium Siber & CBT</option>
